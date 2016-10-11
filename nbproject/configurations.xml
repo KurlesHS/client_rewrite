@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="SourceFiles"
+                   displayName="Исходные файлы"
+                   projectFiles="true">
+      <logicalFolder name="f1" displayName="network" projectFiles="true">
+        <itemPath>network/itransport.cpp</itemPath>
+        <itemPath>network/tcpserver.cpp</itemPath>
+        <itemPath>network/tcpsocket.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="protocol" projectFiles="true">
+        <itemPath>protocol/hardwareprotocolfactory.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="thread" projectFiles="true">
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="timer" projectFiles="true">
+        <itemPath>timer/itimer.cpp</itemPath>
+        <itemPath>timer/timerfactory.cpp</itemPath>
+      </logicalFolder>
+      <itemPath>fortest.cpp</itemPath>
+      <itemPath>main.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="HeaderFiles"
+                   displayName="Файлы заголовков"
+                   projectFiles="true">
+      <logicalFolder name="f4" displayName="ioc" projectFiles="true">
+        <itemPath>ioc/resolver.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="network" projectFiles="true">
+        <itemPath>network/itransport.h</itemPath>
+        <itemPath>network/tcpserver.h</itemPath>
+        <itemPath>tcpsocket.h</itemPath>
+        <itemPath>network/tcpsocket.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="protocol" projectFiles="true">
+        <itemPath>protocol/hardwareprotocolfactory.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="thread" projectFiles="true">
+        <itemPath>thread/threadregister.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="timer" projectFiles="true">
+        <itemPath>timer/itimer.h</itemPath>
+        <itemPath>timer/timerfactory.h</itemPath>
+      </logicalFolder>
+      <itemPath>fortest.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Файлы ресурсов"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Файлы тестов"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Важные файлы"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <standard>11</standard>
+          <incDir>
+            <pElem>3rdparty</pElem>
+            <pElem>3rdparty/sol2</pElem>
+            <pElem>/usr/include/</pElem>
+            <pElem>/usr/include/lua5.3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto </linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="fortest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/itransport.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/itransport.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="network/tcpserver.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/tcpserver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="network/tcpsocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/tcpsocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="protocol/hardwareprotocolfactory.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/hardwareprotocolfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tcpsocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="thread/threadregister.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="timer/itimer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="timer/itimer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="timer/timerfactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="timer/timerfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <standard>11</standard>
+          <incDir>
+            <pElem>3rdparty</pElem>
+            <pElem>3rdparty/sol2</pElem>
+            <pElem>/usr/include/</pElem>
+            <pElem>/usr/include/lua5.3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto </linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="fortest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/itransport.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/itransport.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="network/tcpserver.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/tcpserver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="network/tcpsocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="network/tcpsocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="protocol/hardwareprotocolfactory.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/hardwareprotocolfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tcpsocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="thread/threadregister.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="timer/itimer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="timer/itimer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="timer/timerfactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="timer/timerfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
