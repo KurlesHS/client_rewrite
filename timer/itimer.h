@@ -16,10 +16,8 @@
 
 #include <functional>
 #include <memory>
-#include <list>
 
-
-
+#include "safe_list.h"
 
 class ITimer;
 
@@ -70,12 +68,8 @@ protected:
 private:
     uint32_t mInterval;
     bool mIsSingleShot;
-    list<ITimerEvents*> mEventListeners;    
-    list<ITimerEvents*> mEventListenersForRemove;
-    
-    list<TimerCallback> mTimerCallbackFunc;
-    bool mIsIterateThroughtEventListeners;
-    bool mIsNeedToClearTimerCallbackFunc;
+    safe_list<ITimerEvents*> mEventListeners;
+    safe_list<TimerCallback> mTimerCallbackFunc;    
 };
 
 #endif /* ITIMER_H */

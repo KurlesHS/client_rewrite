@@ -5,6 +5,7 @@
  */
 
 #include "itransport.h"
+#include "safe_list.h"
 
 void ITransport::addTransportEventsListener(ITransportEvents* listener)
 {
@@ -13,7 +14,7 @@ void ITransport::addTransportEventsListener(ITransportEvents* listener)
 
 void ITransport::removeTransportEventsListener(ITransportEvents* listener)
 {
-    mEventListeners.remove(listener);
+    mEventListeners.safe_remove(listener);
 }
 
 ITransport::~ITransport()
@@ -26,18 +27,12 @@ ITransportEvents::~ITransportEvents()
 
 void ITransport::emit_disonnected()
 {
-    auto copyOfListeners = mEventListeners;
-    for (const auto listener : copyOfListeners) {
-        listener->disconnected(this);
-    }
+    mEventListeners.call_member_func(&ITransportEvents::disconnected, this);    
 }
 
 void ITransport::emit_readyRead()
 {
-    auto copyOfListeners = mEventListeners;
-    for (const auto listener : copyOfListeners) {
-        listener->readyRead(this);
-    }
+    mEventListeners.call_member_func(&ITransportEvents::readyRead, this);  
 }
 
 

@@ -17,10 +17,10 @@
 #include <memory>
 #include <string>
 #include <deque>
-#include <list>
 
 #include <ev++.h>
 
+#include "safe_list.h"
 #include "tcpsocket.h"
 
 using namespace std;
@@ -64,7 +64,7 @@ private:
     int mMaxClients;
     ev::io mConnectionWatcher;
     deque<int> mPendingClientDescriptors;
-    list<ITcpServerEvents *> mEventListeners;
+    safe_list<ITcpServerEvents *> mEventListeners;
 };
 
 #endif /* TCPSERVER_H */

@@ -1,7 +1,9 @@
 ###############################
 /nbproject/private/
 
-Makefile*
+#Makefile*
 Package-*
 
 
+/build/
+/dist/

@@ -44,6 +44,7 @@
         <itemPath>timer/timerfactory.h</itemPath>
       </logicalFolder>
       <itemPath>fortest.h</itemPath>
+      <itemPath>safe_list.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Файлы ресурсов"
@@ -113,6 +114,8 @@
             flavor2="0">
       </item>
       <item path="protocol/hardwareprotocolfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tcpsocket.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -187,6 +190,8 @@
             flavor2="0">
       </item>
       <item path="protocol/hardwareprotocolfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tcpsocket.h" ex="false" tool="3" flavor2="0">
       </item>

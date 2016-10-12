@@ -14,9 +14,10 @@
 #ifndef ITRANSPORT_H
 #define ITRANSPORT_H
 
-#include <list>
 #include <string>
 #include <memory>
+
+#include "safe_list.h"
 
 using namespace std;
 
@@ -52,10 +53,7 @@ protected:
     void emit_disonnected();
   
 private:
-    list<ITransportEvents*> mEventListeners;
-            
-    
-    
+    safe_list<ITransportEvents*> mEventListeners;
 
 };
 

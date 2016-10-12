@@ -15,9 +15,7 @@
 
 ITimer::ITimer(const uint32_t &interval) :
     mInterval(interval),
-    mIsSingleShot(false),
-    mIsIterateThroughtEventListeners(false),
-    mIsNeedToClearTimerCallbackFunc(false)
+    mIsSingleShot(false)
 {
 }
 
@@ -67,32 +65,13 @@ void ITimer::addTimerEventListener(ITimerEvents* listener)
 
 void ITimer::removeTimerEventListener(ITimerEvents* listener)
 {
-    if (mIsIterateThroughtEventListeners) {
-        mEventListenersForRemove.push_back(listener);
-    } else {
-        mEventListeners.remove(listener);
-    }
+    mEventListeners.safe_remove(listener);
 }
 
 void ITimer::emit_timeout()
 {
-
-    mIsIterateThroughtEventListeners = true;
-    for (const auto listener : mEventListeners) {
-        listener->timeout(this);
-    }
-
-    for (const auto func : mTimerCallbackFunc) {
-        func(this);
-    }
-    mIsIterateThroughtEventListeners = false;
-    for (const auto listener : mEventListenersForRemove) {
-        mEventListeners.remove(listener);
-    }
-    mEventListenersForRemove.clear();
-    if (mIsNeedToClearTimerCallbackFunc) {
-        mTimerCallbackFunc.clear();
-    }
+    mEventListeners.call_member_func(&ITimerEvents::timeout, this);
+    mTimerCallbackFunc.call_function(this);
 }
 
 void ITimer::addCallbackFunction(TimerCallback func)
@@ -102,10 +81,6 @@ void ITimer::addCallbackFunction(TimerCallback func)
 
 void ITimer::removeCallbackFunctions()
 {
-    if (mIsIterateThroughtEventListeners) {
-        mIsNeedToClearTimerCallbackFunc = true;
-    } else {
-        mTimerCallbackFunc.clear();
-    }
+    mTimerCallbackFunc.safe_clear();
 }
 

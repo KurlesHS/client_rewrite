@@ -26,8 +26,7 @@
 #include <list>
 #include <iostream>
 
-static int setnonblock(int fd)
-{
+static int setnonblock(int fd) {
     int flags;
 
     flags = fcntl(fd, F_GETFL);
@@ -36,15 +35,13 @@ static int setnonblock(int fd)
     return fcntl(fd, F_SETFL, flags);
 }
 
-ITcpServerEvents::~ITcpServerEvents()
-{
+ITcpServerEvents::~ITcpServerEvents() {
 
 }
 
 TcpServer::TcpServer(ev::loop_ref loop) :
-    mServerId(-1),
-    mMaxClients(10000)
-{
+mServerId(-1),
+mMaxClients(10000) {
     if (!loop.raw_loop) {
         loop = ThreadRegister::loopForCurrentThread();
     }
@@ -52,11 +49,10 @@ TcpServer::TcpServer(ev::loop_ref loop) :
     mConnectionWatcher.set<TcpServer, &TcpServer::onNewConnection>(this);
 }
 
-void TcpServer::onNewConnection(ev::io& watcher, int flag)
-{
+void TcpServer::onNewConnection(ev::io& watcher, int flag) {
     (void) watcher;
     (void) flag;
-    socklen_t len = sizeof(sockaddr);
+    socklen_t len = sizeof (sockaddr);
     sockaddr_in client_addr;
     int client_sd = accept(watcher.fd, (sockaddr*) & client_addr, &len);
 
@@ -69,18 +65,15 @@ void TcpServer::onNewConnection(ev::io& watcher, int flag)
     emit_newConnection();
 }
 
-bool TcpServer::hasPendingConnections() const
-{
+bool TcpServer::hasPendingConnections() const {
     return !mPendingClientDescriptors.empty();
 }
 
-int TcpServer::pendingConnectionCount() const
-{
+int TcpServer::pendingConnectionCount() const {
     return mPendingClientDescriptors.size();
 }
 
-TcpSocketSharedPrt TcpServer::nextPendingConnection(const ev::loop_ref& loop)
-{
+TcpSocketSharedPrt TcpServer::nextPendingConnection(const ev::loop_ref& loop) {
     if (hasPendingConnections()) {
         if (loop.raw_loop) {
             auto it = mPendingClientDescriptors.front();
@@ -91,8 +84,7 @@ TcpSocketSharedPrt TcpServer::nextPendingConnection(const ev::loop_ref& loop)
     return nullptr;
 }
 
-TcpSocketSharedPrt TcpServer::nextPendingConnection()
-{
+TcpSocketSharedPrt TcpServer::nextPendingConnection() {
     if (hasPendingConnections()) {
         auto loop = ThreadRegister::loopForCurrentThread();
         if (loop.raw_loop) {
@@ -104,8 +96,7 @@ TcpSocketSharedPrt TcpServer::nextPendingConnection()
     return nullptr;
 }
 
-void TcpServer::close()
-{
+void TcpServer::close() {
     // закрываем так же все ожидающие подключения
     for (const int socketDescripror : mPendingClientDescriptors) {
         ::close(socketDescripror);
@@ -116,14 +107,12 @@ void TcpServer::close()
     }
 }
 
-TcpServer::~TcpServer()
-{
+TcpServer::~TcpServer() {
     // перед уничтожением сервера закрываем соединения и прослушку
     close();
 }
 
-bool TcpServer::startListen(int port)
-{
+bool TcpServer::startListen(int port) {
     if (mServerId >= 0) {
         // уже слушаем порт
         mError = "already binged";
@@ -166,19 +155,14 @@ on_error:
     return false;
 }
 
-void TcpServer::addServerEventListener(ITcpServerEvents* listener)
-{
+void TcpServer::addServerEventListener(ITcpServerEvents* listener) {
     mEventListeners.emplace_back(listener);
 }
 
-void TcpServer::removeServerEventListener(ITcpServerEvents* listener)
-{
-    mEventListeners.remove(listener);
+void TcpServer::removeServerEventListener(ITcpServerEvents* listener) {
+    mEventListeners.safe_remove(listener);
 }
 
-void TcpServer::emit_newConnection()
-{
-    for (const auto listener : mEventListeners) {
-        listener->newConnection(this);
-    }
+void TcpServer::emit_newConnection() {
+    mEventListeners.call_member_func(&ITcpServerEvents::newConnection, this);
 }
