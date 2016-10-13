@@ -28,6 +28,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+    (void)argc;
+    (void)argv;
     auto authManager = new AuthManager();
     authManager->addUser("admin", "admin");
     di_register_type(ITimerFactory, TimerFactory,)
@@ -40,7 +42,7 @@ int main(int argc, char** argv)
     ThreadRegister::registerThread(mainLoop);
     
 #if 0
-    ForTest test;
+    ForTest test;13
     test.run();
 #endif
     

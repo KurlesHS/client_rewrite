@@ -13,6 +13,8 @@
 
 #include "mainhandler.h"
 
+#include "protocol/startnotifyincommingcommandhandler.h"
+
 MainHandler::MainHandler()
 {
 }

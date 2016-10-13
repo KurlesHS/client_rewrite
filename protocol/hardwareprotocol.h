@@ -14,8 +14,7 @@
 #ifndef HARDWAREPROTOCOL_H
 #define HARDWAREPROTOCOL_H
 
-class HardwareProtocol;
-class IAuthManager;
+
 
 #include "network/tcpsocket.h"
 #include "network/itransport.h"
@@ -24,8 +23,13 @@ class IAuthManager;
 #include "hardwareprotocolpacketparser.h"
 
 #include <unordered_map>
-
+class HardwareProtocol;
+class IAuthManager;
 class ITimerFactory;
+
+class IIncommingCommandHandler;
+
+using HardwareProtocolSharedPtr = std::shared_ptr<HardwareProtocol>;
 
 class HardwareProtocol : public ITransportEvents {
 public:
@@ -44,6 +48,7 @@ public:
     void setUserName(const string &userName);
     
     void sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr outgoingCommand);
+    void registerIncommingCommandHandler(IIncommingCommandHandler *handler);
     
     Error error() const;
 
@@ -54,6 +59,8 @@ private:
     void processErrorCommand();
     void processEmptyCommand();
     void processIncompleteCommand();
+    
+    void sendCommand(Command *cmd);
 
 private:
     ITransportSharedPrt mTransport;
@@ -63,6 +70,7 @@ private:
     Error mError;
     
     unordered_map<uint64_t, IProtocolOutgoingCommandSharedPtr> mOutgoingCommands;
+    unordered_map<uint16_t, IIncommingCommandHandler *> mIncommingCommandHandlers;
 
     uint64_t mSequenceNumber;
     string mUserName;

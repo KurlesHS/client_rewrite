@@ -71,7 +71,7 @@ std::vector<char> CommandParser::bulidPacket(const Command& cmd)
     return result;
 }
 
-void Command::updateSignAndSession(const std::string& username, const std::string& password, const std::string& sessionId)
+void Command::updateSign(const std::string& username, const std::string& password, const std::string& sessionId)
 {
     char buff[8];
     SHA256_CTX ctx;
@@ -84,8 +84,7 @@ void Command::updateSignAndSession(const std::string& username, const std::strin
     SHA224_Update(&ctx, "_", 1); // separator    
     SHA224_Update(&ctx, sessionId.data(), sessionId.length()); // session id
     SHA224_Update(&ctx, data.data(), data.size());
-    SHA224_Final((unsigned char*)sign, &ctx);
-    memcpy(sign, sessionId.data(), std::min<int>(sessionId.length(), sizeof(sign)));
+    SHA224_Final((unsigned char*)sign, &ctx);   
 }
 
 bool Command::checkSign(const std::string& username, const std::string& password, const std::string& sessionId) const

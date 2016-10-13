@@ -19,47 +19,48 @@
 #include "timer/itimer.h"
 
 #include "auth/iauthmanager.h"
+#include "iincommingcommandhandler.h"
 #include "authprotocoloutgoingcommand.h"
 
 #include <math.h>
 
 HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
-    mTransport(transport),
-    mAuthManager(di_inject(IAuthManager)),
-    mTimerFactory(di_inject(ITimerFactory)),
-    mError(Error::NoError),
-    mSequenceNumber(0),
-    mSessionId(Uuid::createUuid().toString(28)), /* 28 байт id сессии */
-    mIsAuthorized(false)
-{
+mTransport(transport),
+mAuthManager(di_inject(IAuthManager)),
+mTimerFactory(di_inject(ITimerFactory)),
+mError(Error::NoError),
+mSequenceNumber(0),
+mSessionId(Uuid::createUuid().toString()),
+mIsAuthorized(false) {
     mTransport->addTransportEventsListener(this);
     sendOutgoingCommand(make_shared<AuthProtocolOutgoingCommand>(this, mSessionId));
 }
 
-HardwareProtocol::~HardwareProtocol()
-{
+void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler* handler) {
+    mIncommingCommandHandlers[handler->command()] = handler;
+}
+
+HardwareProtocol::~HardwareProtocol() {
     mTransport->removeTransportEventsListener(this);
 }
 
-void HardwareProtocol::disconnected(ITransport* self)
-{
+void HardwareProtocol::disconnected(ITransport* self) {
     self->removeTransportEventsListener(this);
 }
 
-void HardwareProtocol::readyRead(ITransport* self)
-{
+void HardwareProtocol::readyRead(ITransport* self) {
     char buff[0x1000];
     int bytes = self->bytesAvailable();
     while (bytes > 0) {
         bytes = min<int>(bytes, sizeof (buff));
         self->read(buff, bytes);
         mHardwareProtocolParser.addData(buff, bytes);
+        doWorkWithIncommingData();
         bytes = self->bytesAvailable();
     }
 }
 
-void HardwareProtocol::doWorkWithIncommingData()
-{
+void HardwareProtocol::doWorkWithIncommingData() {
     HardwareProtocolPacketParser::Result res;
     auto cmd = mHardwareProtocolParser.getCommand(res);
     using R = HardwareProtocolPacketParser::Result;
@@ -79,13 +80,11 @@ void HardwareProtocol::doWorkWithIncommingData()
     }
 }
 
-void HardwareProtocol::processEmptyCommand()
-{
+void HardwareProtocol::processEmptyCommand() {
     //TODO: запланировать отправку ping команды
 }
 
-void HardwareProtocol::processErrorCommand()
-{
+void HardwareProtocol::processErrorCommand() {
     mError = Error::CommandError;
     if (mTransport->isOpen()) {
         mTransport->close();
@@ -93,19 +92,15 @@ void HardwareProtocol::processErrorCommand()
     }
 }
 
-void HardwareProtocol::processIncompleteCommand()
-{
+void HardwareProtocol::processIncompleteCommand() {
     // TODO: запустить таймер
-
 }
 
-HardwareProtocol::Error HardwareProtocol::error() const
-{
+HardwareProtocol::Error HardwareProtocol::error() const {
     return mError;
 }
 
-void HardwareProtocol::sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr outgoingCommand)
-{
+void HardwareProtocol::sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr outgoingCommand) {
     if (!mTransport->isOpen()) {
         return;
     }
@@ -114,26 +109,31 @@ void HardwareProtocol::sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr out
     Command cmd;
     cmd.command = outgoingCommand->command();
     cmd.data = outgoingCommand->payload();
-    cmd.updateSignAndSession(mUserName, mPassword, mSessionId);
-    
-    mTransport->write(CommandParser::bulidPacket(cmd));
-    
+    cmd.sequenceNum = currentSeqNum;
+    sendCommand(&cmd);
 }
 
-void HardwareProtocol::setUserName(const string& userName)
-{
+void HardwareProtocol::sendCommand(Command* cmd) {
+    if (mTransport->isOpen()) {
+        cmd->updateSign(mUserName, mPassword, mSessionId);
+        mTransport->write(CommandParser::bulidPacket(*cmd));
+    }
+}
+
+void HardwareProtocol::setUserName(const string& userName) {
     mUserName = userName;
     mPassword = mAuthManager->getUserPassword(userName);
 }
 
-void HardwareProtocol::processOkCommand(const Command& cmd)
-{
+void HardwareProtocol::processOkCommand(const Command& cmd) {
     if (cmd.command == 0x0000 || cmd.command == 0xffff) {
         /* отклик. */
         auto it = mOutgoingCommands.find(cmd.sequenceNum);
         if (it != mOutgoingCommands.end()) {
             /* есть команда, ожидающая отклика */
             IProtocolOutgoingCommandSharedPtr outCmd = it->second;
+            /* удаляем команду из списка ожидающих ответа */
+            mOutgoingCommands.erase(it);
             /* пароноидальная проверка */
             if (outCmd) {
                 if (cmd.command == 0x0000) {
@@ -159,5 +159,34 @@ void HardwareProtocol::processOkCommand(const Command& cmd)
                 }
             }
         }
+    } else {
+        /* входящая команда */
+        /* сразу проверяем на валидность */
+        if (!cmd.checkSign(mUserName, mPassword, mSessionId)) {
+            /* беда с аутентификацией */
+            if (mTransport->isOpen()) {
+                mError = Error::AuthError;
+                mTransport->close();
+                disconnected(mTransport.get());
+            }
+            return;
+        }
+        auto it = mIncommingCommandHandlers.find(cmd.command);
+        /* по умолчанию отклик ошибочный */
+        uint16_t respCommand = 0xffff;
+        if (it != mIncommingCommandHandlers.end()) {
+            IIncommingCommandHandler *handler = it->second;
+            if (handler->handleCommand(cmd.data)) {
+                /* команда обработана - шлём нормальный отклик*/
+                respCommand = 0x0000;
+            }
+        }
+        /* формируем ответ */
+        Command resp;
+        resp.command = respCommand;
+        resp.sequenceNum = cmd.sequenceNum;
+        /* и отправляем его */
+        sendCommand(&resp);
+        
     }
 }

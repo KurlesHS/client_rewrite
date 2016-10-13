@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="3rdparty" displayName="3rdparty" projectFiles="true">
+      <logicalFolder name="json" displayName="json" projectFiles="true">
+        <itemPath>3rdparty/json/json.hpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="sol2" displayName="sol2" projectFiles="true">
+        <itemPath>3rdparty/sol2/sol2.hpp</itemPath>
+      </logicalFolder>
+    </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Исходные файлы"
                    projectFiles="true">
@@ -17,7 +25,7 @@
         <itemPath>protocol/hardwareprotocol.cpp</itemPath>
         <itemPath>protocol/hardwareprotocolfactory.cpp</itemPath>
         <itemPath>protocol/hardwareprotocolpacketparser.cpp</itemPath>
-        <itemPath>protocol/pingprotocolincommingcommand.cpp</itemPath>
+        <itemPath>protocol/startnotifyincommingcommandhandler.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
       </logicalFolder>
@@ -54,9 +62,10 @@
         <itemPath>protocol/hardwareprotocol.h</itemPath>
         <itemPath>protocol/hardwareprotocolfactory.h</itemPath>
         <itemPath>protocol/hardwareprotocolpacketparser.h</itemPath>
+        <itemPath>protocol/iincommingcommandhandler.h</itemPath>
         <itemPath>protocol/iprotocolincommingcommand.h</itemPath>
         <itemPath>protocol/iprotocoloutgoingcommand.h</itemPath>
-        <itemPath>protocol/pingprotocolincommingcommand.h</itemPath>
+        <itemPath>protocol/startnotifyincommingcommandhandler.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
         <itemPath>thread/threadregister.h</itemPath>
@@ -88,6 +97,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>auth</Elem>
+    <Elem>3rdparty</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -115,6 +125,10 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="3rdparty/json/json.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/sol2/sol2.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="auth/authmanager.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="auth/authmanager.h" ex="false" tool="3" flavor2="0">
@@ -182,6 +196,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="protocol/iincommingcommandhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="protocol/iprotocolincommingcommand.h"
             ex="false"
             tool="3"
@@ -192,12 +211,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="protocol/pingprotocolincommingcommand.cpp"
+      <item path="protocol/startnotifyincommingcommandhandler.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="protocol/pingprotocolincommingcommand.h"
+      <item path="protocol/startnotifyincommingcommandhandler.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -255,6 +274,10 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="3rdparty/json/json.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/sol2/sol2.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="auth/authmanager.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="auth/authmanager.h" ex="false" tool="3" flavor2="0">
@@ -322,6 +345,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="protocol/iincommingcommandhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="protocol/iprotocolincommingcommand.h"
             ex="false"
             tool="3"
@@ -332,12 +360,12 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="protocol/pingprotocolincommingcommand.cpp"
+      <item path="protocol/startnotifyincommingcommandhandler.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="protocol/pingprotocolincommingcommand.h"
+      <item path="protocol/startnotifyincommingcommandhandler.h"
             ex="false"
             tool="3"
             flavor2="0">

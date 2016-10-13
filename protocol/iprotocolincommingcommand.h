@@ -15,8 +15,13 @@
 #define IPROTOCOLINCOMMINGCOMMAND_H
 
 #include <vector>
+#include <memory>
 
 using namespace std;
+
+class IProtocolIncommingCommand;
+
+using IProtocolIncommingCommandSharedPtr = shared_ptr<IProtocolIncommingCommand>;
 
 class IProtocolIncommingCommand {
 public:

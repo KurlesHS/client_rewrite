@@ -28,7 +28,6 @@ void HardwareProtocolFactory::newConnection(TcpServer* self)
             mActiveProtocols.push_back(std::make_shared<HardwareProtocol>(socket));
         }
     }
-
 }
 
 HardwareProtocolFactory::HardwareProtocolFactory()
@@ -40,3 +39,17 @@ bool HardwareProtocolFactory::startListen(const uint16_t port)
 {
     return mServer.startListen(port);
 }
+
+void HardwareProtocolFactory::sendCommand(IProtocolOutgoingCommandSharedPtr command) {
+    for (HardwareProtocolSharedPtr protocol : mActiveProtocols) {
+        protocol->sendOutgoingCommand(command);
+    }
+}
+
+void HardwareProtocolFactory::registerIncommingCommandHandler(IIncommingCommandHandler* handler) {
+    for (HardwareProtocolSharedPtr protocol : mActiveProtocols) {
+        protocol->registerIncommingCommandHandler(handler);
+    }
+}
+
+

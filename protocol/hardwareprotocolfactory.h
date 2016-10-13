@@ -15,12 +15,12 @@
 #define HARDWAREPROTOCOLFACTORY_H
 
 #include "network/tcpserver.h"
-#include "hardwareprotocol.h"
-
+#include "iprotocoloutgoingcommand.h"
 #include <list>
 #include <memory>
 
 class HardwareProtocol;
+class IIncommingCommandHandler;
 
 using namespace std;
 
@@ -30,16 +30,18 @@ class HardwareProtocolFactory : public ITcpServerEvents {
 public:
     HardwareProtocolFactory();
     virtual ~HardwareProtocolFactory();
-    
+
     bool startListen(const uint16_t port);
-    
     void newConnection(TcpServer* self) override;
-    
+    void sendCommand(IProtocolOutgoingCommandSharedPtr command);
+    void registerIncommingCommandHandler(IIncommingCommandHandler *handler);
+
+
 private:
     TcpServer mServer;
     list<std::shared_ptr<HardwareProtocol>> mActiveProtocols;
     list<std::shared_ptr<HardwareProtocol>> mSpentProtocols;
-    
+
 
 };
 

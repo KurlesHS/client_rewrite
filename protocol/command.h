@@ -29,7 +29,7 @@ struct Command {
         return data.size() + command_header_lenght;
     }
     
-    void updateSignAndSession(const std::string &username, const std::string &password,
+    void updateSign(const std::string &username, const std::string &password,
             const std::string &sessionId);
     
     bool checkSign(const std::string &username, const std::string &password,

@@ -11,6 +11,7 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>auth</sourceRootElem>
+                <sourceRootElem>3rdparty</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

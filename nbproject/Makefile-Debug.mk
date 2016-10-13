@@ -47,7 +47,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/protocol/hardwareprotocol.o \
 	${OBJECTDIR}/protocol/hardwareprotocolfactory.o \
 	${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o \
-	${OBJECTDIR}/protocol/pingprotocolincommingcommand.o \
+	${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/timer/itimer.o \
 	${OBJECTDIR}/timer/timerfactory.o \
 	${OBJECTDIR}/uuid.o
@@ -71,11 +71,11 @@ LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/auth
@@ -137,10 +137,10 @@ ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o: protocol/hardwareprotocolp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o protocol/hardwareprotocolpacketparser.cpp
 
-${OBJECTDIR}/protocol/pingprotocolincommingcommand.o: protocol/pingprotocolincommingcommand.cpp
+${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o: protocol/startnotifyincommingcommandhandler.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/pingprotocolincommingcommand.o protocol/pingprotocolincommingcommand.cpp
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o protocol/startnotifyincommingcommandhandler.cpp
 
 ${OBJECTDIR}/timer/itimer.o: timer/itimer.cpp
 	${MKDIR} -p ${OBJECTDIR}/timer
