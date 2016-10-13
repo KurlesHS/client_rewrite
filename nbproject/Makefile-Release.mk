@@ -35,14 +35,22 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/auth/authmanager.o \
 	${OBJECTDIR}/fortest.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/mainhandler.o \
 	${OBJECTDIR}/network/itransport.o \
 	${OBJECTDIR}/network/tcpserver.o \
 	${OBJECTDIR}/network/tcpsocket.o \
+	${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o \
+	${OBJECTDIR}/protocol/command.o \
+	${OBJECTDIR}/protocol/hardwareprotocol.o \
 	${OBJECTDIR}/protocol/hardwareprotocolfactory.o \
+	${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o \
+	${OBJECTDIR}/protocol/pingprotocolincommingcommand.o \
 	${OBJECTDIR}/timer/itimer.o \
-	${OBJECTDIR}/timer/timerfactory.o
+	${OBJECTDIR}/timer/timerfactory.o \
+	${OBJECTDIR}/uuid.o
 
 
 # C Compiler Flags
@@ -63,11 +71,16 @@ LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
+	${MKDIR} -p ${OBJECTDIR}/auth
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/authmanager.o auth/authmanager.cpp
 
 ${OBJECTDIR}/fortest.o: fortest.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -78,6 +91,11 @@ ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/mainhandler.o: mainhandler.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/mainhandler.o mainhandler.cpp
 
 ${OBJECTDIR}/network/itransport.o: network/itransport.cpp
 	${MKDIR} -p ${OBJECTDIR}/network
@@ -94,10 +112,35 @@ ${OBJECTDIR}/network/tcpsocket.o: network/tcpsocket.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/network/tcpsocket.o network/tcpsocket.cpp
 
+${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o: protocol/authprotocoloutgoingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o protocol/authprotocoloutgoingcommand.cpp
+
+${OBJECTDIR}/protocol/command.o: protocol/command.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/command.o protocol/command.cpp
+
+${OBJECTDIR}/protocol/hardwareprotocol.o: protocol/hardwareprotocol.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/hardwareprotocol.o protocol/hardwareprotocol.cpp
+
 ${OBJECTDIR}/protocol/hardwareprotocolfactory.o: protocol/hardwareprotocolfactory.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/hardwareprotocolfactory.o protocol/hardwareprotocolfactory.cpp
+
+${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o: protocol/hardwareprotocolpacketparser.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o protocol/hardwareprotocolpacketparser.cpp
+
+${OBJECTDIR}/protocol/pingprotocolincommingcommand.o: protocol/pingprotocolincommingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/pingprotocolincommingcommand.o protocol/pingprotocolincommingcommand.cpp
 
 ${OBJECTDIR}/timer/itimer.o: timer/itimer.cpp
 	${MKDIR} -p ${OBJECTDIR}/timer
@@ -108,6 +151,11 @@ ${OBJECTDIR}/timer/timerfactory.o: timer/timerfactory.cpp
 	${MKDIR} -p ${OBJECTDIR}/timer
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/timer/timerfactory.o timer/timerfactory.cpp
+
+${OBJECTDIR}/uuid.o: uuid.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/uuid.o uuid.cpp
 
 # Subprojects
 .build-subprojects:

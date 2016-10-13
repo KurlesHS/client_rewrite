@@ -34,6 +34,7 @@ public:
     
 private:
     list<ITransportSharedPrt> mCurrentTransports;
+    list<ITransportSharedPrt> mSpendTransports;
     TcpServer mServer;
     
 

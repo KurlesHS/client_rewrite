@@ -17,6 +17,8 @@
 #include <string>
 #include <memory>
 
+#include <vector>
+
 #include "safe_list.h"
 
 using namespace std;
@@ -27,7 +29,7 @@ using ITransportSharedPrt = std::shared_ptr<ITransport>;
 
 class ITransportEvents {
 public:    
-    virtual ~ITransportEvents();    
+    virtual ~ITransportEvents(); 
     virtual void readyRead(ITransport *self) = 0;
     virtual void disconnected(ITransport *self) = 0;
 };
@@ -38,9 +40,12 @@ public:
     virtual ~ITransport();
 
     virtual void close() = 0;
+    
+    virtual bool isOpen() const = 0;
 
     virtual int read(char *buff, int len) = 0;
     virtual int write(const char *buff, int len) = 0;
+    int write(const vector<char> &data) { return write(data.data(), data.size()); }
     virtual int bytesAvailable() const = 0;
 
     virtual string peerAddress() const = 0;

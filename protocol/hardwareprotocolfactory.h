@@ -15,8 +15,12 @@
 #define HARDWAREPROTOCOLFACTORY_H
 
 #include "network/tcpserver.h"
+#include "hardwareprotocol.h"
 
 #include <list>
+#include <memory>
+
+class HardwareProtocol;
 
 using namespace std;
 
@@ -27,11 +31,15 @@ public:
     HardwareProtocolFactory();
     virtual ~HardwareProtocolFactory();
     
+    bool startListen(const uint16_t port);
+    
     void newConnection(TcpServer* self) override;
     
 private:
-    TcpServer *mServer;
-    list<TcpSocketSharedPrt> mCurrentConnections;
+    TcpServer mServer;
+    list<std::shared_ptr<HardwareProtocol>> mActiveProtocols;
+    list<std::shared_ptr<HardwareProtocol>> mSpentProtocols;
+    
 
 };
 

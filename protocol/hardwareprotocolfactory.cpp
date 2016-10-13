@@ -8,15 +8,11 @@
  * File:   hardwareprotocolfactory.cpp
  * Author: Alexey
  * 
- * Created on 12 октября 2016 г., 0:05
+ * Created on 12 октября 2016 г., 20:25
  */
 
 #include "hardwareprotocolfactory.h"
-
-HardwareProtocolFactory::HardwareProtocolFactory()
-{
-    mServer->addServerEventListener(this);
-}
+#include "hardwareprotocol.h"
 
 HardwareProtocolFactory::~HardwareProtocolFactory()
 {
@@ -24,11 +20,23 @@ HardwareProtocolFactory::~HardwareProtocolFactory()
 
 void HardwareProtocolFactory::newConnection(TcpServer* self)
 {
+    /* получено новое соединение*/
     while (self->hasPendingConnections()) {
         auto socket = self->nextPendingConnection();
-        
+        if (socket) {
+            /* есть создаём протокол, и помещаем его к активным */
+            mActiveProtocols.push_back(std::make_shared<HardwareProtocol>(socket));
+        }
     }
 
 }
 
+HardwareProtocolFactory::HardwareProtocolFactory()
+{
+    mServer.addServerEventListener(this);
+}
 
+bool HardwareProtocolFactory::startListen(const uint16_t port)
+{
+    return mServer.startListen(port);
+}

@@ -92,10 +92,16 @@ void TcpSocket::onReadWriteEvent(ev::io& watcher, int flag)
 }
 
 void TcpSocket::errorCallback()
-{    
-    // TODO: информировать
+{        
     close();
+    emit_disonnected();
 }
+
+bool TcpSocket::isOpen() const
+{
+    return mSocketDescriptor >= 0;
+}
+
 
 void TcpSocket::readCallback()
 {
@@ -121,8 +127,7 @@ void TcpSocket::readCallback()
     } else {
         mReadOffset += nread;
         emit_readyRead();
-        // std::cout << nread << std::endl;
-        // TODO: информировать
+        // std::cout << nread << std::endl;        
     }
 }
 
@@ -133,10 +138,9 @@ void TcpSocket::writeCallback()
     } else {
         int count = ::write(mSocketDescriptor, &mWriteBuff[0], mWriteLen);
         if (count < 0) {
-            // ошибка
-            // TODO: информировать
-            emit_disonnected();
+            // ошибка            
             close();
+            emit_disonnected();
         } else {
             int remain = mWriteLen - count;
             if (remain > 0) {

@@ -11,9 +11,13 @@
  * Created on 11 октября 2016 г., 22:51
  */
 
+#include "fortest.h"
+#include "ioc/resolver.h"
+#include "timer/itimer.h"
+
 #include <iostream>
 
-#include "fortest.h"
+
 
 ForTest::ForTest()
 {
@@ -25,15 +29,22 @@ ForTest::~ForTest()
 
 void ForTest::disconnected(ITransport* self)
 {
-    cout << "disconnect inter " << mCurrentTransports.size() << endl;
-    mCurrentTransports.remove_if([self](ITransportSharedPrt transport) {
-       return transport.get() == self; 
+    cout << "disconnect inter " << mCurrentTransports.size() << endl;    
+    mCurrentTransports.remove_if([self, this](ITransportSharedPrt transport) {
+        if (transport.get() == self) {
+            mSpendTransports.push_back(transport);
+            transport->removeTransportEventsListener(this);
+            return true;
+        } 
+       return false;
     });
+    
     cout << "disconnect exit " << mCurrentTransports.size() << endl;
 }
 
 void ForTest::newConnection(TcpServer* self)
 {    
+    mSpendTransports.clear();
     while (self->hasPendingConnections()) {
         auto socket = self->nextPendingConnection();
         if (socket) {
@@ -56,6 +67,9 @@ void ForTest::run()
 {
     mServer.startListen(55555);
     mServer.addServerEventListener(this);
+    di_inject_variable(ITimerFactory, timerfactory);
+    auto timer = timerfactory->getTimer(12);
+    (void)timer;
 }
 
 

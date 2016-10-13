@@ -18,13 +18,17 @@
 #include <typeinfo>
 #include <mutex>
 
-#define di_inject(_type, _var_name) _type *_var_name = \
+#define di_inject_variable(_type, _var_name) _type *_var_name = \
                 Resolver::resolveDi<_type>();
+
+#define di_inject(_type) Resolver::resolveDi<_type>()                
 
 #define di_register_type(_base_type, _type, ...) \
                 Resolver::registerDi<_base_type, _type>(__VA_ARGS__);
 #define di_register_object(_type, _onbject) \
                 Resolver::registerDiObject<_type>(_onbject);
+
+#define di_unregister_type(_type) 
 
 class Resolver {
 public:    
@@ -51,6 +55,22 @@ public:
             
         }
         return  result;
+    }
+    
+    template <typename T>
+    static void unregisterDi() {
+        std::lock_guard<std::mutex> locker(mutex());
+        T *result = nullptr;
+        try {
+            auto key = std::string(typeid (T).name());
+            result = (T *) registeredTypes().at(key);            
+            registeredTypes().erase(key);
+            delete result;
+            
+        } catch (std::out_of_range) {       
+            
+        }
+        
     }
     
     

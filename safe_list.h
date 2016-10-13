@@ -15,11 +15,14 @@
 #define SAFE_LIST_H
 
 #include <list>
+#include <iostream>
+
+using namespace std;
 
 template<typename _Tp, typename _Alloc = std::allocator<_Tp> >
 class safe_list : public std::list<_Tp, _Alloc>
 {
-public:
+public:    
     void safe_remove(const _Tp &element) {
         if (mIsIterating) {
             mToDelete.push_back(element);
@@ -38,7 +41,7 @@ public:
     }
 
     template<typename M, typename ... Args>
-    void call_member_func(M m, Args ...args) {
+    void call_member_func(M m, Args ...args) {        
         #define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
         mIsIterating = true;
         for (const auto pointer : *this) {
@@ -56,7 +59,7 @@ public:
         if (mIsNeedToClear) {
             this->clear();
             mIsNeedToClear = false;
-        }
+        }        
     }
     template<typename ... Args>
     void call_function(Args ...args) {

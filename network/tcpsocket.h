@@ -33,6 +33,7 @@ public:
 
     int bytesAvailable() const override;
     void close() override;
+    bool isOpen() const override;
     std::string peerAddress() const override;
     int read(char* buff, int len) override;
     int write(const char* buff, int len) override;
