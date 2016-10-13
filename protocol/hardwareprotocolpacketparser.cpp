@@ -38,16 +38,25 @@ Command HardwareProtocolPacketParser::getCommand(HardwareProtocolPacketParser::R
         auto res = mParser.parse(mBuffer.data(), mBuffer.size());
         switch (res) {
             case CommandParser::Result::Error:
-                result = Result::Error;
-                
+                result = Result::Error;                
                 break;
             case CommandParser::Result::Incomplete:
                 result = Result::Incomplete;
                 break;
             case CommandParser::Result::Ok:
                 result = Result::Ok;                
-                cmd = mParser.cmd();
+                cmd = mParser.cmd();                
                 break;
+        }
+    }
+    if (result == Result::Ok) {
+        if (mBuffer.size() <= cmd.commandTotalLen()) {
+            mBuffer.clear();
+        } else {
+            auto remainBytes = mBuffer.size() - cmd.commandTotalLen();
+            memmove(mBuffer.data(), mBuffer.data() + cmd.commandTotalLen(), 
+                    remainBytes);
+            mBuffer.resize(remainBytes);            
         }
     }
     return cmd;

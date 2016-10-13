@@ -41,15 +41,15 @@ CommandParser::Result CommandParser::parse(const char* data, size_t length)
         // общая длинна меньше длинны заголовка - не полный пакет
         return Result::Incomplete;
     }
-    size_t lenght = fromBigEndian<uint32_t>(data + 4);
-    if (lenght + command_header_lenght < length) {
+    size_t dataLenght = fromBigEndian<uint32_t>(data + 4);
+    if (dataLenght + command_header_lenght > length) {
         return Result::Incomplete;
     }
     memcpy(mCommand.sign, data + 18, sizeof(mCommand.sign));
     mCommand.sequenceNum = fromBigEndian<uint64_t>(data + 8);
     mCommand.command = fromBigEndian<uint16_t>(data + 16);
     mCommand.data = std::vector<char>(data + command_header_lenght,
-            data + command_header_lenght + lenght);
+            data + command_header_lenght + dataLenght);
     return Result::Ok;
 }
 

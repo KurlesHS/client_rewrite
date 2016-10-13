@@ -25,30 +25,35 @@
 #include <math.h>
 
 HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
-mTransport(transport),
-mAuthManager(di_inject(IAuthManager)),
-mTimerFactory(di_inject(ITimerFactory)),
-mError(Error::NoError),
-mSequenceNumber(0),
-mSessionId(Uuid::createUuid().toString()),
-mIsAuthorized(false) {
+    mTransport(transport),
+    mAuthManager(di_inject(IAuthManager)),
+    mTimerFactory(di_inject(ITimerFactory)),
+    mError(Error::NoError),
+    mSequenceNumber(0),
+    mSessionId(Uuid::createUuid().toString()),
+    mIsAuthorized(false)
+{
     mTransport->addTransportEventsListener(this);
     sendOutgoingCommand(make_shared<AuthProtocolOutgoingCommand>(this, mSessionId));
 }
 
-void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler* handler) {
+void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler* handler)
+{
     mIncommingCommandHandlers[handler->command()] = handler;
 }
 
-HardwareProtocol::~HardwareProtocol() {
+HardwareProtocol::~HardwareProtocol()
+{
     mTransport->removeTransportEventsListener(this);
 }
 
-void HardwareProtocol::disconnected(ITransport* self) {
+void HardwareProtocol::disconnected(ITransport* self)
+{
     self->removeTransportEventsListener(this);
 }
 
-void HardwareProtocol::readyRead(ITransport* self) {
+void HardwareProtocol::readyRead(ITransport* self)
+{
     char buff[0x1000];
     int bytes = self->bytesAvailable();
     while (bytes > 0) {
@@ -60,7 +65,8 @@ void HardwareProtocol::readyRead(ITransport* self) {
     }
 }
 
-void HardwareProtocol::doWorkWithIncommingData() {
+void HardwareProtocol::doWorkWithIncommingData()
+{
     HardwareProtocolPacketParser::Result res;
     auto cmd = mHardwareProtocolParser.getCommand(res);
     using R = HardwareProtocolPacketParser::Result;
@@ -70,6 +76,7 @@ void HardwareProtocol::doWorkWithIncommingData() {
             break;
         case R::Ok:
             processOkCommand(cmd);
+            doWorkWithIncommingData();
             break;
         case R::Incomplete:
             processIncompleteCommand();
@@ -77,14 +84,16 @@ void HardwareProtocol::doWorkWithIncommingData() {
         case R::Error:
             processErrorCommand();
             break;
-    }
+    }    
 }
 
-void HardwareProtocol::processEmptyCommand() {
+void HardwareProtocol::processEmptyCommand()
+{
     //TODO: запланировать отправку ping команды
 }
 
-void HardwareProtocol::processErrorCommand() {
+void HardwareProtocol::processErrorCommand()
+{
     mError = Error::CommandError;
     if (mTransport->isOpen()) {
         mTransport->close();
@@ -92,15 +101,18 @@ void HardwareProtocol::processErrorCommand() {
     }
 }
 
-void HardwareProtocol::processIncompleteCommand() {
+void HardwareProtocol::processIncompleteCommand()
+{
     // TODO: запустить таймер
 }
 
-HardwareProtocol::Error HardwareProtocol::error() const {
+HardwareProtocol::Error HardwareProtocol::error() const
+{
     return mError;
 }
 
-void HardwareProtocol::sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr outgoingCommand) {
+void HardwareProtocol::sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr outgoingCommand)
+{
     if (!mTransport->isOpen()) {
         return;
     }
@@ -113,19 +125,22 @@ void HardwareProtocol::sendOutgoingCommand(IProtocolOutgoingCommandSharedPtr out
     sendCommand(&cmd);
 }
 
-void HardwareProtocol::sendCommand(Command* cmd) {
+void HardwareProtocol::sendCommand(Command* cmd)
+{
     if (mTransport->isOpen()) {
         cmd->updateSign(mUserName, mPassword, mSessionId);
         mTransport->write(CommandParser::bulidPacket(*cmd));
     }
 }
 
-void HardwareProtocol::setUserName(const string& userName) {
+void HardwareProtocol::setUserName(const string& userName)
+{
     mUserName = userName;
     mPassword = mAuthManager->getUserPassword(userName);
 }
 
-void HardwareProtocol::processOkCommand(const Command& cmd) {
+void HardwareProtocol::processOkCommand(const Command& cmd)
+{
     if (cmd.command == 0x0000 || cmd.command == 0xffff) {
         /* отклик. */
         auto it = mOutgoingCommands.find(cmd.sequenceNum);
@@ -187,6 +202,6 @@ void HardwareProtocol::processOkCommand(const Command& cmd) {
         resp.sequenceNum = cmd.sequenceNum;
         /* и отправляем его */
         sendCommand(&resp);
-        
+
     }
 }
