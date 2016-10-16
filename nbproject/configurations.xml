@@ -25,6 +25,7 @@
         <itemPath>protocol/hardwareprotocol.cpp</itemPath>
         <itemPath>protocol/hardwareprotocolfactory.cpp</itemPath>
         <itemPath>protocol/hardwareprotocolpacketparser.cpp</itemPath>
+        <itemPath>protocol/pingincommingcommandhandler.cpp</itemPath>
         <itemPath>protocol/startnotifyincommingcommandhandler.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
@@ -65,6 +66,7 @@
         <itemPath>protocol/iincommingcommandhandler.h</itemPath>
         <itemPath>protocol/iprotocolincommingcommand.h</itemPath>
         <itemPath>protocol/iprotocoloutgoingcommand.h</itemPath>
+        <itemPath>protocol/pingincommingcommandhandler.h</itemPath>
         <itemPath>protocol/startnotifyincommingcommandhandler.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
@@ -207,6 +209,16 @@
             flavor2="0">
       </item>
       <item path="protocol/iprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingincommingcommandhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingincommingcommandhandler.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -356,6 +368,16 @@
             flavor2="0">
       </item>
       <item path="protocol/iprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingincommingcommandhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingincommingcommandhandler.h"
             ex="false"
             tool="3"
             flavor2="0">

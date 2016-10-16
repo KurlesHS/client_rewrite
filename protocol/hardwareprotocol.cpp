@@ -21,12 +21,14 @@
 #include "auth/iauthmanager.h"
 #include "iincommingcommandhandler.h"
 #include "authprotocoloutgoingcommand.h"
+#include "pingincommingcommandhandler.h"
 
 #include <math.h>
 
 HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
     mTransport(transport),
     mAuthManager(di_inject(IAuthManager)),
+    mPingCommandHandler(new PingIncommingCommandHandler()),
     mTimerFactory(di_inject(ITimerFactory)),
     mError(Error::NoError),
     mSequenceNumber(0),
@@ -35,6 +37,7 @@ HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
 {
     mTransport->addTransportEventsListener(this);
     sendOutgoingCommand(make_shared<AuthProtocolOutgoingCommand>(this, mSessionId));
+    registerIncommingCommandHandler(mPingCommandHandler);
 }
 
 void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler* handler)
@@ -45,6 +48,7 @@ void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler*
 HardwareProtocol::~HardwareProtocol()
 {
     mTransport->removeTransportEventsListener(this);
+    delete mPingCommandHandler;
 }
 
 void HardwareProtocol::disconnected(ITransport* self)
@@ -84,7 +88,7 @@ void HardwareProtocol::doWorkWithIncommingData()
         case R::Error:
             processErrorCommand();
             break;
-    }    
+    }
 }
 
 void HardwareProtocol::processEmptyCommand()

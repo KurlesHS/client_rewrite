@@ -21,6 +21,7 @@
 
 #include "iprotocoloutgoingcommand.h"
 #include "hardwareprotocolpacketparser.h"
+#include "iincommingcommandhandler.h"
 
 #include <unordered_map>
 class HardwareProtocol;
@@ -66,6 +67,7 @@ private:
     ITransportSharedPrt mTransport;
     IAuthManager *mAuthManager;
     HardwareProtocolPacketParser mHardwareProtocolParser;
+    IIncommingCommandHandler *mPingCommandHandler;
     ITimerFactory *mTimerFactory;
     Error mError;
     

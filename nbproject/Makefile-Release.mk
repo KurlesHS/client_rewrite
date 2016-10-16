@@ -47,6 +47,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/protocol/hardwareprotocol.o \
 	${OBJECTDIR}/protocol/hardwareprotocolfactory.o \
 	${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o \
+	${OBJECTDIR}/protocol/pingincommingcommandhandler.o \
 	${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/timer/itimer.o \
 	${OBJECTDIR}/timer/timerfactory.o \
@@ -136,6 +137,11 @@ ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o: protocol/hardwareprotocolp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o protocol/hardwareprotocolpacketparser.cpp
+
+${OBJECTDIR}/protocol/pingincommingcommandhandler.o: protocol/pingincommingcommandhandler.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/pingincommingcommandhandler.o protocol/pingincommingcommandhandler.cpp
 
 ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o: protocol/startnotifyincommingcommandhandler.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
