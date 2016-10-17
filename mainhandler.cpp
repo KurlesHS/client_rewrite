@@ -11,24 +11,48 @@
  * Created on 13 октября 2016 г., 1:07
  */
 
+#include <unistd.h>
+
 #include "mainhandler.h"
 
 #include "protocol/startnotifyincommingcommandhandler.h"
 
+#include "ioc/resolver.h"
+#include "isettings.h"
+#include "jsonfilesettings.h"
+#include "logger.h"
+#include "thread/threadregister.h"
+
 MainHandler::MainHandler() :
-    mSoundManager("/home/kurles/develop/orange_files")
+    mSoundManager("/home/kurles/develop/orange_files"),
+    mLuaScriptManager("/usr/share/sonet/scripts"),
+    mLuaToProtocolMediator(&mLuaScriptManager, &mFactory)
 {
-    mSoundManager.playbackByHash("7626e4d70bf6a25634bfcbd377274de40208f4be313832e9db2dc4fb", "id1");
+    Logger::createInstanse();
+    Logger::setCopyToStdoutEnabled(true);
+    Logger::openlog("/var/log/sonet/server/", "server.log");
+    Logger::msg("--- Sonet hardware server started ---");    
+    mSoundManager.playbackByHash("7626e4d70bf6a25634bfcbd377274de40208f4be313832e9db2dc4fb", "id1");    
+    
 }
 
 MainHandler::~MainHandler()
 {
-    
+
 }
 
-void MainHandler::run()
+bool MainHandler::run()
 {
-    mFactory.startListen(55555);
+    di_inject_variable(ISettings, settings);
+    if (mFactory.startListen(settings->port())) {
+        Logger::msg("start listening port %d", settings->port());
+        return true;
+    } else {
+        Logger::msg("can't start listening port %d", settings->port());
+        sleep(1);
+        ThreadRegister::unloopAllLoops();
+        return false;
+    }
 }
 
 

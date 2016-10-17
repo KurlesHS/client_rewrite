@@ -25,7 +25,12 @@ void HardwareProtocolFactory::newConnection(TcpServer* self)
         auto socket = self->nextPendingConnection();
         if (socket) {
             /* есть создаём протокол, и помещаем его к активным */
-            mActiveProtocols.push_back(std::make_shared<HardwareProtocol>(socket));
+            auto protocol = std::make_shared<HardwareProtocol>(socket);
+            mActiveProtocols.push_back(protocol);
+            for (auto h : mIncommingCommandHandlers) {
+                protocol->registerIncommingCommandHandler(h);
+            }
+            
         }
     }
 }
@@ -47,6 +52,7 @@ void HardwareProtocolFactory::sendCommand(IProtocolOutgoingCommandSharedPtr comm
 }
 
 void HardwareProtocolFactory::registerIncommingCommandHandler(IIncommingCommandHandler* handler) {
+    mIncommingCommandHandlers.push_back(handler);
     for (HardwareProtocolSharedPtr protocol : mActiveProtocols) {
         protocol->registerIncommingCommandHandler(handler);
     }

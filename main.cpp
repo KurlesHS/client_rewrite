@@ -23,6 +23,7 @@
 #include "auth/iauthmanager.h"
 #include "auth/authmanager.h"
 #include "mainhandler.h"
+#include "jsonfilesettings.h"
 
 using namespace std;
 
@@ -32,28 +33,23 @@ int main(int argc, char** argv)
     (void)argv;
     auto authManager = new AuthManager();
     authManager->addUser("admin", "admin");
-    di_register_type(ITimerFactory, TimerFactory,)
-    di_register_object(IAuthManager, authManager)
-    di_inject_variable(IAuthManager, auth);
-    
-    auth->getUserPassword("admin");
+    di_register_type(ITimerFactory, TimerFactory,);
+    di_register_object(IAuthManager, authManager);   
             
     ev::default_loop mainLoop;
     ThreadRegister::registerThread(mainLoop);
     
-#if 0
-    ForTest test;13
-    test.run();
-#endif
-    
+    di_register_type(ISettings, JsonFileSettings, "/etc/sonet_server.json");
     MainHandler m;
-    m.run();
+    int retCode = 0;
+    if (m.run()) {
+        mainLoop.run();
+        retCode = -1;
+    }  
+           
+    di_unregister_type(ITimerFactory);
+    di_unregister_type(IAuthManager)  ;  
     
-    mainLoop.run();
-    
-    di_unregister_type(ITimerFactory)
-    di_unregister_type(IAuthManager)    
-    
-    return 0;
+    return retCode;
 }
 

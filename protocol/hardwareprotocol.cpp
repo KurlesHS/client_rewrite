@@ -22,8 +22,11 @@
 #include "iincommingcommandhandler.h"
 #include "authprotocoloutgoingcommand.h"
 #include "pingincommingcommandhandler.h"
+#include "logger.h"
 
 #include <math.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
     mTransport(transport),
@@ -33,11 +36,13 @@ HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
     mError(Error::NoError),
     mSequenceNumber(0),
     mSessionId(Uuid::createUuid().toString()),
-    mIsAuthorized(false)
+    mIsAuthorized(false),
+    mIsAuthError(false)
 {
     mTransport->addTransportEventsListener(this);
     sendOutgoingCommand(make_shared<AuthProtocolOutgoingCommand>(this, mSessionId));
     registerIncommingCommandHandler(mPingCommandHandler);
+    Logger::msg("client from %s is connected...", transport->peerAddress().data());
 }
 
 void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler* handler)
@@ -162,12 +167,20 @@ void HardwareProtocol::processOkCommand(const Command& cmd)
                     }
                     if (!cmd.checkSign(mUserName, mPassword, mSessionId)) {
                         /* беда с аутентификацией */
+                        if (!mIsAuthError) {
+                            mIsAuthError = true;
+                            Logger::msg("client from %s: auth error...", mTransport->peerAddress().data());
+                        }
                         if (mTransport->isOpen()) {
                             mError = Error::AuthError;
                             mTransport->close();
                             disconnected(mTransport.get());
                         }
                         return;
+                    } else if (!mIsAuthorized) {
+                        mIsAuthorized = true;
+                        Logger::msg("client from %s is authorized...", mTransport->peerAddress().data());
+
                     }
                     /* работа должна быть сделана после проверки авторизации */
                     if (outCmd->doWorkAfterAuth()) {
@@ -183,12 +196,19 @@ void HardwareProtocol::processOkCommand(const Command& cmd)
         /* сразу проверяем на валидность */
         if (!cmd.checkSign(mUserName, mPassword, mSessionId)) {
             /* беда с аутентификацией */
+            if (!mIsAuthError) {
+                mIsAuthError = true;
+                Logger::msg("client from %s: auth error...", mTransport->peerAddress().data());
+            }
             if (mTransport->isOpen()) {
                 mError = Error::AuthError;
                 mTransport->close();
                 disconnected(mTransport.get());
             }
             return;
+        } else if (!mIsAuthorized) {
+            mIsAuthorized = true;
+            Logger::msg("client from %s is authorized...", mTransport->peerAddress().data(), mUserName.data());
         }
         auto it = mIncommingCommandHandlers.find(cmd.command);
         /* по умолчанию отклик ошибочный */

@@ -33,6 +33,12 @@ PlayLocalFileRequestLuaEvent::Type PlayLocalFileRequestLuaEvent::type() const
     return mType;
 }
 
+string PlayLocalFileRequestLuaEvent::id() const
+{
+    return mId;
+}
+
+
 string PlayLocalFileRequestLuaEvent::value() const
 {
     return mValue;

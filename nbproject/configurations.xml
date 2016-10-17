@@ -18,6 +18,7 @@
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
         <itemPath>lua/luascript.cpp</itemPath>
+        <itemPath>lua/luascriptmanager.cpp</itemPath>
         <itemPath>lua/playlocalfilerequestluaevent.cpp</itemPath>
         <itemPath>lua/playnetworkaudiorequestluaevent.cpp</itemPath>
         <itemPath>lua/scriptfinishedluaevent.cpp</itemPath>
@@ -46,7 +47,12 @@
         <itemPath>timer/itimer.cpp</itemPath>
         <itemPath>timer/timerfactory.cpp</itemPath>
       </logicalFolder>
+      <itemPath>cancelnotifyincommingcommandhandler.cpp</itemPath>
       <itemPath>fortest.cpp</itemPath>
+      <itemPath>jsonfilesettings.cpp</itemPath>
+      <itemPath>logger.cpp</itemPath>
+      <itemPath>luatoaudiomediator.cpp</itemPath>
+      <itemPath>luatoprotocolmediator.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>mainhandler.cpp</itemPath>
       <itemPath>uuid.cpp</itemPath>
@@ -64,8 +70,10 @@
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/iluaevent.h</itemPath>
+        <itemPath>lua/iluascripteventlistener.h</itemPath>
         <itemPath>lua/logmessageluaevent.h</itemPath>
         <itemPath>lua/luascript.h</itemPath>
+        <itemPath>lua/luascriptmanager.h</itemPath>
         <itemPath>lua/playlocalfilerequestluaevent.h</itemPath>
         <itemPath>lua/playnetworkaudiorequestluaevent.h</itemPath>
         <itemPath>lua/scriptfinishedluaevent.h</itemPath>
@@ -92,6 +100,7 @@
         <itemPath>protocol/iprotocoloutgoingcommand.h</itemPath>
         <itemPath>protocol/pingincommingcommandhandler.h</itemPath>
         <itemPath>protocol/startnotifyincommingcommandhandler.h</itemPath>
+        <itemPath>protocol/startnotifyinfo.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
         <itemPath>thread/threadregister.h</itemPath>
@@ -100,8 +109,15 @@
         <itemPath>timer/itimer.h</itemPath>
         <itemPath>timer/timerfactory.h</itemPath>
       </logicalFolder>
+      <itemPath>cancelnotifyincommingcommandhandler.h</itemPath>
       <itemPath>endian.hpp</itemPath>
       <itemPath>fortest.h</itemPath>
+      <itemPath>isettings.h</itemPath>
+      <itemPath>isoundmanagereventslistener.h</itemPath>
+      <itemPath>jsonfilesettings.h</itemPath>
+      <itemPath>logger.h</itemPath>
+      <itemPath>luatoaudiomediator.h</itemPath>
+      <itemPath>luatoprotocolmediator.h</itemPath>
       <itemPath>mainhandler.h</itemPath>
       <itemPath>safe_list.h</itemPath>
     </logicalFolder>
@@ -174,6 +190,16 @@
       </item>
       <item path="auth/iauthmanager.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="cancelnotifyincommingcommandhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="cancelnotifyincommingcommandhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="endian.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <folder path="TestFiles">
@@ -204,7 +230,21 @@
       </item>
       <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="isettings.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isoundmanagereventslistener.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="jsonfilesettings.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="jsonfilesettings.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="logger.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="logger.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/iluascripteventlistener.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/logmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -213,6 +253,10 @@
       <item path="lua/luascript.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="lua/luascript.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/luascriptmanager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/luascriptmanager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/playlocalfilerequestluaevent.cpp"
             ex="false"
@@ -254,6 +298,14 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="luatoaudiomediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="luatoaudiomediator.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="luatoprotocolmediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="luatoprotocolmediator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -342,6 +394,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="protocol/startnotifyinfo.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -412,6 +466,16 @@
       </item>
       <item path="auth/iauthmanager.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="cancelnotifyincommingcommandhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="cancelnotifyincommingcommandhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="endian.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <folder path="TestFiles">
@@ -442,7 +506,21 @@
       </item>
       <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="isettings.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isoundmanagereventslistener.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="jsonfilesettings.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="jsonfilesettings.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="logger.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="logger.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/iluascripteventlistener.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/logmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -451,6 +529,10 @@
       <item path="lua/luascript.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="lua/luascript.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/luascriptmanager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/luascriptmanager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/playlocalfilerequestluaevent.cpp"
             ex="false"
@@ -492,6 +574,14 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="luatoaudiomediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="luatoaudiomediator.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="luatoprotocolmediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="luatoprotocolmediator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -580,6 +670,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="protocol/startnotifyinfo.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>

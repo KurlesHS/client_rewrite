@@ -12,39 +12,50 @@
  */
 
 #include "startnotifyincommingcommandhandler.h"
+#include "startnotifyinfo.h"
+#include "luatoprotocolmediator.h"
+
+#include "logger.h"
 
 using json = nlohmann::json;
 
-static void handleIdKey(json::iterator &it, StartNotifyInfo &info) {
+static void handleIdKey(json::iterator &it, StartNotifyInfo &info)
+{
     if (it.value().is_string()) {
         info.id = it.value();
     }
 }
 
-static void handlePriorityKey(json::iterator &it, StartNotifyInfo &info) {
+static void handlePriorityKey(json::iterator &it, StartNotifyInfo &info)
+{
 
     if (it.value().is_number()) {
         info.priority = it.value();
     }
 }
 
-static void handleAudioContentKey(json::iterator &it, StartNotifyInfo &info) {
+static void handleAudioContentKey(json::iterator &it, StartNotifyInfo &info)
+{
 
     if (it.value().is_object()) {
         json obj = it.value();
         for (json::iterator element = obj.begin(); element != obj.end(); ++element) {
             if (element.value().is_string()) {
                 if (element.key() == "type") {
+                    // 'file' or 'url'
                     info.audioContentType = element.value();
                 } else if (element.key() == "value") {
                     info.audioContentValue = element.value();
+                } else if (element.key() == "filename") {
+                    info.audioContentFileName = element.value();
                 }
             }
         }
     }
 }
 
-static void handleHardwareKey(json::iterator &it, StartNotifyInfo &info) {
+static void handleHardwareKey(json::iterator &it, StartNotifyInfo &info)
+{
     if (it.value().type() == json::value_t::array) {
         json obj = it.value();
         for (const auto &element : obj) {
@@ -55,13 +66,15 @@ static void handleHardwareKey(json::iterator &it, StartNotifyInfo &info) {
     }
 }
 
-static void handleCodeKey(json::iterator &it, StartNotifyInfo &info) {
+static void handleCodeKey(json::iterator &it, StartNotifyInfo &info)
+{
     if (it.value().is_string()) {
         info.code = it.value();
     }
 }
 
-static void handleAdditionalDataKey(json::iterator &it, StartNotifyInfo &info) {
+static void handleAdditionalDataKey(json::iterator &it, StartNotifyInfo &info)
+{
     if (!it.value().is_object()) {
         /* если значение не объект - то тут и ловить нам нечего */
         return;
@@ -95,21 +108,26 @@ static void handleAdditionalDataKey(json::iterator &it, StartNotifyInfo &info) {
     }
 }
 
-StartNotifyIncommingCommandHandler::StartNotifyIncommingCommandHandler() {
+StartNotifyIncommingCommandHandler::StartNotifyIncommingCommandHandler(LuaToProtocolMediator *mediator) :
+    mMediator(mediator)
+{
 }
 
-StartNotifyIncommingCommandHandler::~StartNotifyIncommingCommandHandler() {
+StartNotifyIncommingCommandHandler::~StartNotifyIncommingCommandHandler()
+{
 }
 
-uint16_t StartNotifyIncommingCommandHandler::command() const {
+uint16_t StartNotifyIncommingCommandHandler::command() const
+{
     return 0x0100;
 }
 
-bool StartNotifyIncommingCommandHandler::handleCommand(const vector<char>& payload) {    
+bool StartNotifyIncommingCommandHandler::handleCommand(const vector<char>& payload)
+{
     bool result = true;
     try {
         using handler = void (*)(json::iterator &it, StartNotifyInfo & info);
-        
+
         json j = json::parse(string(payload.begin(), payload.end()));
         unordered_map<string, handler> handlers;
         handlers["id"] = handleIdKey;
@@ -125,9 +143,12 @@ bool StartNotifyIncommingCommandHandler::handleCommand(const vector<char>& paylo
             if (h != handlers.end()) {
                 h->second(it, info);
             }
-        }        
+        }
         /* TODO: сделать что нибудь с вытащеной информацией */
+        Logger::msg("received start notify incomming command with code '%s'", info.code.data());
+        mMediator->startNotifyRequest(info);
     } catch (const std::exception &e) {
+        Logger::msg("received mailformed (wrong) start notify incomming command");
         result = false;
     }
     return result;

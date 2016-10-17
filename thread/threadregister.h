@@ -45,6 +45,13 @@ public:
         return loopForThread(std::this_thread::get_id());
     }
     
+    static void unloopAllLoops() {
+        for (auto loop : registeredThreads()) {
+            loop.second.unloop();
+        }        
+    }
+    
+    
 private:
     static std::unordered_map<std::thread::id, ev::loop_ref> &registeredThreads() {
         static std::unordered_map<std::thread::id, ev::loop_ref> t;

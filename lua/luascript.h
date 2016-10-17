@@ -17,25 +17,22 @@
 #define LUASCRIPT_H
 
 #include "iluaevent.h"
+#include "iluascripteventlistener.h"
 
 #include <string>
+#include <memory>
 
 class LuaScriptPrivate;
 
 class ILuaPendingFunc {
 public:
 
-    virtual ~ILuaPendingFunc() {
-    }
+    virtual ~ILuaPendingFunc();
 };
 
-class ILuaScriptEventsListener 
-{
-public:
-    virtual ~ILuaScriptEventsListener() {}
-    virtual void luaEvent(ILuaEventSharedPtr event) = 0;
-    
-};
+class LuaScript;
+
+using LuaScriptSharedPtr = std::shared_ptr<LuaScript>;
 
 class LuaScript {
 public:
@@ -46,6 +43,10 @@ public:
     void cancel();
 
     std::string id() const;
+    
+    std::string notifyId() const;
+    void setNotifyId(const std::string &notifyId);
+    
 
     bool isValid() const;
     bool isFinished() const;

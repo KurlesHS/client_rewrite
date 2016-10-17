@@ -16,19 +16,21 @@
 
 #include "protocol/hardwareprotocolfactory.h"
 #include "soundmanager.h"
-
+#include "lua/luascriptmanager.h"
+#include "luatoprotocolmediator.h"
 
 class MainHandler {
 public:
     MainHandler();
     virtual ~MainHandler();
     
-    void run();
+    bool run();
     
 private:
     HardwareProtocolFactory mFactory;
     SoundManager mSoundManager;
-
+    LuaScriptManager mLuaScriptManager;
+    LuaToProtocolMediator mLuaToProtocolMediator;
 };
 
 #endif /* MAINHANDLER_H */

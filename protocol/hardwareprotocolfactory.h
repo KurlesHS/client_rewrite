@@ -41,6 +41,7 @@ private:
     TcpServer mServer;
     list<std::shared_ptr<HardwareProtocol>> mActiveProtocols;
     list<std::shared_ptr<HardwareProtocol>> mSpentProtocols;
+    list<IIncommingCommandHandler*> mIncommingCommandHandlers;
 
 
 };

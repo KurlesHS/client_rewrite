@@ -16,6 +16,8 @@
 
 #include "iincommingcommandhandler.h"
 
+#include "startnotifyinfo.h"
+
 #include <list>
 #include <unordered_map>
 
@@ -25,41 +27,19 @@
 
 using namespace std;
 
-struct StartNotifyAdditionalData {
-    enum class Type {
-        String,
-        List,
-        Table
-    };
-
-    string stringValue;
-    list<string> listValue;
-    unordered_map<string, string> tableValue;
-
-    Type type;
-
-};
-
-struct StartNotifyInfo {
-    string id;
-    string code;
-    list<string> hardwares;
-    int priority;
-    string audioContentType;
-    string audioContentValue;
-    unordered_map<string, StartNotifyAdditionalData> additionalData;
-};
+class LuaToProtocolMediator;
 
 class StartNotifyIncommingCommandHandler : public IIncommingCommandHandler {
 public:
-    StartNotifyIncommingCommandHandler();
+    StartNotifyIncommingCommandHandler(LuaToProtocolMediator *mediator);
     virtual ~StartNotifyIncommingCommandHandler();
 
     uint16_t command() const override;
     bool handleCommand(const vector<char>& payload) override;
 
 private:
-
+    LuaToProtocolMediator *mMediator;
+    string mCommandDescription;
 };
 
 #endif /* STARTNOTIFYINCOMMINGCOMMANDHANDLER_H */

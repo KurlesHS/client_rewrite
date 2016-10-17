@@ -162,6 +162,7 @@ class LuaScriptPrivate
     std::string lastError;
     int priority = 0;
     std::string id;
+    std::string notifyId;
     
     ITimerFactory *timerFactory;
     std::unordered_map<std::string, IfHappensPendingFuncSharedPtr> mIfHappensFunc;
@@ -397,6 +398,21 @@ std::string LuaScript::getStringVar(const std::string& varName)
 {
     return d->state.get<std::string>(varName);
 }
+
+std::string LuaScript::notifyId() const
+{
+    return d->notifyId;
+}
+
+void LuaScript::setNotifyId(const std::string& notifyId)
+{
+    d->notifyId = notifyId;
+}
+
+ILuaPendingFunc::~ILuaPendingFunc()
+{
+}
+
 
 LuaScript::LuaScript(const std::string &scriptPath) :
     d(new LuaScriptPrivate)

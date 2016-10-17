@@ -20,6 +20,8 @@
 
 #include <ev++.h>
 
+#include "isoundmanagereventslistener.h"
+
 using namespace std;
 
 struct SoundManagerFileInfo {
@@ -27,15 +29,6 @@ struct SoundManagerFileInfo {
     string filePath;    
 };
 
-class ISoundManagerEventsListener 
-{
-public:
-    virtual ~ISoundManagerEventsListener() { }
-    
-    virtual void fileNotFound(const string &playbackId) = 0;
-    virtual void playbackStarted(const string &playbackId) = 0;
-    virtual void playbackFinished(const string &playbackId, const bool isCanceled) = 0;
-};
 
 class SoundManager
 {

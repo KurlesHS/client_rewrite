@@ -14,6 +14,8 @@
 #include "authprotocoloutgoingcommand.h"
 #include "hardwareprotocol.h"
 
+#include "logger.h"
+
 AuthProtocolOutgoingCommand::AuthProtocolOutgoingCommand(
         HardwareProtocol *protocol, const string &sessionId) :
     mProtocol(protocol),

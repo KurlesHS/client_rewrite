@@ -24,9 +24,9 @@
 #define di_inject(_type) Resolver::resolveDi<_type>()                
 
 #define di_register_type(_base_type, _type, ...) \
-                Resolver::registerDi<_base_type, _type>(__VA_ARGS__);
+                Resolver::registerDi<_base_type, _type>(__VA_ARGS__)
 #define di_register_object(_type, _onbject) \
-                Resolver::registerDiObject<_type>(_onbject);
+                Resolver::registerDiObject<_type>(_onbject)
 
 #define di_unregister_type(_type) 
 

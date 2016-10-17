@@ -79,6 +79,7 @@ private:
     string mPassword;
     const string mSessionId;
     bool mIsAuthorized;
+    bool mIsAuthError;
 };
 
 #endif /* HARDWAREPROTOCOL_H */
