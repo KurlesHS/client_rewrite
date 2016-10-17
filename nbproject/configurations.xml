@@ -15,10 +15,22 @@
       <logicalFolder name="auth" displayName="auth" projectFiles="true">
         <itemPath>auth/authmanager.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f5" displayName="lua" projectFiles="true">
+        <itemPath>lua/logmessageluaevent.cpp</itemPath>
+        <itemPath>lua/luascript.cpp</itemPath>
+        <itemPath>lua/playlocalfilerequestluaevent.cpp</itemPath>
+        <itemPath>lua/playnetworkaudiorequestluaevent.cpp</itemPath>
+        <itemPath>lua/scriptfinishedluaevent.cpp</itemPath>
+        <itemPath>lua/stoplocalaudiorequestluaevent.cpp</itemPath>
+        <itemPath>lua/stopnetworkaudiorequestluaevent.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="network" projectFiles="true">
         <itemPath>network/itransport.cpp</itemPath>
         <itemPath>network/tcpserver.cpp</itemPath>
         <itemPath>network/tcpsocket.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
+        <itemPath>soundmanager.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="protocol" projectFiles="true">
         <itemPath>protocol/command.cpp</itemPath>
@@ -50,11 +62,23 @@
       <logicalFolder name="f4" displayName="ioc" projectFiles="true">
         <itemPath>ioc/resolver.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f5" displayName="lua" projectFiles="true">
+        <itemPath>lua/iluaevent.h</itemPath>
+        <itemPath>lua/logmessageluaevent.h</itemPath>
+        <itemPath>lua/luascript.h</itemPath>
+        <itemPath>lua/playlocalfilerequestluaevent.h</itemPath>
+        <itemPath>lua/playnetworkaudiorequestluaevent.h</itemPath>
+        <itemPath>lua/scriptfinishedluaevent.h</itemPath>
+        <itemPath>lua/stoplocalaudiorequestluaevent.h</itemPath>
+        <itemPath>lua/stopnetworkaudiorequestluaevent.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="network" projectFiles="true">
         <itemPath>network/itransport.h</itemPath>
         <itemPath>network/tcpserver.h</itemPath>
-        <itemPath>tcpsocket.h</itemPath>
         <itemPath>network/tcpsocket.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
+        <itemPath>soundmanager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="protocol" projectFiles="true">
         <itemPath>protocol/authprotocoloutgoingcommand.cpp</itemPath>
@@ -89,13 +113,26 @@
                    displayName="Файлы тестов"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f1"
+                     displayName="test LuaScript"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/tst_luascript.cpp</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Важные файлы"
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
+      <itemPath>test_files/lua/test_00.lua</itemPath>
+      <itemPath>test_files/lua/test_01.lua</itemPath>
+      <itemPath>test_files/lua/test_02.lua</itemPath>
+      <itemPath>test_files/lua/test_03.lua</itemPath>
+      <itemPath>test_files/lua/test_04.lua</itemPath>
+      <itemPath>test_files/lua/test_05.lua</itemPath>
     </logicalFolder>
+    <itemPath>tests/testtimerfactory.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>auth</Elem>
@@ -139,11 +176,84 @@
       </item>
       <item path="endian.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles">
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lgtest -lgmock</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
       <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/logmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/logmessageluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/luascript.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/luascript.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/playlocalfilerequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/playlocalfilerequestluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/playnetworkaudiorequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/playnetworkaudiorequestluaevent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="lua/scriptfinishedluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/scriptfinishedluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/stoplocalaudiorequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/stoplocalaudiorequestluaevent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="lua/stopnetworkaudiorequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/stopnetworkaudiorequestluaevent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -235,7 +345,13 @@
       </item>
       <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="tcpsocket.h" ex="false" tool="3" flavor2="0">
+      <item path="soundmanager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="soundmanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/testtimerfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/tst_luascript.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="thread/threadregister.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -298,11 +414,84 @@
       </item>
       <item path="endian.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles">
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lgtest -lgmock</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
       <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/logmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/logmessageluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/luascript.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/luascript.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/playlocalfilerequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/playlocalfilerequestluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/playnetworkaudiorequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/playnetworkaudiorequestluaevent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="lua/scriptfinishedluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/scriptfinishedluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/stoplocalaudiorequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/stoplocalaudiorequestluaevent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="lua/stopnetworkaudiorequestluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/stopnetworkaudiorequestluaevent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -394,7 +583,13 @@
       </item>
       <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="tcpsocket.h" ex="false" tool="3" flavor2="0">
+      <item path="soundmanager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="soundmanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/testtimerfactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/tst_luascript.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="thread/threadregister.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -15,6 +15,7 @@
 #define MAINHANDLER_H
 
 #include "protocol/hardwareprotocolfactory.h"
+#include "soundmanager.h"
 
 
 class MainHandler {
@@ -26,6 +27,7 @@ public:
     
 private:
     HardwareProtocolFactory mFactory;
+    SoundManager mSoundManager;
 
 };
 

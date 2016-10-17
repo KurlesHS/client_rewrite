@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=RewriteClient
+PROJECTNAME=client_rewrite
 
 # Active Configuration
 DEFAULTCONF=Debug

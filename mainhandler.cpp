@@ -15,12 +15,15 @@
 
 #include "protocol/startnotifyincommingcommandhandler.h"
 
-MainHandler::MainHandler()
+MainHandler::MainHandler() :
+    mSoundManager("/home/kurles/develop/orange_files")
 {
+    mSoundManager.playbackByHash("7626e4d70bf6a25634bfcbd377274de40208f4be313832e9db2dc4fb", "id1");
 }
 
 MainHandler::~MainHandler()
 {
+    
 }
 
 void MainHandler::run()
