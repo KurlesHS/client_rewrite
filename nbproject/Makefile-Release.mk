@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/fortest.o \
 	${OBJECTDIR}/jsonfilesettings.o \
 	${OBJECTDIR}/logger.o \
+	${OBJECTDIR}/lua/iluaeventforifhappenshandler.o \
 	${OBJECTDIR}/lua/logmessageluaevent.o \
 	${OBJECTDIR}/lua/luascript.o \
 	${OBJECTDIR}/lua/luascriptmanager.o \
@@ -63,6 +64,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/protocol/pingincommingcommandhandler.o \
 	${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/soundmanager.o \
+	${OBJECTDIR}/soundmanagerifhappenshandler.o \
 	${OBJECTDIR}/timer/itimer.o \
 	${OBJECTDIR}/timer/timerfactory.o \
 	${OBJECTDIR}/uuid.o
@@ -96,11 +98,11 @@ LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/auth
@@ -126,6 +128,11 @@ ${OBJECTDIR}/logger.o: logger.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/logger.o logger.cpp
+
+${OBJECTDIR}/lua/iluaeventforifhappenshandler.o: lua/iluaeventforifhappenshandler.cpp
+	${MKDIR} -p ${OBJECTDIR}/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o lua/iluaeventforifhappenshandler.cpp
 
 ${OBJECTDIR}/lua/logmessageluaevent.o: lua/logmessageluaevent.cpp
 	${MKDIR} -p ${OBJECTDIR}/lua
@@ -242,6 +249,11 @@ ${OBJECTDIR}/soundmanager.o: soundmanager.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/soundmanager.o soundmanager.cpp
 
+${OBJECTDIR}/soundmanagerifhappenshandler.o: soundmanagerifhappenshandler.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/soundmanagerifhappenshandler.o soundmanagerifhappenshandler.cpp
+
 ${OBJECTDIR}/timer/itimer.o: timer/itimer.cpp
 	${MKDIR} -p ${OBJECTDIR}/timer
 	${RM} "$@.d"
@@ -338,6 +350,19 @@ ${OBJECTDIR}/logger_nomain.o: ${OBJECTDIR}/logger.o logger.cpp
 	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/logger_nomain.o logger.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/logger.o ${OBJECTDIR}/logger_nomain.o;\
+	fi
+
+${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o: ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o lua/iluaeventforifhappenshandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o lua/iluaeventforifhappenshandler.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o ${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o;\
 	fi
 
 ${OBJECTDIR}/lua/logmessageluaevent_nomain.o: ${OBJECTDIR}/lua/logmessageluaevent.o lua/logmessageluaevent.cpp 
@@ -637,6 +662,19 @@ ${OBJECTDIR}/soundmanager_nomain.o: ${OBJECTDIR}/soundmanager.o soundmanager.cpp
 	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/soundmanager_nomain.o soundmanager.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/soundmanager.o ${OBJECTDIR}/soundmanager_nomain.o;\
+	fi
+
+${OBJECTDIR}/soundmanagerifhappenshandler_nomain.o: ${OBJECTDIR}/soundmanagerifhappenshandler.o soundmanagerifhappenshandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/soundmanagerifhappenshandler.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/soundmanagerifhappenshandler_nomain.o soundmanagerifhappenshandler.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/soundmanagerifhappenshandler.o ${OBJECTDIR}/soundmanagerifhappenshandler_nomain.o;\
 	fi
 
 ${OBJECTDIR}/timer/itimer_nomain.o: ${OBJECTDIR}/timer/itimer.o timer/itimer.cpp 

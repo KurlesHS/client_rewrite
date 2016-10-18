@@ -27,6 +27,8 @@ using namespace std;
 struct SoundManagerFileInfo {
     string playbackId;
     string filePath;    
+    FILE *f = nullptr;
+    pid_t pid;
 };
 
 

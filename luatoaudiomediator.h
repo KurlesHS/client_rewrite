@@ -16,6 +16,7 @@
 
 #include "lua/iluascripteventlistener.h"
 #include "isoundmanagereventslistener.h"
+#include "soundmanagerifhappenshandler.h"
 
 class SoundManager;
 class LuaScriptManager;
@@ -41,6 +42,7 @@ private:
 private:
     LuaScriptManager *mLuaManager;
     SoundManager *mSoundManager;
+    SoundManagerIfHappensHandler mIfHappensHandler;
 
 };
 

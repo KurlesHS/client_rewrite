@@ -14,6 +14,8 @@
 #include "luascriptmanager.h"
 
 #include "thread/threadregister.h"
+#include "scriptfinishedluaevent.h"
+#include "logger.h"
 
 #include <algorithm>
 
@@ -36,6 +38,7 @@ void LuaScriptManager::cancelScript(const string& notifyId)
 
     if (mCurrentScript) {
         if (mCurrentScript->notifyId() == notifyId) {
+            Logger::msg("Cancel current script '%s'", mCurrentScript->scriptName().data());
             mCurrentScript->cancel();
         }
     }
@@ -46,15 +49,17 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
     string scriptPath = mLuaScriptPath + "/" + scriptName + ".lua";
     auto script = make_shared<LuaScript>(scriptPath);
     script->setNotifyId(info.id);
+    script->setScriptName(scriptName);
     if (script->isValid()) {
         script->addLuaScriptEventListener(this);
         if (mCurrentScript) {
             if (mCurrentScript->priority() < script->priority()) {
                 // если у пришедшего скрипта приоритет больше текущего, то выполнение
                 // текущей задачи надо прервать
+                Logger::msg("cancel current script '%s'", mCurrentScript->scriptName().data());
                 mCurrentScript->cancel();
-                // TODO: log this
 
+                // TODO: log this
             }
             // добваляем сприпт в очередь
             mScripts.push_back(script);
@@ -67,9 +72,42 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
         } else {
             // скрипта в работе на данный момент нет - запускаем текущий скрипт
             mCurrentScript = script;
-            mCurrentScript->run();
+            runCurrentScript();
         }
     }
+}
+
+void LuaScriptManager::runCurrentScript()
+{
+    if (mCurrentScript) {
+        for (auto handler : mIfHappensHandlers) {
+            handler->registerCommand(mCurrentScript->luaState());
+            handler->addLuaScript(mCurrentScript.get());
+        }
+        Logger::msg("Starting script '%s'", mCurrentScript->scriptName().data());
+        mCurrentScript->run();
+    }
+}
+
+void LuaScriptManager::resetCurrentScript()
+{
+    if (mCurrentScript) {
+        for (auto handler : mIfHappensHandlers) {
+            handler->removeLuaScript(mCurrentScript.get());
+        }
+        Logger::msg("remove current script '%s'", mCurrentScript->scriptName().data());
+        mCurrentScript.reset();
+    }
+}
+
+void LuaScriptManager::addIfHappensHandler(ILuaEventForIfHappensHandler* handler)
+{
+    mIfHappensHandlers.push_back(handler);
+}
+
+void LuaScriptManager::removeIfHappensHandler(ILuaEventForIfHappensHandler* handler)
+{
+    mIfHappensHandlers.remove(handler);
 }
 
 void LuaScriptManager::addLuaScriptEventListener(ILuaScriptEventsListener* listener)
@@ -87,15 +125,20 @@ void LuaScriptManager::luaEvent(ILuaEventSharedPtr event)
     if (event->eventType() == ILuaEvent::EventType::FinishScript) {
         // для предотвращения удаления экземпляра LuaScript в процесс рассылки
         // оным уведомления о событии
-        mPendingCommands.push_back([this, event]() {
-            mCurrentScript.reset();
-            informAboutEvent(event);
-            if (!mScripts.empty()) {
-                mCurrentScript = mScripts.front();
-                        mScripts.pop_front();
-                        mCurrentScript->run();
-            }
-        });
+        auto finishEvent = static_cast<ScriptFinishedLuaEvent*> (event.get());        
+
+        if (mCurrentScript && finishEvent && finishEvent->scriptId() == mCurrentScript->id()) {
+            mPendingCommands.push_back([this, event]() {
+                resetCurrentScript();
+                informAboutEvent(event);
+                if (!mScripts.empty()) {
+                    mCurrentScript = mScripts.front();
+                            mScripts.pop_front();
+                            runCurrentScript();
+                }
+            });
+            mAsync.send();
+        }
     } else {
         informAboutEvent(event);
     }

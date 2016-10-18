@@ -16,6 +16,7 @@
         <itemPath>auth/authmanager.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
+        <itemPath>lua/iluaeventforifhappenshandler.cpp</itemPath>
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
         <itemPath>lua/luascript.cpp</itemPath>
         <itemPath>lua/luascriptmanager.cpp</itemPath>
@@ -32,6 +33,7 @@
       </logicalFolder>
       <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
         <itemPath>soundmanager.cpp</itemPath>
+        <itemPath>soundmanagerifhappenshandler.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="protocol" projectFiles="true">
         <itemPath>protocol/command.cpp</itemPath>
@@ -70,6 +72,7 @@
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/iluaevent.h</itemPath>
+        <itemPath>lua/iluaeventforifhappenshandler.h</itemPath>
         <itemPath>lua/iluascripteventlistener.h</itemPath>
         <itemPath>lua/logmessageluaevent.h</itemPath>
         <itemPath>lua/luascript.h</itemPath>
@@ -120,6 +123,7 @@
       <itemPath>luatoprotocolmediator.h</itemPath>
       <itemPath>mainhandler.h</itemPath>
       <itemPath>safe_list.h</itemPath>
+      <itemPath>soundmanagerifhappenshandler.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Файлы ресурсов"
@@ -244,6 +248,13 @@
       </item>
       <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lua/iluaeventforifhappenshandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/iluaeventforifhappenshandler.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/iluascripteventlistener.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/logmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
@@ -402,6 +413,10 @@
       <item path="soundmanager.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="soundmanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="soundmanagerifhappenshandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="soundmanagerifhappenshandler.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/testtimerfactory.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -520,6 +535,13 @@
       </item>
       <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lua/iluaeventforifhappenshandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/iluaeventforifhappenshandler.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/iluascripteventlistener.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/logmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
@@ -678,6 +700,10 @@
       <item path="soundmanager.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="soundmanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="soundmanagerifhappenshandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="soundmanagerifhappenshandler.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/testtimerfactory.h" ex="false" tool="3" flavor2="0">
       </item>

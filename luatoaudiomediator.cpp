@@ -28,6 +28,7 @@ LuaToAudioMediator::LuaToAudioMediator(LuaScriptManager* luaManager, SoundManage
 {
     mLuaManager->addLuaScriptEventListener(this);
     mSoundManager->addEventListener(this);
+    mLuaManager->addIfHappensHandler(&mIfHappensHandler);
 }
 
 void LuaToAudioMediator::luaEvent(ILuaEventSharedPtr event)
@@ -48,17 +49,17 @@ void LuaToAudioMediator::luaEvent(ILuaEventSharedPtr event)
 
 void LuaToAudioMediator::fileNotFound(const string& playbackId)
 {
-
+    mIfHappensHandler.fileNotFound(playbackId);
 }
 
 void LuaToAudioMediator::playbackFinished(const string& playbackId, const bool isCanceled)
 {
-
+    mIfHappensHandler.playbackFinished(playbackId, isCanceled);
 }
 
 void LuaToAudioMediator::playbackStarted(const string& playbackId)
 {
-
+    mIfHappensHandler.playbackStarted(playbackId);
 }
 
 void LuaToAudioMediator::handlePlayFileEvent(ILuaEventSharedPtr event)

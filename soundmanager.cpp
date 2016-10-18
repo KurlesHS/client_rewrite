@@ -14,6 +14,7 @@
 #include "soundmanager.h"
 
 #include "thread/threadregister.h"
+#include "logger.h"
 
 #include <stdio.h>
 #include <dirent.h>
@@ -33,6 +34,30 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+static pid_t start_avplay(const char *filepath, FILE **f)
+{
+    pid_t pid = 0;
+    int pipefd[2];
+    FILE* output;    
+
+    pipe(pipefd); //create a pipe
+    pid = fork(); //span a child process
+    if (pid == 0) {
+        // Child. Let's redirect its standard output to our pipe and replace process with tail
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+        dup2(pipefd[1], STDERR_FILENO);
+        //  const char *command[] = {"avplay", "-nodisp", "-autoexit", mCurrentPlaybackFile.filePath.data(), "2>&1", NULL};
+        execl("/usr/bin/avplay", "/usr/bin/avplay", "-nodisp", "-autoexit", filepath, (char*) NULL);
+    }
+
+    //Only parent gets here. Listen to what the tail says
+    close(pipefd[1]);
+    output = fdopen(pipefd[0], "r");
+    *f = output;
+    return pid;
+}
 
 string getHashByFilename(const string &name)
 {
@@ -170,18 +195,41 @@ void SoundManager::playbackByFilePath(const string &filepath, const string& play
     }
 }
 
+void SoundManager::cancelPlaybackFile(const string& playbackId)
+{
+    if (mCurrentPlaybackFile.playbackId == playbackId) {
+        if (mAvPlayWatcher.is_active()) {
+            mAvPlayWatcher.stop();
+            close(mAvPlayWatcher.fd);
+            ::kill(mCurrentPlaybackFile.pid, SIGKILL);
+
+            Logger::msg("sound manager event: cancel playback. Playback id: '%s'", mCurrentPlaybackFile.playbackId.data());
+            informAboutEvent(&ISoundManagerEventsListener::playbackFinished, mCurrentPlaybackFile.playbackId, true);
+        }
+        clearInfoAboutCurrentFile();
+        tryToPlaybackNextFile();
+    } else {
+        mFilesToPlayback.remove_if([playbackId](const SoundManagerFileInfo & info) {
+            return playbackId == info.playbackId;
+        });
+    }
+}
+
 void SoundManager::startPlaybackCurrentFile()
 {
     mIsPlaybackStarted = false;
+    /*
     stringstream ss;
     ss << "avplay -nodisp -autoexit '";
     ss << mCurrentPlaybackFile.filePath;
     ss << "' 2>&1";
-
-    FILE *f = popen(ss.str().data(), "r");
-    if (f) {
-        int fd = fileno(f);        
+    */
+    
+    mCurrentPlaybackFile.pid = start_avplay(mCurrentPlaybackFile.filePath.data(), &mCurrentPlaybackFile.f);
+    if (mCurrentPlaybackFile.pid > 0) {
+        int fd = fileno(mCurrentPlaybackFile.f);
         mAvPlayWatcher.start(fd, ev::READ);
+        // mCurrentPlaybackFile.f = f;
     } else {
         informAboutEvent(&ISoundManagerEventsListener::fileNotFound, mCurrentPlaybackFile.playbackId);
         mCurrentPlaybackFile.filePath.clear();
@@ -211,52 +259,36 @@ void SoundManager::removeEventListener(ISoundManagerEventsListener* listener)
 }
 
 void SoundManager::onAvPlayEvent(ev::io& io, int event)
-{    
-    if (event & ev::READ) {
+{
+    if (event & ev::READ) {        
         static string duration("  Duration:");
         int count;
         ioctl(io.fd, FIONREAD, &count);
         vector<char> buff;
         buff.resize(count);
-        int len = read(io.fd, buff.data(), buff.size());
-
+        int len = read(io.fd, buff.data(), buff.size());        
         if (len <= 0) {
             // все, выход из программы avplay
             io.stop();
             close(io.fd);
-            mCurrentPlaybackFile.filePath.clear();
-            mCurrentPlaybackFile.playbackId.clear();
             if (!mIsPlaybackStarted) {
                 // если не начинали проигрывние - значит беда
+                Logger::msg("sound manager event: file not found. Playback id: '%s'", mCurrentPlaybackFile.playbackId.data());
                 informAboutEvent(&ISoundManagerEventsListener::fileNotFound, mCurrentPlaybackFile.playbackId);
             } else {
                 // если начинали = то проигрывние закончено
+                Logger::msg("sound manager event: playback finihed. Playback id: '%s'", mCurrentPlaybackFile.playbackId.data());
                 informAboutEvent(&ISoundManagerEventsListener::playbackFinished, mCurrentPlaybackFile.playbackId, false);
             }
+            clearInfoAboutCurrentFile();
             tryToPlaybackNextFile();
         } else if (!mIsPlaybackStarted) {
             if (std::search(buff.begin(), buff.end(), duration.begin(), duration.end()) != buff.end()) {
                 mIsPlaybackStarted = true;
+                Logger::msg("sound manager event: playback started. Playback id: '%s'", mCurrentPlaybackFile.playbackId.data());
                 informAboutEvent(&ISoundManagerEventsListener::playbackStarted, mCurrentPlaybackFile.playbackId);
             }
         }
-    }
-}
-
-void SoundManager::cancelPlaybackFile(const string& playbackId)
-{
-    if (mCurrentPlaybackFile.playbackId == playbackId) {
-        if (mAvPlayWatcher.is_active()) {
-            mAvPlayWatcher.stop();
-            close(mAvPlayWatcher.fd);
-            informAboutEvent(&ISoundManagerEventsListener::playbackFinished, mCurrentPlaybackFile.playbackId, true);            
-        }
-        clearInfoAboutCurrentFile();
-        tryToPlaybackNextFile();
-    } else {        
-        mFilesToPlayback.remove_if([playbackId](const SoundManagerFileInfo &info) {
-            return playbackId == info.playbackId;
-        });
     }
 }
 

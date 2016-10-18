@@ -20,7 +20,10 @@
 
 #include <list>
 #include <string>
+#include <sstream>
+#include <functional>
 #include <unordered_map>
+#include <ev++.h>
 
 #include "uuid.h"
 #include "scriptfinishedluaevent.h"
@@ -29,6 +32,7 @@
 #include "stoplocalaudiorequestluaevent.h"
 #include "playnetworkaudiorequestluaevent.h"
 #include "stopnetworkaudiorequestluaevent.h"
+#include "logger.h"
 
 
 
@@ -63,8 +67,7 @@ class IfHappensPendingFunc;
 
 typedef std::shared_ptr<IfHappensPendingFunc> IfHappensPendingFuncSharedPtr;
 
-class IfHappensPendingFunc 
-{
+class IfHappensPendingFunc {
 public:
     using onExecuteFunc = std::function<void(const std::string &)>;
 
@@ -79,7 +82,7 @@ public:
         mErrorFunc(errorFunc),
         mTimer(Resolver::resolveDi<ITimerFactory>()->getTimer())
     {
-        
+
     }
 
     ~IfHappensPendingFunc()
@@ -90,11 +93,12 @@ public:
     virtual void start()
     {
         mTimer->setSingleShot(true);
-        mTimer->addCallbackFunction([this](ITimer *) {onTimeout(); } );
+        mTimer->addCallbackFunction([this](ITimer *) {
+            onTimeout(); });
         mTimer->start(mDelay);
     }
 
-    void onTimeout() 
+    void onTimeout()
     {
         if (mOnTimeoutFunc) {
             mOnTimeoutFunc(mPendingId);
@@ -119,7 +123,7 @@ public:
     {
         if (mErrorFunc) {
             mErrorFunc();
-        }       
+        }
     }
 
     std::string ifHappensId() const
@@ -130,6 +134,11 @@ public:
     void setOnTimeoutFunc(onExecuteFunc func)
     {
         mOnTimeoutFunc = func;
+    }
+
+    sol::function okFunc() const
+    {
+        return mOkFunc;
     }
 
 private:
@@ -143,16 +152,15 @@ private:
     onExecuteFunc mOnTimeoutFunc;
 };
 
-struct OnRelayChangedParams
-{
+struct OnRelayChangedParams {
     sol::object relayNum;
     sol::object relayState;
 };
 
-class LuaScriptPrivate
-{
+class LuaScriptPrivate {
     friend class LuaScript;
     LuaScript *q;
+    std::string scriptName;
     std::string scriptPath;
     std::string group = "default_group";
     sol::state state;
@@ -163,28 +171,49 @@ class LuaScriptPrivate
     int priority = 0;
     std::string id;
     std::string notifyId;
-    
+    ev::async async;
+
+
+
     ITimerFactory *timerFactory;
     std::unordered_map<std::string, IfHappensPendingFuncSharedPtr> mIfHappensFunc;
     std::unordered_map<std::string, OnRelayChangedParams> mRelayChangeParams;
     list<ILuaScriptEventsListener*> mEventListeners;
-    
-    void informAboutLuaEvent(ILuaEventSharedPtr event) {
-        for (const auto listener : mEventListeners) {
-            listener->luaEvent(event);
-        }
+    list<function<void() >> mAsyncFunc;
+
+    LuaScriptPrivate()
+    {
+        async.set<LuaScriptPrivate, &LuaScriptPrivate::onAsync>(this);
+        async.start();
     }
-    
+
+    void onAsync()
+    {
+        for (auto f : mAsyncFunc) {
+            f();
+        }
+        mAsyncFunc.clear();
+    }
+
+    void informAboutLuaEvent(ILuaEventSharedPtr event)
+    {
+        addAsyncFunc([event, this]() {
+            for (const auto listener : mEventListeners) {
+                listener->luaEvent(event);
+            }
+        });
+    }
 
     void removeIfHappensParams(const std::string &idHappensId)
     {
         mRelayChangeParams.erase(idHappensId);
-    }   
-    
-    void addLuaScriptEventListener(ILuaScriptEventsListener *listener) 
+    }
+
+    void addLuaScriptEventListener(ILuaScriptEventsListener *listener)
     {
         mEventListeners.push_back(listener);
     }
+
     void removeLuaScriptEventListener(ILuaScriptEventsListener *listener)
     {
         mEventListeners.remove(listener);
@@ -192,7 +221,7 @@ class LuaScriptPrivate
 
     void onRelayChanged(const int relayNum, const int newState)
     {
-        for (auto it = mRelayChangeParams.begin();it != mRelayChangeParams.end();) {
+        for (auto it = mRelayChangeParams.begin(); it != mRelayChangeParams.end();) {
             bool relayIsSame = true;
             bool stateIsSame = true;
             if (it->second.relayNum.is<int>()) {
@@ -258,6 +287,7 @@ class LuaScriptPrivate
         this->lastError = lastError;
         isValid = false;
         isFinished = true;
+        Logger::msg("lua error: %s", lastError.data());
     }
 
     void cancelPendingFuncImpl(const std::string &pendingId)
@@ -326,8 +356,12 @@ class LuaScriptPrivate
 
                     }
                     // удаляем инфу об функции
-                    cancelPendingFuncImpl(pendingId);
-                    checkIfFinished();
+                    auto f = [this, pendingId]() {
+                        cancelPendingFuncImpl(pendingId);
+                        checkIfFinished();
+                    };
+                    addAsyncFunc(f);
+
                 });
                 // запускаем таймер ожидания события
                 func->start();
@@ -336,16 +370,24 @@ class LuaScriptPrivate
         return id;
     }
 
+    void addAsyncFunc(const function<void()> &f)
+    {
+        mAsyncFunc.push_back(f);
+        async.send();
+    }
+
     void logMessageFuncImpl(const std::string &message)
     {
-        // q->emit_logMessage(message);
-        informAboutLuaEvent(make_shared<LogMessageLuaEvent>(message));
+        stringstream ss;
+        ss << "message from lua script: " << message;
+        
+        Logger::msg(ss.str());
+        //informAboutLuaEvent(make_shared<LogMessageLuaEvent>(message));
     }
 
     std::string playLocalFileByFilepathFuncImpl(const std::string &filepath)
     {
         std::string id = Uuid::createUuid().toString();
-        //q->emit_playLocalFileByPathRequest(id, filepath);        
         informAboutLuaEvent(make_shared<PlayLocalFileRequestLuaEvent>(
                 PlayLocalFileRequestLuaEvent::Type::ByPath, id, filepath));
         return id;
@@ -354,7 +396,6 @@ class LuaScriptPrivate
     std::string playLocalFileByFilehashFuncImpl(const std::string &filehash)
     {
         std::string id = Uuid::createUuid().toString();
-        //q->emit_playLocalFileByHashRequest(id, filehash);        
         informAboutLuaEvent(make_shared<PlayLocalFileRequestLuaEvent>(
                 PlayLocalFileRequestLuaEvent::Type::ByHash, id, filehash));
         return id;
@@ -362,19 +403,16 @@ class LuaScriptPrivate
 
     void stopPlayLocalFileFuncImpl(const std::string &id)
     {
-        // q->emit_stopLocalAduioRequest(id);        
         informAboutLuaEvent(make_shared<StopLocalAudioRequestLuaEvent>(id));
     }
 
     void playNetworkAudioFuncImpl(const std::string &url)
     {
-        //q->emit_playNetworkAduioRequest(url);
         informAboutLuaEvent(make_shared<PlayNetworkAudioRequestLuaEvent>(url));
     }
 
     void stopPlayNetworkAudioFuncImpl()
     {
-        //q->emit_stopNetworkAduioRequest();
         informAboutLuaEvent(make_shared<StopNetworkAudioRequestLuaEvent>());
     }
 };
@@ -413,7 +451,6 @@ ILuaPendingFunc::~ILuaPendingFunc()
 {
 }
 
-
 LuaScript::LuaScript(const std::string &scriptPath) :
     d(new LuaScriptPrivate)
 {
@@ -446,6 +483,7 @@ LuaScript::LuaScript(const std::string &scriptPath) :
             d->group = groupObject.as<std::string>();
         }
 
+
         d->state.set_function(finishFuncName,
                 &LuaScriptPrivate::finishFuncImpl, d);
         d->state.set_function(delayFuncName,
@@ -454,8 +492,6 @@ LuaScript::LuaScript(const std::string &scriptPath) :
                 &LuaScriptPrivate::ifHappensFuncImpl, d);
         d->state.set_function(cancelPendingFuncFuncName,
                 &LuaScriptPrivate::cancelPendingFuncImpl, d);
-        d->state.set_function(finishFuncName,
-                &LuaScriptPrivate::finishFuncImpl, d);
         d->state.set_function(logMessageFuncName,
                 &LuaScriptPrivate::logMessageFuncImpl, d);
         d->state.set_function(playLocalFileByFilehashFuncName,
@@ -468,8 +504,8 @@ LuaScript::LuaScript(const std::string &scriptPath) :
                 &LuaScriptPrivate::playNetworkAudioFuncImpl, d);
         d->state.set_function(stopPlayNetworkAudioFuncName,
                 &LuaScriptPrivate::stopPlayNetworkAudioFuncImpl, d);
-        
-        d->state.set_function(onRelayChagedFuncName, 
+
+        d->state.set_function(onRelayChagedFuncName,
                 &LuaScriptPrivate::onRelayChangedFuncImpl, d);
     } catch (sol::error error) {
         d->setLastError(error.what());
@@ -547,7 +583,6 @@ void LuaScript::onRelayChanged(const int relayNum, const int newState)
     d->onRelayChanged(relayNum, newState);
 }
 
-
 int LuaScript::pendingIfHanpensFunctionCount() const
 {
     return d->mIfHappensFunc.size();
@@ -568,3 +603,53 @@ void LuaScript::removeLuaScriptEventListener(ILuaScriptEventsListener* listener)
     d->removeLuaScriptEventListener(listener);
 }
 
+sol::state& LuaScript::luaState()
+{
+    return d->state;
+}
+
+list<sol::function> LuaScript::ifHappensOkFunc(const string& ifHappensId)
+{
+    list<sol::function> result;
+    for (auto x : d->mIfHappensFunc) {
+        if (x.second->ifHappensId() == ifHappensId) {
+            x.second->stop();
+            if (x.second->okFunc()) {
+                result.push_back(x.second->okFunc());
+            }
+        }
+    }
+    return result;
+}
+
+
+string LuaScript::scriptName() const
+{
+    return d->scriptName;
+}
+
+void LuaScript::setScriptName(const string& name)
+{
+    d->scriptName = name;
+}
+
+void LuaScript::removeIfHappens(const string& ifHappensId, const bool checkIsfinished, const bool forceAsync)
+{
+   if (forceAsync) {
+        d->addAsyncFunc([this, ifHappensId, checkIsfinished]() {
+            removeIfHappens(ifHappensId, checkIsfinished, false);
+        });
+    } else {
+        for (auto x = d->mIfHappensFunc.begin(); x != d->mIfHappensFunc.end();) {
+            if (x->second->ifHappensId() == ifHappensId) {
+                x->second->stop();
+                x = d->mIfHappensFunc.erase(x);
+            } else {
+                ++x;
+            }
+        }
+        if (checkIsfinished) {
+            d->checkIfFinished();
+        }
+    }
+}

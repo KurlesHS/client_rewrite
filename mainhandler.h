@@ -18,6 +18,7 @@
 #include "soundmanager.h"
 #include "lua/luascriptmanager.h"
 #include "luatoprotocolmediator.h"
+#include "luatoaudiomediator.h"
 
 class MainHandler {
 public:
@@ -31,6 +32,7 @@ private:
     SoundManager mSoundManager;
     LuaScriptManager mLuaScriptManager;
     LuaToProtocolMediator mLuaToProtocolMediator;
+    LuaToAudioMediator mLuaToAudioMediator;
 };
 
 #endif /* MAINHANDLER_H */

@@ -16,12 +16,17 @@
 
 #include "luascript.h"
 #include "iluascripteventlistener.h"
+#include "iluaeventforifhappenshandler.h"
+
 #include "protocol/startnotifyinfo.h"
+
 
 #include <string>
 #include <list>
 
 #include <ev++.h>
+
+class ILuaEventForIfHappensHandler;
 
 using namespace std;
 
@@ -37,11 +42,17 @@ public:
 
     void addLuaScriptEventListener(ILuaScriptEventsListener *listener);
     void removeLuaScriptEventListener(ILuaScriptEventsListener *listener);
+    
+    void addIfHappensHandler(ILuaEventForIfHappensHandler *handler);
+    void removeIfHappensHandler(ILuaEventForIfHappensHandler *handler);   
 
 private:
     void onAsyncCommand();
     
     void informAboutEvent(ILuaEventSharedPtr event);
+    
+    void runCurrentScript();
+    void resetCurrentScript();
 
 
 private:
@@ -49,6 +60,7 @@ private:
     list<LuaScriptSharedPtr> mScripts;
     LuaScriptSharedPtr mCurrentScript;
     list<ILuaScriptEventsListener*> mEventListeners;
+    list<ILuaEventForIfHappensHandler*> mIfHappensHandlers;
     ev::async mAsync;
     list<function<void()> > mPendingCommands;
     
