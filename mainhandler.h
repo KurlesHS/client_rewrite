@@ -19,6 +19,7 @@
 #include "lua/luascriptmanager.h"
 #include "luatoprotocolmediator.h"
 #include "luatoaudiomediator.h"
+#include "networkaudio/networkaudiomanager.h"
 
 class MainHandler {
 public:
@@ -28,6 +29,7 @@ public:
     bool run();
     
 private:
+    NetworkAudioManager mNetworkAudioManager;
     HardwareProtocolFactory mFactory;
     SoundManager mSoundManager;
     LuaScriptManager mLuaScriptManager;

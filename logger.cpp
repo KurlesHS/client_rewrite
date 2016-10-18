@@ -65,7 +65,7 @@ Logger::Logger() :
         run();
     });
     std::unique_lock<std::mutex> lock(mWaitStartThreadMutex);
-    mWaitStartThreadCondVar.wait(lock);    
+    mWaitStartThreadCondVar.wait(lock);
 }
 
 void Logger::run()
@@ -77,7 +77,7 @@ void Logger::run()
     async.set<Logger, &Logger::onAsync>(this);
     async.start();
     mAsync = &async;
-    onAsync();    
+    onAsync();
     mWaitStartThreadCondVar.notify_all();
     loop.run();
     onAsync();
@@ -297,7 +297,9 @@ void Logger::msg(const string &str)
 
 void Logger::createInstanse()
 {
-    m_instanse = new Logger();
+    if (!m_instanse) {
+        m_instanse = new Logger();
+    }
 }
 
 void Logger::setCopyToStdoutEnabled(const bool enabled)

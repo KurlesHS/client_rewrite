@@ -5,6 +5,19 @@
       <logicalFolder name="json" displayName="json" projectFiles="true">
         <itemPath>3rdparty/json/json.hpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="rabbit" displayName="rabbit" projectFiles="true">
+        <itemPath>3rdparty/rabbit/common.h</itemPath>
+        <itemPath>3rdparty/rabbit/config.h</itemPath>
+        <itemPath>3rdparty/rabbit/fastest_coeffs.h</itemPath>
+        <itemPath>3rdparty/rabbit/float_cast.h</itemPath>
+        <itemPath>3rdparty/rabbit/high_qual_coeffs.h</itemPath>
+        <itemPath>3rdparty/rabbit/mid_qual_coeffs.h</itemPath>
+        <itemPath>3rdparty/rabbit/samplerate.c</itemPath>
+        <itemPath>3rdparty/rabbit/samplerate.h</itemPath>
+        <itemPath>3rdparty/rabbit/src_linear.c</itemPath>
+        <itemPath>3rdparty/rabbit/src_sinc.c</itemPath>
+        <itemPath>3rdparty/rabbit/src_zoh.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="sol2" displayName="sol2" projectFiles="true">
         <itemPath>3rdparty/sol2/sol2.hpp</itemPath>
       </logicalFolder>
@@ -30,6 +43,9 @@
         <itemPath>network/itransport.cpp</itemPath>
         <itemPath>network/tcpserver.cpp</itemPath>
         <itemPath>network/tcpsocket.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7" displayName="network_audio" projectFiles="true">
+        <itemPath>networkaudio/networkaudiomanager.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
         <itemPath>soundmanager.cpp</itemPath>
@@ -57,6 +73,7 @@
       <itemPath>luatoprotocolmediator.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>mainhandler.cpp</itemPath>
+      <itemPath>networkaudio/networkaudiothread.cpp</itemPath>
       <itemPath>uuid.cpp</itemPath>
       <itemPath>uuid.h</itemPath>
     </logicalFolder>
@@ -87,6 +104,9 @@
         <itemPath>network/itransport.h</itemPath>
         <itemPath>network/tcpserver.h</itemPath>
         <itemPath>network/tcpsocket.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7" displayName="network_audio" projectFiles="true">
+        <itemPath>networkaudio/networkaudiomanager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
         <itemPath>soundmanager.h</itemPath>
@@ -122,6 +142,7 @@
       <itemPath>luatoaudiomediator.h</itemPath>
       <itemPath>luatoprotocolmediator.h</itemPath>
       <itemPath>mainhandler.h</itemPath>
+      <itemPath>networkaudio/networkaudiothread.h</itemPath>
       <itemPath>safe_list.h</itemPath>
       <itemPath>soundmanagerifhappenshandler.h</itemPath>
     </logicalFolder>
@@ -180,11 +201,33 @@
         </ccTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto </linkerOptionItem>
+            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lavformat -lavcodec -lavutil -lportaudio</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path="3rdparty/json/json.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/common.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/fastest_coeffs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/float_cast.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/high_qual_coeffs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/mid_qual_coeffs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/samplerate.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/samplerate.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/src_linear.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/src_sinc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/src_zoh.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="3rdparty/sol2/sol2.hpp" ex="false" tool="3" flavor2="0">
       </item>
@@ -335,6 +378,20 @@
       <item path="network/tcpsocket.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="network/tcpsocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiomanager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiomanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiothread.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiothread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="protocol/authprotocoloutgoingcommand.cpp"
             ex="false"
@@ -467,11 +524,33 @@
         </asmTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto </linkerOptionItem>
+            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lavformat -lavcodec -lavutil -lportaudio</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path="3rdparty/json/json.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/common.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/fastest_coeffs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/float_cast.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/high_qual_coeffs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/mid_qual_coeffs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/samplerate.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/samplerate.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/src_linear.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/src_sinc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="3rdparty/rabbit/src_zoh.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="3rdparty/sol2/sol2.hpp" ex="false" tool="3" flavor2="0">
       </item>
@@ -622,6 +701,20 @@
       <item path="network/tcpsocket.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="network/tcpsocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiomanager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiomanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiothread.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudiothread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="protocol/authprotocoloutgoingcommand.cpp"
             ex="false"

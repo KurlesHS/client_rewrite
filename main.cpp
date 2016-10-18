@@ -24,6 +24,7 @@
 #include "auth/authmanager.h"
 #include "mainhandler.h"
 #include "jsonfilesettings.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
+    Logger::createInstanse();
     auto authManager = new AuthManager();
     authManager->addUser("admin", "admin");
     di_register_type(ITimerFactory, TimerFactory,);

@@ -32,9 +32,8 @@ MainHandler::MainHandler() :
     Logger::createInstanse();
     Logger::setCopyToStdoutEnabled(true);
     Logger::openlog("/var/log/sonet/server/", "server.log");
-    Logger::msg("--- Sonet hardware server started ---");
-    // mSoundManager.playbackByHash("7626e4d70bf6a25634bfcbd377274de40208f4be313832e9db2dc4fb", "id1");
-
+    Logger::msg("--- Sonet hardware server started ---");    
+    mNetworkAudioManager.start();
 }
 
 MainHandler::~MainHandler()

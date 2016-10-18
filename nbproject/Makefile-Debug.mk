@@ -35,6 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/3rdparty/rabbit/samplerate.o \
+	${OBJECTDIR}/3rdparty/rabbit/src_linear.o \
+	${OBJECTDIR}/3rdparty/rabbit/src_sinc.o \
+	${OBJECTDIR}/3rdparty/rabbit/src_zoh.o \
 	${OBJECTDIR}/auth/authmanager.o \
 	${OBJECTDIR}/cancelnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/fortest.o \
@@ -56,6 +60,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/network/itransport.o \
 	${OBJECTDIR}/network/tcpserver.o \
 	${OBJECTDIR}/network/tcpsocket.o \
+	${OBJECTDIR}/networkaudio/networkaudiomanager.o \
+	${OBJECTDIR}/networkaudio/networkaudiothread.o \
 	${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o \
 	${OBJECTDIR}/protocol/command.o \
 	${OBJECTDIR}/protocol/hardwareprotocol.o \
@@ -94,15 +100,35 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto
+LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto -lavformat -lavcodec -lavutil -lportaudio
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/3rdparty/rabbit/samplerate.o: 3rdparty/rabbit/samplerate.c
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/samplerate.o 3rdparty/rabbit/samplerate.c
+
+${OBJECTDIR}/3rdparty/rabbit/src_linear.o: 3rdparty/rabbit/src_linear.c
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/src_linear.o 3rdparty/rabbit/src_linear.c
+
+${OBJECTDIR}/3rdparty/rabbit/src_sinc.o: 3rdparty/rabbit/src_sinc.c
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/src_sinc.o 3rdparty/rabbit/src_sinc.c
+
+${OBJECTDIR}/3rdparty/rabbit/src_zoh.o: 3rdparty/rabbit/src_zoh.c
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/src_zoh.o 3rdparty/rabbit/src_zoh.c
 
 ${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/auth
@@ -209,6 +235,16 @@ ${OBJECTDIR}/network/tcpsocket.o: network/tcpsocket.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/network/tcpsocket.o network/tcpsocket.cpp
 
+${OBJECTDIR}/networkaudio/networkaudiomanager.o: networkaudio/networkaudiomanager.cpp
+	${MKDIR} -p ${OBJECTDIR}/networkaudio
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/networkaudiomanager.o networkaudio/networkaudiomanager.cpp
+
+${OBJECTDIR}/networkaudio/networkaudiothread.o: networkaudio/networkaudiothread.cpp
+	${MKDIR} -p ${OBJECTDIR}/networkaudio
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/networkaudiothread.o networkaudio/networkaudiothread.cpp
+
 ${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o: protocol/authprotocoloutgoingcommand.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
@@ -286,6 +322,58 @@ ${TESTDIR}/tests/tst_luascript.o: tests/tst_luascript.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/tst_luascript.o tests/tst_luascript.cpp
 
+
+${OBJECTDIR}/3rdparty/rabbit/samplerate_nomain.o: ${OBJECTDIR}/3rdparty/rabbit/samplerate.o 3rdparty/rabbit/samplerate.c 
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/3rdparty/rabbit/samplerate.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/samplerate_nomain.o 3rdparty/rabbit/samplerate.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/3rdparty/rabbit/samplerate.o ${OBJECTDIR}/3rdparty/rabbit/samplerate_nomain.o;\
+	fi
+
+${OBJECTDIR}/3rdparty/rabbit/src_linear_nomain.o: ${OBJECTDIR}/3rdparty/rabbit/src_linear.o 3rdparty/rabbit/src_linear.c 
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/3rdparty/rabbit/src_linear.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/src_linear_nomain.o 3rdparty/rabbit/src_linear.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/3rdparty/rabbit/src_linear.o ${OBJECTDIR}/3rdparty/rabbit/src_linear_nomain.o;\
+	fi
+
+${OBJECTDIR}/3rdparty/rabbit/src_sinc_nomain.o: ${OBJECTDIR}/3rdparty/rabbit/src_sinc.o 3rdparty/rabbit/src_sinc.c 
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/3rdparty/rabbit/src_sinc.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/src_sinc_nomain.o 3rdparty/rabbit/src_sinc.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/3rdparty/rabbit/src_sinc.o ${OBJECTDIR}/3rdparty/rabbit/src_sinc_nomain.o;\
+	fi
+
+${OBJECTDIR}/3rdparty/rabbit/src_zoh_nomain.o: ${OBJECTDIR}/3rdparty/rabbit/src_zoh.o 3rdparty/rabbit/src_zoh.c 
+	${MKDIR} -p ${OBJECTDIR}/3rdparty/rabbit
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/3rdparty/rabbit/src_zoh.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/3rdparty/rabbit/src_zoh_nomain.o 3rdparty/rabbit/src_zoh.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/3rdparty/rabbit/src_zoh.o ${OBJECTDIR}/3rdparty/rabbit/src_zoh_nomain.o;\
+	fi
 
 ${OBJECTDIR}/auth/authmanager_nomain.o: ${OBJECTDIR}/auth/authmanager.o auth/authmanager.cpp 
 	${MKDIR} -p ${OBJECTDIR}/auth
@@ -558,6 +646,32 @@ ${OBJECTDIR}/network/tcpsocket_nomain.o: ${OBJECTDIR}/network/tcpsocket.o networ
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/network/tcpsocket_nomain.o network/tcpsocket.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/network/tcpsocket.o ${OBJECTDIR}/network/tcpsocket_nomain.o;\
+	fi
+
+${OBJECTDIR}/networkaudio/networkaudiomanager_nomain.o: ${OBJECTDIR}/networkaudio/networkaudiomanager.o networkaudio/networkaudiomanager.cpp 
+	${MKDIR} -p ${OBJECTDIR}/networkaudio
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/networkaudio/networkaudiomanager.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/networkaudiomanager_nomain.o networkaudio/networkaudiomanager.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/networkaudio/networkaudiomanager.o ${OBJECTDIR}/networkaudio/networkaudiomanager_nomain.o;\
+	fi
+
+${OBJECTDIR}/networkaudio/networkaudiothread_nomain.o: ${OBJECTDIR}/networkaudio/networkaudiothread.o networkaudio/networkaudiothread.cpp 
+	${MKDIR} -p ${OBJECTDIR}/networkaudio
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/networkaudio/networkaudiothread.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/networkaudiothread_nomain.o networkaudio/networkaudiothread.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/networkaudio/networkaudiothread.o ${OBJECTDIR}/networkaudio/networkaudiothread_nomain.o;\
 	fi
 
 ${OBJECTDIR}/protocol/authprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o protocol/authprotocoloutgoingcommand.cpp 
