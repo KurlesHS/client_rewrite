@@ -33,10 +33,11 @@
 #include "playnetworkaudiorequestluaevent.h"
 #include "stopnetworkaudiorequestluaevent.h"
 #include "logger.h"
+#include "sethardwarestatusesluaevent.h"
 
 
 
-static const char priorityVarName[] = "priority";
+// static const char priorityVarName[] = "priority";
 static const char groupVarName[] = "group";
 
 static const char startFuncName[] = "start";
@@ -52,12 +53,26 @@ static const char ifHappensFuncName[] = "if_happens";
 static const char delayFuncName[] = "delay";
 static const char cancelPendingFuncFuncName[] = "cancel_pending_func";
 
+static const char setHardwareStatusWorkingFuncName[] = "set_hardware_status_working";
+static const char setHardwareStatusErrorFuncName[] = "set_hardware_status_error";
+static const char setHardwareStatusUnknownFuncName[] = "set_hardware_status_unknown";
+
+static const char setNotifyStatusProcessFuncName[] = "set_notify_status_process";
+static const char setNotifyStatusWaitFuncName[] = "set_notify_status_wait";
+static const char setNotifyStatusErrorFuncName[] = "set_notify_status_error";
+static const char setNotifyStatusUnknownFuncName[] = "set_notify_status_unknown";
+
 static const char onRelayChagedFuncName[] = "on_relay_changed";
 
+static const char notifyIdVarName[] = "notify_id";
+static const char notifyCodeVarName[] = "notify_code";
+static const char hardwaresVarName[] = "hardwares";
+static const char priorityVarName[] = "priority";
+static const char audioContentTypeVarName[] = "audio_content_type";
+static const char audioContentValueVarName[] = "audio_content_value";
+static const char audioContentFilenameVarName[] = "audio_content_filename";
 
 /*
-static const char FuncName[] = "";
-static const char FuncName[] = "";
 static const char FuncName[] = "";
  */
 
@@ -266,6 +281,38 @@ class LuaScriptPrivate {
         checkIfFinished();
     }
 
+    void setHardwareStatusWorkingFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::setHardwareStatusWorking, hardwareId));
+    }
+    void setHardwareStatusErrorFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::SetHardwareStatusError, hardwareId));
+    }
+        
+    void setHardwareStatusUnknownFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::SetHardwareStatusUnknown, hardwareId));
+    }
+
+    void setNotifyStatusProcessFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::SetNotifyStatusProcess, hardwareId));
+    }
+    void setNotifyStatusWaitFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::SetNotifyStatusWait, hardwareId));
+    }
+    void setNotifyStatusErrorFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::SetNotifyStatusError, hardwareId));
+    }
+    void setNotifyStatusUnknownFuncImpl(const string &hardwareId) {
+        informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
+                ILuaEvent::EventType::SetNotifyStatusUnknown, hardwareId));
+        
+    }
+
     std::string onRelayChangedFuncImpl(sol::object relayNum, sol::object newState)
     {
         auto id = Uuid::createUuid().toString();
@@ -380,7 +427,7 @@ class LuaScriptPrivate {
     {
         stringstream ss;
         ss << "message from lua script: " << message;
-        
+
         Logger::msg(ss.str());
         //informAboutLuaEvent(make_shared<LogMessageLuaEvent>(message));
     }
@@ -622,7 +669,6 @@ list<sol::function> LuaScript::ifHappensOkFunc(const string& ifHappensId)
     return result;
 }
 
-
 string LuaScript::scriptName() const
 {
     return d->scriptName;
@@ -635,7 +681,7 @@ void LuaScript::setScriptName(const string& name)
 
 void LuaScript::removeIfHappens(const string& ifHappensId, const bool checkIsfinished, const bool forceAsync)
 {
-   if (forceAsync) {
+    if (forceAsync) {
         d->addAsyncFunc([this, ifHappensId, checkIsfinished]() {
             removeIfHappens(ifHappensId, checkIsfinished, false);
         });
@@ -650,6 +696,50 @@ void LuaScript::removeIfHappens(const string& ifHappensId, const bool checkIsfin
         }
         if (checkIsfinished) {
             d->checkIfFinished();
+        }
+    }
+}
+
+void LuaScript::setNotifyInfo(const StartNotifyInfo& info)
+{
+    auto createTable = [this](const unordered_map<string, string> &tableValue) {
+        sol::table tbl = d->state.create_table(0, 0);
+        for (auto it = tableValue.begin(); it != tableValue.end(); ++it) {
+            tbl[it->first] = it->second;
+        }
+        return tbl;
+    };
+
+    auto createArray = [this](const list<string> &arrayValue) {
+        sol::table arr = d->state.create_table(0, 0);
+        int idx = 1;
+        for (const auto &value : arrayValue) {
+            arr[idx++] = value;
+        }
+        return arr;
+    };
+
+    d->state[hardwaresVarName] = createArray(info.hardwares);
+    d->state[notifyIdVarName] = info.id;
+    d->state[notifyCodeVarName] = info.code;
+    d->state[audioContentFilenameVarName] = info.audioContentFileName;
+    d->state[audioContentTypeVarName] = info.audioContentType;
+    d->state[audioContentValueVarName] = info.audioContentValue;
+
+
+    for (auto it = info.additionalData.begin(); it != info.additionalData.end(); ++it) {
+        switch (it->second.type) {
+            case StartNotifyAdditionalData::Type::List:
+                d->state[it->first] = createArray(it->second.listValue);
+                break;
+            case StartNotifyAdditionalData::Type::String:
+                d->state[it->first] = it->second.stringValue;
+                break;
+            case StartNotifyAdditionalData::Type::Table:
+                d->state[it->first] = createTable(it->second.tableValue);
+                break;
+            default:
+                break;
         }
     }
 }

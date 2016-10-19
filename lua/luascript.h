@@ -19,6 +19,8 @@
 #include "iluaevent.h"
 #include "iluascripteventlistener.h"
 
+#include "protocol/startnotifyinfo.h"
+
 #include <string>
 #include <memory>
 #include <list>
@@ -45,6 +47,8 @@ class LuaScript
 public:
     LuaScript(const std::string &scriptPath);
     virtual ~LuaScript();
+    
+    void setNotifyInfo(const StartNotifyInfo &info);
 
     bool run();
     void cancel();

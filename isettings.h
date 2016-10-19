@@ -25,6 +25,7 @@ public:
     virtual uint16_t port() = 0;
     
     virtual string scriptNameByNotifyCode(const string &notifyCode) = 0;
+    virtual string fileServerUrl() = 0;
 
 };
 

@@ -19,11 +19,12 @@
 #include "logger.h"
 #include "ioc/resolver.h"
 
-LuaToProtocolMediator::LuaToProtocolMediator(LuaScriptManager *luaManager, HardwareProtocolFactory *protocolFactory) :
+LuaToProtocolMediator::LuaToProtocolMediator(LuaScriptManager *luaManager, HardwareProtocolFactory *protocolFactory, SoundManager *soundManager) :
     mStartNotifyIncommingCommandHandler(this),
     mCancelNotifyIncommingCommandHandler(this),
     mLuaManager(luaManager),
     mProtocolFactory(protocolFactory),
+    mSoundManager(soundManager),
     mSettings(di_inject(ISettings))
 {
     mProtocolFactory->registerIncommingCommandHandler(&mStartNotifyIncommingCommandHandler);
@@ -35,6 +36,32 @@ LuaToProtocolMediator::~LuaToProtocolMediator()
 }
 
 void LuaToProtocolMediator::startNotifyRequest(const StartNotifyInfo& startNotifyInfo)
+{
+    bool isNeedToStartNotifyIdemideatly = true;
+    if (startNotifyInfo.audioContentType == "file" && !startNotifyInfo.audioContentValue.empty()) {
+        if (!mSoundManager->isFilePresent(startNotifyInfo.audioContentValue)) {
+            // нужно скачать файл!!!
+            isNeedToStartNotifyIdemideatly = false;
+            mSoundManager->downloadFileFromServer(startNotifyInfo.audioContentValue,
+                    startNotifyInfo.audioContentFileName, [this, startNotifyInfo](bool result) {
+                        auto startNotifyInfoCopy = startNotifyInfo;
+                        if (!result) {
+                            startNotifyInfoCopy.audioContentFileName.clear();
+                                    startNotifyInfoCopy.audioContentType.clear();
+                                    startNotifyInfoCopy.audioContentValue.clear();
+                        }
+                        startNotifyRequestHelper(startNotifyInfoCopy);
+                    });
+        }
+    }
+
+    if (isNeedToStartNotifyIdemideatly) {
+        // файл скачивать не нужно
+        startNotifyRequestHelper(startNotifyInfo);
+    }
+}
+
+void LuaToProtocolMediator::startNotifyRequestHelper(const StartNotifyInfo& startNotifyInfo)
 {
     string scriptName = mSettings->scriptNameByNotifyCode(startNotifyInfo.code);
     if (scriptName.empty()) {

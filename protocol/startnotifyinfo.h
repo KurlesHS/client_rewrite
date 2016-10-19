@@ -39,6 +39,7 @@ struct StartNotifyInfo {
     string code;
     list<string> hardwares;
     int priority;
+    // 'file' or 'url'
     string audioContentType;
     string audioContentValue;
     string audioContentFileName;

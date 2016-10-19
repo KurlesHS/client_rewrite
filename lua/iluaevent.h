@@ -20,22 +20,35 @@ class ILuaEvent;
 
 using ILuaEventSharedPtr = std::shared_ptr<ILuaEvent>;
 
-class ILuaEvent {
+class ILuaEvent
+{
 public:
-    enum class EventType {
+
+    enum class EventType
+    {
         FinishScript,
         LogMessage,
         PlayNetworkAudioRequest,
         StopNetworkAudioRequest,
         PlayLocalFileByHashRequest,
         PlayLocalFileByPathRequest,
-        StopLocalAudioRequest
+        StopLocalAudioRequest,
+        setHardwareStatusWorking,
+        SetHardwareStatusError,
+        SetHardwareStatusUnknown,
+        SetNotifyStatusProcess,
+        SetNotifyStatusWait,
+        SetNotifyStatusError,
+        SetNotifyStatusUnknown
+
     };
-    
-    virtual ~ILuaEvent() {}
-    
+
+    virtual ~ILuaEvent()
+    {
+    }
+
     virtual EventType eventType() const = 0;
-    
+
 private:
 
 };

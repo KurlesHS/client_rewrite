@@ -15,6 +15,7 @@
 
 #include "thread/threadregister.h"
 #include "logger.h"
+#include "filedownloader.h"
 
 #include <stdio.h>
 #include <dirent.h>
@@ -39,7 +40,7 @@ static pid_t start_avplay(const char *filepath, FILE **f)
 {
     pid_t pid = 0;
     int pipefd[2];
-    FILE* output;    
+    FILE* output;
 
     pipe(pipefd); //create a pipe
     pid = fork(); //span a child process
@@ -73,8 +74,9 @@ SoundManager::~SoundManager()
 {
 }
 
-SoundManager::SoundManager(const string& path) :
-    mPath(path)
+SoundManager::SoundManager(const string &path, const string &fileServerUrl) :
+    mPath(path),
+    mFileServerUrl(fileServerUrl)
 {
     updateFiles();
     mAvPlayWatcher.set(ThreadRegister::loopForCurrentThread());
@@ -143,6 +145,63 @@ void SoundManager::updateFiles()
     closedir(dfd);
 }
 
+void SoundManager::downloadFileFromServer(const string& hash, const string& fileName, const fileIsDownloadedCallback& callback)
+{
+    auto downloader = new FileDownloader(mFileServerUrl, mPath, hash, fileName, callback);
+    downloader->start();
+}
+
+string getFilepathByHash(string hash, const string &path)
+{
+    std::transform(hash.begin(), hash.end(), hash.begin(), ::tolower);
+    DIR *dfd = opendir(path.data());
+    struct dirent *dp;
+    string result;
+
+    if (dfd == NULL) {
+        return result;
+    }
+    while ((dp = readdir(dfd)) != NULL) {
+        struct stat stbuf;
+        string fileName(dp->d_name);
+        string filePath = path + "/" + fileName;
+        if (stat(filePath.data(), &stbuf) == -1) {
+            continue;
+        }
+
+        if ((stbuf.st_mode & S_IFMT) == S_IFDIR) {
+            // Skip directories
+            continue;
+        } else {
+            auto fileHash = getHashByFilename(fileName);
+            if (fileHash == hash) {
+                result = filePath;
+                break;
+            }
+        }
+    }
+    closedir(dfd);
+    return result;
+}
+
+bool SoundManager::isFilePresent(const string &hash) const
+{
+    return !getFilepathByHash(hash, mPath).empty();
+}
+
+void SoundManager::playbackByHash(const string &hash, const string &playbackId)
+{
+    auto filePath = getFilepathByHash(hash, mPath);
+    if (filePath.empty()) {
+        informAboutEvent(&ISoundManagerEventsListener::fileNotFound, playbackId);
+    } else {
+        playbackByFilePath(filePath, playbackId);
+    }
+}
+
+
+#if 0
+
 void SoundManager::playbackByHash(string hash, const string &playbackId)
 {
     std::transform(hash.begin(), hash.end(), hash.begin(), ::tolower);
@@ -181,6 +240,8 @@ void SoundManager::playbackByHash(string hash, const string &playbackId)
         informAboutEvent(&ISoundManagerEventsListener::fileNotFound, playbackId);
     }
 }
+
+#endif
 
 void SoundManager::playbackByFilePath(const string &filepath, const string& playbackId)
 {
@@ -223,8 +284,8 @@ void SoundManager::startPlaybackCurrentFile()
     ss << "avplay -nodisp -autoexit '";
     ss << mCurrentPlaybackFile.filePath;
     ss << "' 2>&1";
-    */
-    
+     */
+
     mCurrentPlaybackFile.pid = start_avplay(mCurrentPlaybackFile.filePath.data(), &mCurrentPlaybackFile.f);
     if (mCurrentPlaybackFile.pid > 0) {
         int fd = fileno(mCurrentPlaybackFile.f);
@@ -260,13 +321,13 @@ void SoundManager::removeEventListener(ISoundManagerEventsListener* listener)
 
 void SoundManager::onAvPlayEvent(ev::io& io, int event)
 {
-    if (event & ev::READ) {        
+    if (event & ev::READ) {
         static string duration("  Duration:");
         int count;
         ioctl(io.fd, FIONREAD, &count);
         vector<char> buff;
         buff.resize(count);
-        int len = read(io.fd, buff.data(), buff.size());        
+        int len = read(io.fd, buff.data(), buff.size());
         if (len <= 0) {
             // все, выход из программы avplay
             io.stop();

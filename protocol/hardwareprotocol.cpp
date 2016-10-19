@@ -226,6 +226,5 @@ void HardwareProtocol::processOkCommand(const Command& cmd)
         resp.sequenceNum = cmd.sequenceNum;
         /* и отправляем его */
         sendCommand(&resp);
-
     }
 }

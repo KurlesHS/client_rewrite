@@ -25,12 +25,16 @@ public:
         registeredThreads().emplace(std::make_pair(threadId, loop));
     }
     
-    static void registerThread(ev::loop_ref loop) {
+    static void registerCurrentThread(ev::loop_ref loop) {
         registerThread(std::this_thread::get_id(), loop);
     }
     
     static void unregisterThread(std::thread::id threadId) {
         registeredThreads().erase(threadId);
+    }
+    
+    static void unregisterCurrentThread() {
+        unregisterThread(std::this_thread::get_id());
     }
     
     static ev::loop_ref loopForThread(std::thread::id threadId) {

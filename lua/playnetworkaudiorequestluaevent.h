@@ -29,7 +29,7 @@ public:
     string url() const;
 
 private:
-    const string &mUrl;
+    const string mUrl;
 };
 
 #endif /* PLAYNETWORKAUDIOREQUESTLUAEVENT_H */

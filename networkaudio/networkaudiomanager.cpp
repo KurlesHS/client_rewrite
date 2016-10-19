@@ -13,24 +13,16 @@
 
 #include "networkaudiomanager.h"
 
-extern "C"
-{
-#include <libavformat/avformat.h>
-}
-
 #include "thread/threadregister.h"
 #include "logger.h"
 
 #include <algorithm>
-
+#include <iostream>
+#include <bits/c++config.h>
 
 NetworkAudioManager::NetworkAudioManager() :
-    mStream(0),
-    mIsPortAudioInitialized(false)
+    mWorker(nullptr)
 {
-    // инициализируем ffplay
-
-
     mAsync.set(ThreadRegister::loopForCurrentThread());
     mAsync.set<NetworkAudioManager, &NetworkAudioManager::onAsync>(this);
     mAsync.start();
@@ -38,86 +30,40 @@ NetworkAudioManager::NetworkAudioManager() :
 
 void NetworkAudioManager::start()
 {
-    av_register_all();
-    avformat_network_init();
-    Logger::msg("libav is initialized");
-
-    PaError error = Pa_Initialize();
-    if (error == paNoError) {
-        Logger::msg("portaudio library is initialzed");
-    }
+    mWorker = new NetworkAudoThreadWorker(this);
+    mWorker->start();
 }
 
-void NetworkAudioManager::onAsync()
-{    
-    for (auto f : mPendingCommands) {
-        f();
-    }
-    
-    mPendingCommands.clear();
-}
-
-int NetworkAudioManager::paCallback(const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void* userData)
+void NetworkAudioManager::addEventListener(INetworkAudoEvents* listener)
 {
-    (void)inputBuffer;
-    (void)timeInfo;
-    (void)statusFlags;
-    ((NetworkAudioManager*)userData)->playbackCallback(outputBuffer, framesPerBuffer);
-    return 0;
+    mEventsListeners.push_back(listener);
+}
+
+void NetworkAudioManager::removeEventListener(INetworkAudoEvents* listener)
+{
+    mEventsListeners.remove(listener);
 }
 
 NetworkAudioManager::~NetworkAudioManager()
 {
-    if (mIsPortAudioInitialized) {
-        Pa_Terminate();
+    if (mWorker) {
+        mWorker->quit();
+        delete mWorker;
     }
 }
 
-void NetworkAudioManager::newAudioFrame(const vector<char>& frame)
+void NetworkAudioManager::startStream(const string& streamAddress)
 {
-    mMutex.lock();
-    mAudioData.reserve(mAudioData.size() + frame.size());
-    mAudioData.insert(mAudioData.end(), frame.begin(), frame.end());
-    mMutex.unlock();
-}
-
-
-void NetworkAudioManager::playbackCallback(void* outputBuffer, unsigned long framesPerBuffer)
-{
-    mMutex.lock();
-    if (mAudioData.size() > 192000) {
-        int half = mAudioData.size() / 2;
-        if (half % 2 == 1) {
-            ++half;
-        }
-        mAudioData.erase(mAudioData.begin() + half, mAudioData.end());
+    if (mWorker) {
+        mWorker->startStream(streamAddress);
     }
-    
-    int maxBytesToSend = framesPerBuffer * sizeof(int16_t);
-    int bytesToSend = std::min(maxBytesToSend, (int)mAudioData.size());
-    memcpy(outputBuffer, mAudioData.data(), bytesToSend);
-    if ((int)mAudioData.size() <= bytesToSend) {
-        mAudioData.clear();
-    } else {
-        mAudioData.erase(mAudioData.begin(), mAudioData.begin() + bytesToSend);
+}
+
+void NetworkAudioManager::stopStream()
+{
+    if (mWorker) {
+        mWorker->stopStream();
     }
-    mMutex.unlock();
-}
-
-
-void NetworkAudioManager::informAboutFailToStartPlayingNetworkStream()
-{
-
-}
-
-void NetworkAudioManager::informAboutFinishPlayingNetworkStream()
-{
-
-}
-
-void NetworkAudioManager::informAboutStartPlayingNetworkStream()
-{
-
 }
 
 bool NetworkAudioManager::isPlaying() const
@@ -125,6 +71,65 @@ bool NetworkAudioManager::isPlaying() const
     return false;
 }
 
-NetworkAudioManagerEvents::~NetworkAudioManagerEvents()
+void NetworkAudioManager::onAsync()
 {
+    mMutex.lock();
+    decltype(mPendingFunc) copy;
+    copy.swap(mPendingFunc);
+    mMutex.unlock();
+    for (auto f : copy) {
+        f();
+    }
+
 }
+
+template<typename M, typename ... Args>
+static void informAboutEvent(
+        list<INetworkAudoEvents*> &mEventsListeners,
+        list<function<void()>> &pendingFunc,
+        mutex &mutex,
+        ev::async &async,
+        M m, Args ... args)
+{
+    mutex.lock();
+    #define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
+    auto f = [&]() {
+        for (auto listener : mEventsListeners) {
+            CALL_MEMBER_FN(listener, m)(std::forward<Args>(args)...);
+            listener->onFailToStartNetworkStream();
+        }
+    };
+    pendingFunc.push_back(f);
+    mutex.unlock();
+    async.send();    
+}
+
+void NetworkAudioManager::onFailToStartNetworkStream()
+{
+    cout << __func__ << endl;
+    informAboutEvent(&INetworkAudoEvents::onFailToStartNetworkStream);
+#if 0
+    mMutex.lock();
+    auto f = [this]() {
+        for (auto listener : mEventsListeners) {
+            listener->onFailToStartNetworkStream();
+        }
+    };
+    mPendingFunc.push_back(f);
+    mMutex.unlock();
+    mAsync.send();
+#endif
+}
+
+void NetworkAudioManager::onFinishNetworkStream()
+{
+    cout << __func__ << endl;
+    informAboutEvent(&INetworkAudoEvents::onFinishNetworkStream);
+}
+
+void NetworkAudioManager::onStartNetworkStream()
+{
+    cout << __func__ << endl;
+    informAboutEvent(&INetworkAudoEvents::onStartNetworkStream);
+}
+

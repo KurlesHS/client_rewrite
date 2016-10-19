@@ -14,6 +14,7 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 
+#include <functional>
 #include <string>
 #include <queue>
 #include <list>
@@ -31,19 +32,22 @@ struct SoundManagerFileInfo {
     pid_t pid;
 };
 
+using fileIsDownloadedCallback = function<void(const bool res)>;
 
 class SoundManager
 {
 public:
-    SoundManager(const string &path);
+    SoundManager(const string &path, const string &fileServerUrl);
 
     virtual ~SoundManager();
     
-    void playbackByHash(string hash, const string &playbackId);
+    void playbackByHash(const string &hash, const string &playbackId);
     void playbackByFilePath(const string &filepath, const string &playbackId);
     void cancelPlaybackFile(const string &playbackId);
     void addEventListener(ISoundManagerEventsListener *listener);
     void removeEventListener(ISoundManagerEventsListener *listener);
+    bool isFilePresent(const string &hash) const;
+    void downloadFileFromServer(const string &hash, const string &fileName, const fileIsDownloadedCallback &callback);
     
 private:
     void updateFiles();
@@ -64,6 +68,7 @@ private:
     
 private:
     const string mPath;
+    const string mFileServerUrl;
     list<ISoundManagerEventsListener*> mEventListeners;
     SoundManagerFileInfo mCurrentPlaybackFile;
     ev::io mAvPlayWatcher;

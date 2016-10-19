@@ -18,23 +18,30 @@
 #include "isettings.h"
 #include "protocol/startnotifyincommingcommandhandler.h"
 #include "cancelnotifyincommingcommandhandler.h"
+#include "soundmanager.h"
 
 class LuaScriptManager;
 class HardwareProtocolFactory;
 
 class LuaToProtocolMediator {
 public:
-    LuaToProtocolMediator(LuaScriptManager *luaManager, HardwareProtocolFactory *protocolFactory);
+    LuaToProtocolMediator(LuaScriptManager *luaManager, HardwareProtocolFactory *protocolFactory, SoundManager *soundManager);
     virtual ~LuaToProtocolMediator();
     
     void startNotifyRequest(const StartNotifyInfo &startNotifyInfo);
+    
     void cancelNotifyRequest(const string &notifyId);
+    
+    
+private:
+    void startNotifyRequestHelper(const StartNotifyInfo &startNotifyInfo);
     
 private:
     StartNotifyIncommingCommandHandler mStartNotifyIncommingCommandHandler;
     CancelNotifyIncommingCommandHandler mCancelNotifyIncommingCommandHandler;
     LuaScriptManager *mLuaManager;
     HardwareProtocolFactory *mProtocolFactory;
+    SoundManager *mSoundManager;
     ISettings *mSettings;
 };
 

@@ -14,66 +14,65 @@
 #ifndef NETWORKAUDIOMANAGER_H
 #define NETWORKAUDIOMANAGER_H
 
-#include <list>
-#include <mutex>
-#include <vector>
-#include <functional>
-
 #include <ev++.h>
 
-extern "C" {
-#include <portaudio.h>
-}
+#include <list>
+#include <mutex>
+#include <functional>
+
+#include "networkaudothreadworker.h"
+
+
 
 using namespace std;
 
-class NetworkAudioManagerEvents {
-public:
-    virtual ~NetworkAudioManagerEvents();
-    virtual void startPlayingNetworkStream() = 0;
-    virtual void failToStartPlayingNetworkStream() = 0;
-    virtual void finishPlayingNetworkStream() = 0;
-};
+#include "inetworkaudioevents.h"
 
-class NetworkAudioManager {
+class NetworkAudioManager : public INetworkAudoEvents
+{
 public:
     NetworkAudioManager();
     virtual ~NetworkAudioManager();
     
+    void startStream(const string &streamAddress);
+    void stopStream();
+    
+    void addEventListener(INetworkAudoEvents *listener);
+    void removeEventListener(INetworkAudoEvents *listener);
+
     void start();
-    
+
     bool isPlaying() const;
-    
-    
-    // для внутреннего пользования
-    void informAboutStartPlayingNetworkStream();
-    void informAboutFailToStartPlayingNetworkStream();
-    void informAboutFinishPlayingNetworkStream();
-    
-    void newAudioFrame(const vector<char> &frame);
-    
-   
+
+    void onFailToStartNetworkStream() override;
+    void onStartNetworkStream() override;
+    void onFinishNetworkStream() override;
     
 private:
     void onAsync();
     
-    void playbackCallback(void *outputBuffer, unsigned long framesPerBuffer);
-    
-    static int paCallback( const void *inputBuffer, void *outputBuffer,
-                           unsigned long framesPerBuffer,
-                           const PaStreamCallbackTimeInfo* timeInfo,
-                           PaStreamCallbackFlags statusFlags,
-                           void *userData );
+    template<typename M, typename ... Args>
+    void informAboutEvent(M m, Args ... args)
+{
+    mMutex.lock();
+    #define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
+    auto f = [this, m, args...]() {
+        for (auto listener : mEventsListeners) {
+            CALL_MEMBER_FN(listener, m)(std::forward<Args>(args)...);            
+        }
+    };
+    mPendingFunc.push_back(f);
+    mMutex.unlock();
+    mAsync.send();    
+}
+
 private:
+    NetworkAudoThreadWorker *mWorker;
+    list<INetworkAudoEvents*> mEventsListeners;
+    list<function<void()>> mPendingFunc;    
     ev::async mAsync;
-    list<function<void()>> mPendingCommands;
-    vector<char> mAudioData;
-    
-    PaStream *mStream;
-    bool mIsPortAudioInitialized;
     mutex mMutex;
 
 };
 
 #endif /* NETWORKAUDIOMANAGER_H */
-

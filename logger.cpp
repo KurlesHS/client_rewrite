@@ -71,7 +71,7 @@ Logger::Logger() :
 void Logger::run()
 {
     ev::dynamic_loop loop;
-    ThreadRegister::registerThread(loop);
+    ThreadRegister::registerCurrentThread(loop);
     ev::async async;
     async.set(loop);
     async.set<Logger, &Logger::onAsync>(this);

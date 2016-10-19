@@ -29,12 +29,14 @@ public:
     virtual ~JsonFileSettings();
     uint16_t port() override;
     string scriptNameByNotifyCode(const string& notifyCode) override;
+    string fileServerUrl() override;
     
 private:
     void readSettings(const string &filePath);
 
 private:
     uint16_t mPort;
+    string mFileServerUrl;
     unordered_map<string, string> mCodeToScriptBinding;
 };
 

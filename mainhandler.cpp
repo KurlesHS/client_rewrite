@@ -24,16 +24,24 @@
 #include "thread/threadregister.h"
 
 MainHandler::MainHandler() :
-    mSoundManager("/home/kurles/develop/orange_files"),
+    mSoundManager("/var/spool/sonet/files", Resolver::resolveDi<ISettings>()->fileServerUrl()),
     mLuaScriptManager("/usr/share/sonet/scripts"),
-    mLuaToProtocolMediator(&mLuaScriptManager, &mFactory),
-    mLuaToAudioMediator(&mLuaScriptManager, &mSoundManager)
+    mLuaToProtocolMediator(&mLuaScriptManager, &mFactory, &mSoundManager),
+    mLuaToAudioMediator(&mLuaScriptManager, &mSoundManager),
+    mLuaToNetworkStreamMediator(&mLuaScriptManager, &mNetworkAudioManager)
 {
     Logger::createInstanse();
     Logger::setCopyToStdoutEnabled(true);
     Logger::openlog("/var/log/sonet/server/", "server.log");
-    Logger::msg("--- Sonet hardware server started ---");    
+    Logger::msg("--- Sonet hardware server started ---");
     mNetworkAudioManager.start();
+#if 0
+    mNetworkAudioManager.startStream("rtsp://localhost:9002/test.sdp");
+    mSoundManager.downloadFileFromServer("827717d816d95c60f2059c8be841341897216104100d7b495f04c96f", "test.mp4", [](bool result) {
+        cout << "downloaded: " << (int) result << endl;
+    });
+#endif
+
 }
 
 MainHandler::~MainHandler()

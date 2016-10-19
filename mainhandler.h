@@ -20,6 +20,7 @@
 #include "luatoprotocolmediator.h"
 #include "luatoaudiomediator.h"
 #include "networkaudio/networkaudiomanager.h"
+#include "luatonetworkstreammediator.h"
 
 class MainHandler {
 public:
@@ -35,6 +36,7 @@ private:
     LuaScriptManager mLuaScriptManager;
     LuaToProtocolMediator mLuaToProtocolMediator;
     LuaToAudioMediator mLuaToAudioMediator;
+    LuaToNetworkStreamMediator mLuaToNetworkStreamMediator;
 };
 
 #endif /* MAINHANDLER_H */

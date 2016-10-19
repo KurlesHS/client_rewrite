@@ -51,6 +51,8 @@ void JsonFileSettings::readSettings(const string& filePath)
             for (json::iterator element = j.begin(); element != j.end(); ++element) {
                 if (element.key() == "port" && element.value().is_number()) {
                     mPort = element.value();
+                } else if (element.key() == "file_server" && element.value().is_string()) {
+                    mFileServerUrl = element.value();
                 } else if (element.key() == "bindings" && element.value().is_object()) {
                     json obj = element.value();
                     for (json::iterator it = obj.begin(); it != obj.end(); ++it) {
@@ -72,4 +74,9 @@ string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode)
         return it->second;
     }
     return string();
+}
+
+string JsonFileSettings::fileServerUrl()
+{
+    return mFileServerUrl;
 }

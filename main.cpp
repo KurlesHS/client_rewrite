@@ -27,7 +27,7 @@
 #include "logger.h"
 
 using namespace std;
-
+ 
 int main(int argc, char** argv)
 {
     (void)argc;
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     di_register_object(IAuthManager, authManager);   
             
     ev::default_loop mainLoop;
-    ThreadRegister::registerThread(mainLoop);
+    ThreadRegister::registerCurrentThread(mainLoop);
     
     di_register_type(ISettings, JsonFileSettings, "/etc/sonet_server.json");
     MainHandler m;

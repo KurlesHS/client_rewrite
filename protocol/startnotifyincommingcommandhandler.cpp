@@ -127,7 +127,7 @@ bool StartNotifyIncommingCommandHandler::handleCommand(const vector<char>& paylo
     bool result = true;
     try {
         using handler = void (*)(json::iterator &it, StartNotifyInfo & info);
-
+        
         json j = json::parse(string(payload.begin(), payload.end()));
         unordered_map<string, handler> handlers;
         handlers["id"] = handleIdKey;

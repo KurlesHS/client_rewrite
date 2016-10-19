@@ -51,6 +51,7 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
     script->setNotifyId(info.id);
     script->setScriptName(scriptName);
     if (script->isValid()) {
+        script->setNotifyInfo(info);
         script->addLuaScriptEventListener(this);
         if (mCurrentScript) {
             if (mCurrentScript->priority() < script->priority()) {

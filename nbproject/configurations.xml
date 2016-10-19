@@ -5,19 +5,6 @@
       <logicalFolder name="json" displayName="json" projectFiles="true">
         <itemPath>3rdparty/json/json.hpp</itemPath>
       </logicalFolder>
-      <logicalFolder name="rabbit" displayName="rabbit" projectFiles="true">
-        <itemPath>3rdparty/rabbit/common.h</itemPath>
-        <itemPath>3rdparty/rabbit/config.h</itemPath>
-        <itemPath>3rdparty/rabbit/fastest_coeffs.h</itemPath>
-        <itemPath>3rdparty/rabbit/float_cast.h</itemPath>
-        <itemPath>3rdparty/rabbit/high_qual_coeffs.h</itemPath>
-        <itemPath>3rdparty/rabbit/mid_qual_coeffs.h</itemPath>
-        <itemPath>3rdparty/rabbit/samplerate.c</itemPath>
-        <itemPath>3rdparty/rabbit/samplerate.h</itemPath>
-        <itemPath>3rdparty/rabbit/src_linear.c</itemPath>
-        <itemPath>3rdparty/rabbit/src_sinc.c</itemPath>
-        <itemPath>3rdparty/rabbit/src_zoh.c</itemPath>
-      </logicalFolder>
       <logicalFolder name="sol2" displayName="sol2" projectFiles="true">
         <itemPath>3rdparty/sol2/sol2.hpp</itemPath>
       </logicalFolder>
@@ -28,6 +15,9 @@
       <logicalFolder name="auth" displayName="auth" projectFiles="true">
         <itemPath>auth/authmanager.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
+        <itemPath>hardwarestatuses/hardwarestatusesmanager.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/iluaeventforifhappenshandler.cpp</itemPath>
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
@@ -36,6 +26,7 @@
         <itemPath>lua/playlocalfilerequestluaevent.cpp</itemPath>
         <itemPath>lua/playnetworkaudiorequestluaevent.cpp</itemPath>
         <itemPath>lua/scriptfinishedluaevent.cpp</itemPath>
+        <itemPath>lua/sethardwarestatusesluaevent.cpp</itemPath>
         <itemPath>lua/stoplocalaudiorequestluaevent.cpp</itemPath>
         <itemPath>lua/stopnetworkaudiorequestluaevent.cpp</itemPath>
       </logicalFolder>
@@ -46,6 +37,7 @@
       </logicalFolder>
       <logicalFolder name="f7" displayName="network_audio" projectFiles="true">
         <itemPath>networkaudio/networkaudiomanager.cpp</itemPath>
+        <itemPath>networkaudio/networkaudothreadworker.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
         <itemPath>soundmanager.cpp</itemPath>
@@ -66,14 +58,16 @@
         <itemPath>timer/timerfactory.cpp</itemPath>
       </logicalFolder>
       <itemPath>cancelnotifyincommingcommandhandler.cpp</itemPath>
+      <itemPath>filedownloader.cpp</itemPath>
       <itemPath>fortest.cpp</itemPath>
       <itemPath>jsonfilesettings.cpp</itemPath>
       <itemPath>logger.cpp</itemPath>
       <itemPath>luatoaudiomediator.cpp</itemPath>
+      <itemPath>luatonetworkstreammediator.cpp</itemPath>
       <itemPath>luatoprotocolmediator.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>mainhandler.cpp</itemPath>
-      <itemPath>networkaudio/networkaudiothread.cpp</itemPath>
+      <itemPath>networkaudio/networkaudioifhappenshandler.cpp</itemPath>
       <itemPath>uuid.cpp</itemPath>
       <itemPath>uuid.h</itemPath>
     </logicalFolder>
@@ -83,6 +77,10 @@
       <logicalFolder name="auth" displayName="auth" projectFiles="true">
         <itemPath>auth/authmanager.h</itemPath>
         <itemPath>auth/iauthmanager.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
+        <itemPath>hardwarestatuses/hardwarestatusesmanager.h</itemPath>
+        <itemPath>ihardwarestatusesevents.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="ioc" projectFiles="true">
         <itemPath>ioc/resolver.h</itemPath>
@@ -106,7 +104,9 @@
         <itemPath>network/tcpsocket.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f7" displayName="network_audio" projectFiles="true">
+        <itemPath>networkaudio/inetworkaudioevents.h</itemPath>
         <itemPath>networkaudio/networkaudiomanager.h</itemPath>
+        <itemPath>networkaudio/networkaudothreadworker.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="play_audio" projectFiles="true">
         <itemPath>soundmanager.h</itemPath>
@@ -134,16 +134,19 @@
       </logicalFolder>
       <itemPath>cancelnotifyincommingcommandhandler.h</itemPath>
       <itemPath>endian.hpp</itemPath>
+      <itemPath>filedownloader.h</itemPath>
       <itemPath>fortest.h</itemPath>
       <itemPath>isettings.h</itemPath>
       <itemPath>isoundmanagereventslistener.h</itemPath>
       <itemPath>jsonfilesettings.h</itemPath>
       <itemPath>logger.h</itemPath>
       <itemPath>luatoaudiomediator.h</itemPath>
+      <itemPath>luatonetworkstreammediator.h</itemPath>
       <itemPath>luatoprotocolmediator.h</itemPath>
       <itemPath>mainhandler.h</itemPath>
-      <itemPath>networkaudio/networkaudiothread.h</itemPath>
+      <itemPath>networkaudio/networkaudioifhappenshandler.h</itemPath>
       <itemPath>safe_list.h</itemPath>
+      <itemPath>lua/sethardwarestatusesluaevent.h</itemPath>
       <itemPath>soundmanagerifhappenshandler.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -201,33 +204,11 @@
         </ccTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lavformat -lavcodec -lavutil -lportaudio</linkerOptionItem>
+            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path="3rdparty/json/json.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/config.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/fastest_coeffs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/float_cast.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/high_qual_coeffs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/mid_qual_coeffs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/samplerate.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/samplerate.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/src_linear.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/src_sinc.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/src_zoh.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="3rdparty/sol2/sol2.hpp" ex="false" tool="3" flavor2="0">
       </item>
@@ -271,9 +252,25 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <item path="filedownloader.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="filedownloader.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusesmanager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusesmanager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="ihardwarestatusesevents.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -333,6 +330,13 @@
       </item>
       <item path="lua/scriptfinishedluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lua/sethardwarestatusesluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/sethardwarestatusesluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/stoplocalaudiorequestluaevent.cpp"
             ex="false"
             tool="1"
@@ -357,6 +361,10 @@
       </item>
       <item path="luatoaudiomediator.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="luatonetworkstreammediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="luatonetworkstreammediator.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="luatoprotocolmediator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="luatoprotocolmediator.h" ex="false" tool="3" flavor2="0">
@@ -379,6 +387,18 @@
       </item>
       <item path="network/tcpsocket.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="networkaudio/inetworkaudioevents.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudioifhappenshandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudioifhappenshandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="networkaudio/networkaudiomanager.cpp"
             ex="false"
             tool="1"
@@ -386,12 +406,15 @@
       </item>
       <item path="networkaudio/networkaudiomanager.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="networkaudio/networkaudiothread.cpp"
+      <item path="networkaudio/networkaudothreadworker.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="networkaudio/networkaudiothread.h" ex="false" tool="3" flavor2="0">
+      <item path="networkaudio/networkaudothreadworker.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="protocol/authprotocoloutgoingcommand.cpp"
             ex="false"
@@ -524,33 +547,11 @@
         </asmTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lavformat -lavcodec -lavutil -lportaudio</linkerOptionItem>
+            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path="3rdparty/json/json.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/config.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/fastest_coeffs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/float_cast.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/high_qual_coeffs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/mid_qual_coeffs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/samplerate.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/samplerate.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/src_linear.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/src_sinc.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="3rdparty/rabbit/src_zoh.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="3rdparty/sol2/sol2.hpp" ex="false" tool="3" flavor2="0">
       </item>
@@ -594,9 +595,25 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <item path="filedownloader.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="filedownloader.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusesmanager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusesmanager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="ihardwarestatusesevents.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ioc/resolver.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -656,6 +673,13 @@
       </item>
       <item path="lua/scriptfinishedluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lua/sethardwarestatusesluaevent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="lua/sethardwarestatusesluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/stoplocalaudiorequestluaevent.cpp"
             ex="false"
             tool="1"
@@ -680,6 +704,10 @@
       </item>
       <item path="luatoaudiomediator.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="luatonetworkstreammediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="luatonetworkstreammediator.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="luatoprotocolmediator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="luatoprotocolmediator.h" ex="false" tool="3" flavor2="0">
@@ -702,6 +730,18 @@
       </item>
       <item path="network/tcpsocket.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="networkaudio/inetworkaudioevents.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudioifhappenshandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/networkaudioifhappenshandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="networkaudio/networkaudiomanager.cpp"
             ex="false"
             tool="1"
@@ -709,12 +749,15 @@
       </item>
       <item path="networkaudio/networkaudiomanager.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="networkaudio/networkaudiothread.cpp"
+      <item path="networkaudio/networkaudothreadworker.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="networkaudio/networkaudiothread.h" ex="false" tool="3" flavor2="0">
+      <item path="networkaudio/networkaudothreadworker.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="protocol/authprotocoloutgoingcommand.cpp"
             ex="false"
