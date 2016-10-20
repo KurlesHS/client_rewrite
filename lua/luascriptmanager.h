@@ -34,12 +34,14 @@ class LuaScriptManager : public ILuaScriptEventsListener {
 public:
     LuaScriptManager(const string &luaScriptPath);
     virtual ~LuaScriptManager();
+    
+    void startAutostartScript(const string &scriptName);
 
     void startScript(const string &scriptName, const StartNotifyInfo &info);    
     void cancelScript(const string &notifyId);
 
     void luaEvent(ILuaEventSharedPtr event) override;
-
+    
     void addLuaScriptEventListener(ILuaScriptEventsListener *listener);
     void removeLuaScriptEventListener(ILuaScriptEventsListener *listener);
     
@@ -53,12 +55,15 @@ private:
     
     void runCurrentScript();
     void resetCurrentScript();
+    void resetAutostartScript();
+
 
 
 private:
     const string mLuaScriptPath;
     list<LuaScriptSharedPtr> mScripts;
     LuaScriptSharedPtr mCurrentScript;
+    LuaScriptSharedPtr mAutostartScript;
     list<ILuaScriptEventsListener*> mEventListeners;
     list<ILuaEventForIfHappensHandler*> mIfHappensHandlers;
     ev::async mAsync;

@@ -16,8 +16,10 @@
 #include "thread/threadregister.h"
 #include "scriptfinishedluaevent.h"
 #include "logger.h"
+#include "scriptstartedluaevent.h"
 
 #include <algorithm>
+#include <iostream>
 
 LuaScriptManager::LuaScriptManager(const string& luaScriptPath) :
     mLuaScriptPath(luaScriptPath)
@@ -44,6 +46,30 @@ void LuaScriptManager::cancelScript(const string& notifyId)
     }
 }
 
+void LuaScriptManager::startAutostartScript(const string& scriptName)
+{
+    if (scriptName.empty()) {
+        Logger::msg("autostart script is not present in settings");
+        return;
+    }
+    string scriptPath = mLuaScriptPath + "/" + scriptName + ".lua";
+    auto script = make_shared<LuaScript>(scriptPath);
+    script->setScriptName(scriptName);
+    if (script->isValid()) {
+        mAutostartScript = script;
+        mAutostartScript->addLuaScriptEventListener(this);
+        for (auto handler : mIfHappensHandlers) {
+            handler->registerCommand(mAutostartScript->luaState());
+            handler->addLuaScript(mAutostartScript.get());
+        }
+        Logger::msg("starting autostart script '%s'...", scriptName.data());
+        mAutostartScript->run();
+    } else {
+        Logger::msg("autostart script '%s' is not valid", scriptName.data());
+    }
+
+}
+
 void LuaScriptManager::startScript(const string& scriptName, const StartNotifyInfo &info)
 {
     string scriptPath = mLuaScriptPath + "/" + scriptName + ".lua";
@@ -51,6 +77,7 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
     script->setNotifyId(info.id);
     script->setScriptName(scriptName);
     if (script->isValid()) {
+        script->setPriority(info.priority);
         script->setNotifyInfo(info);
         script->addLuaScriptEventListener(this);
         if (mCurrentScript) {
@@ -59,7 +86,6 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
                 // текущей задачи надо прервать
                 Logger::msg("cancel current script '%s'", mCurrentScript->scriptName().data());
                 mCurrentScript->cancel();
-
                 // TODO: log this
             }
             // добваляем сприпт в очередь
@@ -75,6 +101,8 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
             mCurrentScript = script;
             runCurrentScript();
         }
+    } else {
+        luaEvent(make_shared<ScriptFinishedLuaEvent>(script->id(), info.id, info.code, scriptName, false, true));
     }
 }
 
@@ -85,10 +113,26 @@ void LuaScriptManager::runCurrentScript()
             handler->registerCommand(mCurrentScript->luaState());
             handler->addLuaScript(mCurrentScript.get());
         }
-        Logger::msg("Starting script '%s'", mCurrentScript->scriptName().data());
+        const auto &info = mCurrentScript->notifyInfo();
+        for (auto listener : mEventListeners) {
+            listener->luaEvent(make_shared<ScriptStartedLuaEvent>(info.id,
+                    info.code, mCurrentScript->scriptName()));
+        }
         mCurrentScript->run();
     }
 }
+
+void LuaScriptManager::resetAutostartScript()
+{
+    if (mAutostartScript) {
+        for (auto handler : mIfHappensHandlers) {
+            handler->removeLuaScript(mAutostartScript.get());
+        }
+        Logger::msg("clear autostart script '%s'", mAutostartScript->scriptName().data());
+        mAutostartScript.reset(); 
+    }
+}
+
 
 void LuaScriptManager::resetCurrentScript()
 {
@@ -126,7 +170,7 @@ void LuaScriptManager::luaEvent(ILuaEventSharedPtr event)
     if (event->eventType() == ILuaEvent::EventType::FinishScript) {
         // для предотвращения удаления экземпляра LuaScript в процесс рассылки
         // оным уведомления о событии
-        auto finishEvent = static_cast<ScriptFinishedLuaEvent*> (event.get());        
+        auto finishEvent = static_cast<ScriptFinishedLuaEvent*> (event.get());
 
         if (mCurrentScript && finishEvent && finishEvent->scriptId() == mCurrentScript->id()) {
             mPendingCommands.push_back([this, event]() {
@@ -139,6 +183,14 @@ void LuaScriptManager::luaEvent(ILuaEventSharedPtr event)
                 }
             });
             mAsync.send();
+        } else if (mAutostartScript && finishEvent && finishEvent->scriptId() == mAutostartScript->id()) {
+            mPendingCommands.push_back([this, event]() {
+                resetAutostartScript();
+                informAboutEvent(event);                
+            });
+            mAsync.send();
+        } else {
+            informAboutEvent(event);
         }
     } else {
         informAboutEvent(event);

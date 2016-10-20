@@ -16,12 +16,15 @@
 
 #include "iluaevent.h"
 
-class ILuaScriptEventsListener 
-{
-public:
-    virtual ~ILuaScriptEventsListener() {}
+#include <string>
+
+using namespace std;
+
+class ILuaScriptEventsListener {
+public:    
+    virtual ~ILuaScriptEventsListener() {
+    }
     virtual void luaEvent(ILuaEventSharedPtr event) = 0;
-    
 };
 
 #endif /* ILUASCRIPTEVENTLISTENER_H */

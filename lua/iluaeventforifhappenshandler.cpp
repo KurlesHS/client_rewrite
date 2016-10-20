@@ -11,7 +11,6 @@ void ILuaEventForIfHappensHandler::addLuaScript(LuaScript* listener)
     mLuaScripts.push_back(listener);
 }
 
-
 void ILuaEventForIfHappensHandler::removeLuaScript(LuaScript* listener)
 {
     mLuaScripts.remove(listener);
@@ -19,8 +18,5 @@ void ILuaEventForIfHappensHandler::removeLuaScript(LuaScript* listener)
 
 ILuaEventForIfHappensHandler::~ILuaEventForIfHappensHandler()
 {
+    
 }
-
-
-
-

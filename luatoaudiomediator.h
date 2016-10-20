@@ -34,7 +34,7 @@ public:
 
     // ILuaScriptEventsListener
     void luaEvent(ILuaEventSharedPtr event) override;
-    
+        
 private:
     void handleStopLocalAudioEvent(ILuaEventSharedPtr event);
     void handlePlayFileEvent(ILuaEventSharedPtr event);    

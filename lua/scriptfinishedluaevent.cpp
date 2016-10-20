@@ -13,22 +13,61 @@
 
 #include "scriptfinishedluaevent.h"
 
-ScriptFinishedLuaEvent::ScriptFinishedLuaEvent(const string& scriptId) :
-mScriptId(scriptId)
+ScriptFinishedLuaEvent::ScriptFinishedLuaEvent(
+        const string &scriptId,
+        const string &notifyId,
+        const string &notifyCode,
+        const string &scriptName,
+        const bool isCanceled,
+        const bool hasError) :
+    mScriptId(scriptId),
+    mNotifyId(notifyId),
+    mNotifyCode(notifyCode),
+    mScriptName(scriptName),
+    mIsCanceled(isCanceled),
+    mHasError(hasError)
+
 {
 
 }
 
-ScriptFinishedLuaEvent::~ScriptFinishedLuaEvent() {
+bool ScriptFinishedLuaEvent::hasError() const
+{
+    return mHasError;
 }
 
-ILuaEvent::EventType ScriptFinishedLuaEvent::eventType() const {
-    return ILuaEvent::EventType::FinishScript;
+bool ScriptFinishedLuaEvent::isCanceled() const
+{
+    return mIsCanceled;
+}
+
+string ScriptFinishedLuaEvent::notifyCode() const
+{
+    return mNotifyCode;
+}
+
+string ScriptFinishedLuaEvent::scriptName() const
+{
+    return mScriptName;
 }
 
 string ScriptFinishedLuaEvent::scriptId() const
 {
     return mScriptId;
+}
+
+ScriptFinishedLuaEvent::~ScriptFinishedLuaEvent()
+{
+}
+
+ILuaEvent::EventType ScriptFinishedLuaEvent::eventType() const
+{
+    return ILuaEvent::EventType::FinishScript;
+}
+
+string ScriptFinishedLuaEvent::notifyId() const
+{
+    return mNotifyId;
 }
 
 

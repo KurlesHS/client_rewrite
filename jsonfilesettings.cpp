@@ -53,6 +53,8 @@ void JsonFileSettings::readSettings(const string& filePath)
                     mPort = element.value();
                 } else if (element.key() == "file_server" && element.value().is_string()) {
                     mFileServerUrl = element.value();
+                }  else if (element.key() == "autostart_script" && element.value().is_string()) {
+                    mAutostartScript = element.value();
                 } else if (element.key() == "bindings" && element.value().is_object()) {
                     json obj = element.value();
                     for (json::iterator it = obj.begin(); it != obj.end(); ++it) {
@@ -79,4 +81,9 @@ string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode)
 string JsonFileSettings::fileServerUrl()
 {
     return mFileServerUrl;
+}
+
+string JsonFileSettings::autostartScript()
+{
+    return mAutostartScript;
 }

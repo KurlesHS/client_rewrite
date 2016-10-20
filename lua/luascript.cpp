@@ -34,6 +34,7 @@
 #include "stopnetworkaudiorequestluaevent.h"
 #include "logger.h"
 #include "sethardwarestatusesluaevent.h"
+#include "outgoingmessageluaevent.h"
 
 
 
@@ -53,14 +54,16 @@ static const char ifHappensFuncName[] = "if_happens";
 static const char delayFuncName[] = "delay";
 static const char cancelPendingFuncFuncName[] = "cancel_pending_func";
 
-static const char setHardwareStatusWorkingFuncName[] = "set_hardware_status_working";
-static const char setHardwareStatusErrorFuncName[] = "set_hardware_status_error";
+static const char setHardwareStatusWorkFuncName[] = "set_hardware_status_work";
+static const char setHardwareStatusFailFuncName[] = "set_hardware_status_fail";
 static const char setHardwareStatusUnknownFuncName[] = "set_hardware_status_unknown";
 
 static const char setNotifyStatusProcessFuncName[] = "set_notify_status_process";
 static const char setNotifyStatusWaitFuncName[] = "set_notify_status_wait";
 static const char setNotifyStatusErrorFuncName[] = "set_notify_status_error";
 static const char setNotifyStatusUnknownFuncName[] = "set_notify_status_unknown";
+
+static const char outgoingMessageFuncName[] = "outgoing_message";
 
 static const char onRelayChagedFuncName[] = "on_relay_changed";
 
@@ -182,13 +185,13 @@ class LuaScriptPrivate {
     bool isValid = true;
     bool isFinished = false;
     bool isFinishedEmited = false;
+    bool isCanceled = false;
     std::string lastError;
     int priority = 0;
     std::string id;
     std::string notifyId;
     ev::async async;
-
-
+    StartNotifyInfo startNotifyInfo;
 
     ITimerFactory *timerFactory;
     std::unordered_map<std::string, IfHappensPendingFuncSharedPtr> mIfHappensFunc;
@@ -281,13 +284,13 @@ class LuaScriptPrivate {
         checkIfFinished();
     }
 
-    void setHardwareStatusWorkingFuncImpl(const string &hardwareId) {
+    void setHardwareStatusWorkFuncImpl(const string &hardwareId) {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
-                ILuaEvent::EventType::setHardwareStatusWorking, hardwareId));
+                ILuaEvent::EventType::SetHardwareStatusWork, hardwareId));
     }
-    void setHardwareStatusErrorFuncImpl(const string &hardwareId) {
+    void setHardwareStatusFailFuncImpl(const string &hardwareId) {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
-                ILuaEvent::EventType::SetHardwareStatusError, hardwareId));
+                ILuaEvent::EventType::SetHardwareStatusFail, hardwareId));
     }
         
     void setHardwareStatusUnknownFuncImpl(const string &hardwareId) {
@@ -309,8 +312,12 @@ class LuaScriptPrivate {
     }
     void setNotifyStatusUnknownFuncImpl(const string &hardwareId) {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
-                ILuaEvent::EventType::SetNotifyStatusUnknown, hardwareId));
-        
+                ILuaEvent::EventType::SetNotifyStatusUnknown, hardwareId));        
+    }
+    
+    void outgoingMessageFuncImpl(const string &hardwareId, const string &message) {
+        informAboutLuaEvent(make_shared<OutgoingMessageLuaEvent>(
+                hardwareId, message));
     }
 
     std::string onRelayChangedFuncImpl(sol::object relayNum, sol::object newState)
@@ -319,13 +326,18 @@ class LuaScriptPrivate {
         mRelayChangeParams[id] = {relayNum, newState};
         return id;
     }
-
+ 
     void checkIfFinished()
     {
         if (isFinished && !isFinishedEmited) {
-            isFinishedEmited = true;
-            informAboutLuaEvent(make_shared<ScriptFinishedLuaEvent>(id));
-            // q->emit_finishScript(id);
+            isFinishedEmited = true;            
+            informAboutLuaEvent(make_shared<ScriptFinishedLuaEvent>(
+                    id,
+                    startNotifyInfo.id,
+                    startNotifyInfo.code,
+                    scriptName,
+                    isCanceled,
+                    !lastError.empty())); 
         }
     }
 
@@ -334,7 +346,7 @@ class LuaScriptPrivate {
         this->lastError = lastError;
         isValid = false;
         isFinished = true;
-        Logger::msg("lua error: %s", lastError.data());
+        Logger::msg("lua error: %s", lastError.data());        
     }
 
     void cancelPendingFuncImpl(const std::string &pendingId)
@@ -551,9 +563,30 @@ LuaScript::LuaScript(const std::string &scriptPath) :
                 &LuaScriptPrivate::playNetworkAudioFuncImpl, d);
         d->state.set_function(stopPlayNetworkAudioFuncName,
                 &LuaScriptPrivate::stopPlayNetworkAudioFuncImpl, d);
+        
+        d->state.set_function(setHardwareStatusFailFuncName,
+                &LuaScriptPrivate::setHardwareStatusFailFuncImpl, d);
+        d->state.set_function(setHardwareStatusUnknownFuncName,
+                &LuaScriptPrivate::setHardwareStatusUnknownFuncImpl, d);
+        d->state.set_function(setHardwareStatusWorkFuncName,
+                &LuaScriptPrivate::setHardwareStatusWorkFuncImpl, d);
 
+        d->state.set_function(setNotifyStatusErrorFuncName,
+                &LuaScriptPrivate::setNotifyStatusErrorFuncImpl, d);
+        d->state.set_function(setNotifyStatusProcessFuncName,
+                &LuaScriptPrivate::setNotifyStatusProcessFuncImpl, d);
+        d->state.set_function(setNotifyStatusUnknownFuncName,
+                &LuaScriptPrivate::setNotifyStatusUnknownFuncImpl, d);
+        d->state.set_function(setNotifyStatusWaitFuncName,
+                &LuaScriptPrivate::setNotifyStatusWaitFuncImpl, d);
+        
+        d->state.set_function(outgoingMessageFuncName,
+                &LuaScriptPrivate::outgoingMessageFuncImpl, d);
+        
         d->state.set_function(onRelayChagedFuncName,
                 &LuaScriptPrivate::onRelayChangedFuncImpl, d);
+        
+        
     } catch (sol::error error) {
         d->setLastError(error.what());
     }
@@ -568,6 +601,12 @@ int LuaScript::priority() const
 {
     return d->priority;
 }
+
+void LuaScript::setPriority(const int priority)
+{
+    d->priority = priority;
+}
+
 
 std::string LuaScript::group() const
 {
@@ -610,6 +649,7 @@ bool LuaScript::run()
 void LuaScript::cancel()
 {
     if (!isFinished() && isValid()) {
+        d->isCanceled = true;
         // имеет смысл только когда скрипт в работе
         sol::function cleanOnCancel = d->state[cleanupOnCancelFuncName];
         if (cleanOnCancel) {
@@ -700,8 +740,15 @@ void LuaScript::removeIfHappens(const string& ifHappensId, const bool checkIsfin
     }
 }
 
+const StartNotifyInfo& LuaScript::notifyInfo() const
+{
+    return d->startNotifyInfo;
+}
+
+
 void LuaScript::setNotifyInfo(const StartNotifyInfo& info)
 {
+    d->startNotifyInfo = info;
     auto createTable = [this](const unordered_map<string, string> &tableValue) {
         sol::table tbl = d->state.create_table(0, 0);
         for (auto it = tableValue.begin(); it != tableValue.end(); ++it) {

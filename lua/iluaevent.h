@@ -26,15 +26,17 @@ public:
 
     enum class EventType
     {
+        StartScript,
         FinishScript,
         LogMessage,
+        OutgoingMessage,
         PlayNetworkAudioRequest,
         StopNetworkAudioRequest,
         PlayLocalFileByHashRequest,
         PlayLocalFileByPathRequest,
         StopLocalAudioRequest,
-        setHardwareStatusWorking,
-        SetHardwareStatusError,
+        SetHardwareStatusWork,
+        SetHardwareStatusFail,
         SetHardwareStatusUnknown,
         SetNotifyStatusProcess,
         SetNotifyStatusWait,

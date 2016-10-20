@@ -22,8 +22,8 @@ class IHardwareStatusesEvents
 {
 public :
     enum class HardwareStatus {
-        Working, 
-        Error,
+        Work, 
+        Fail,
         Unknown
     };
     

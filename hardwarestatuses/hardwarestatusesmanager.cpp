@@ -14,12 +14,26 @@
 #include "hardwarestatusesmanager.h"
 
 #include "thread/threadregister.h"
+#include "logger.h"
 
 HardwareStatusesManager::HardwareStatusesManager()
 {
     mAsync.set(ThreadRegister::loopForCurrentThread());
     mAsync.set<HardwareStatusesManager, &HardwareStatusesManager::onAsync>(this);
     mAsync.start();
+    
+    mHardwareStatusToString = {
+        {IHardwareStatusesEvents::HardwareStatus::Fail, "fail"},
+        {IHardwareStatusesEvents::HardwareStatus::Unknown, "unknown"},
+        {IHardwareStatusesEvents::HardwareStatus::Work, "worki"}
+    };
+    
+    mNotifyStatusToString = {
+        {IHardwareStatusesEvents::NotifyStatus::Error, "errpr"},
+        {IHardwareStatusesEvents::NotifyStatus::Process, "process"},
+        {IHardwareStatusesEvents::NotifyStatus::Unknown, "unknown"},
+        {IHardwareStatusesEvents::NotifyStatus::Wait, "wait"}
+    };        
 }
 
 HardwareStatusesManager::~HardwareStatusesManager()
@@ -47,7 +61,7 @@ void HardwareStatusesManager::removeEventsListener(IHardwareStatusesEvents* list
     mEventsListeners.remove(listener);
 }
 
-IHardwareStatusesEvents::NotifyStatus HardwareStatusesManager::NotifyStatus(const string& hardwareId)
+IHardwareStatusesEvents::NotifyStatus HardwareStatusesManager::notifyStatus(const string& hardwareId)
 {
     auto it = mNotifyStatuses.find(hardwareId);
     if (it != mNotifyStatuses.end()) {
@@ -68,6 +82,13 @@ IHardwareStatusesEvents::HardwareStatus HardwareStatusesManager::hardwareStatus(
 void HardwareStatusesManager::setHardwareStatus(const string& hardwareId, const IHardwareStatusesEvents::HardwareStatus& hardwareStatus)
 {
     mHardwareStatuses[hardwareId] = hardwareStatus;
+    string strStatus("unknown");
+    try {
+        strStatus = mHardwareStatusToString.at(hardwareStatus);
+    } catch (...) {
+        
+    }
+    Logger::msg("hardware status of hardware with id '%s' changed to '%s'", hardwareId.data(), strStatus.data());
     for (auto listener : mEventsListeners) {
         listener->onHardwareStatusChanged(hardwareId, hardwareStatus);
     }
@@ -76,13 +97,21 @@ void HardwareStatusesManager::setHardwareStatus(const string& hardwareId, const 
 void HardwareStatusesManager::setNotifyStatus(const string& hardwareId, const IHardwareStatusesEvents::NotifyStatus& notifyStatus)
 {
     mNotifyStatuses[hardwareId] = notifyStatus;
+    string strStatus("unknown");
+    try {
+        strStatus = mNotifyStatusToString.at(notifyStatus);
+    } catch (...) {
+        
+    }
+    Logger::msg("notiy status of hardware with id '%s' changed to '%s'", hardwareId.data(), strStatus.data());
     for (auto listener : mEventsListeners) {
         listener->onNotifyStatusChanged(hardwareId, notifyStatus);
     }
+    
 }
 
 set<string> HardwareStatusesManager::hardwares() const
-{gcd
+{
     set<string> result;
     
     for (auto it = mHardwareStatuses.begin(); it != mHardwareStatuses.end(); ++it) {

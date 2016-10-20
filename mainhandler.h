@@ -21,6 +21,9 @@
 #include "luatoaudiomediator.h"
 #include "networkaudio/networkaudiomanager.h"
 #include "luatonetworkstreammediator.h"
+#include "hardwarestatuses/hardwarestatusestolualmediator.h"
+#include "hardwarestatuses/hardwarestatusestoprotocolmediator.h"
+#include "hardwarestatuses/hardwarestatusesmanager.h"
 
 class MainHandler {
 public:
@@ -34,9 +37,12 @@ private:
     HardwareProtocolFactory mFactory;
     SoundManager mSoundManager;
     LuaScriptManager mLuaScriptManager;
+    HardwareStatusesManager mStatusesManager;
     LuaToProtocolMediator mLuaToProtocolMediator;
     LuaToAudioMediator mLuaToAudioMediator;
     LuaToNetworkStreamMediator mLuaToNetworkStreamMediator;
+    HardwareStatusesToLualMediator mHardwareStatusesToLualMediator;
+    HardwareStatusesToProtocolMediator mHardwareStatusesToProtocolMediator;
 };
 
 #endif /* MAINHANDLER_H */

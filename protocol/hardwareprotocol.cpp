@@ -23,6 +23,7 @@
 #include "authprotocoloutgoingcommand.h"
 #include "pingincommingcommandhandler.h"
 #include "logger.h"
+#include "pingprotocoloutgoingcommand.h"
 
 #include <math.h>
 #include <arpa/inet.h>
@@ -39,10 +40,22 @@ HardwareProtocol::HardwareProtocol(ITransportSharedPrt transport) :
     mIsAuthorized(false),
     mIsAuthError(false)
 {
+    mTimerForPingCommand = mTimerFactory->getTimer(20000);
     mTransport->addTransportEventsListener(this);
     sendOutgoingCommand(make_shared<AuthProtocolOutgoingCommand>(this, mSessionId));
     registerIncommingCommandHandler(mPingCommandHandler);
     Logger::msg("client from %s is connected...", transport->peerAddress().data());
+    
+    mTimerForPingCommand->start();
+    mTimerForPingCommand->addCallbackFunction([this](ITimer*) {    
+        onPingCmdTimeout();
+    });
+    
+}
+
+void HardwareProtocol::onPingCmdTimeout()
+{
+    sendOutgoingCommand(make_shared<PingProtocolOutgoingCommand>(this));
 }
 
 void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler* handler)
@@ -55,6 +68,12 @@ HardwareProtocol::~HardwareProtocol()
     mTransport->removeTransportEventsListener(this);
     delete mPingCommandHandler;
 }
+
+void HardwareProtocol::disconnectFromClient()
+{
+    processErrorCommand();
+}
+
 
 void HardwareProtocol::disconnected(ITransport* self)
 {

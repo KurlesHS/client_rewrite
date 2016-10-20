@@ -28,13 +28,16 @@ MainHandler::MainHandler() :
     mLuaScriptManager("/usr/share/sonet/scripts"),
     mLuaToProtocolMediator(&mLuaScriptManager, &mFactory, &mSoundManager),
     mLuaToAudioMediator(&mLuaScriptManager, &mSoundManager),
-    mLuaToNetworkStreamMediator(&mLuaScriptManager, &mNetworkAudioManager)
+    mLuaToNetworkStreamMediator(&mLuaScriptManager, &mNetworkAudioManager),
+    mHardwareStatusesToLualMediator(&mStatusesManager, &mLuaScriptManager),
+    mHardwareStatusesToProtocolMediator(&mFactory, &mStatusesManager)
 {
     Logger::createInstanse();
     Logger::setCopyToStdoutEnabled(true);
     Logger::openlog("/var/log/sonet/server/", "server.log");
     Logger::msg("--- Sonet hardware server started ---");
     mNetworkAudioManager.start();
+    mLuaScriptManager.startAutostartScript(di_inject(ISettings)->autostartScript());
 #if 0
     mNetworkAudioManager.startStream("rtsp://localhost:9002/test.sdp");
     mSoundManager.downloadFileFromServer("827717d816d95c60f2059c8be841341897216104100d7b495f04c96f", "test.mp4", [](bool result) {

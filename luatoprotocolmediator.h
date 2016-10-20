@@ -19,11 +19,12 @@
 #include "protocol/startnotifyincommingcommandhandler.h"
 #include "cancelnotifyincommingcommandhandler.h"
 #include "soundmanager.h"
+#include "lua/iluascripteventlistener.h"
 
 class LuaScriptManager;
 class HardwareProtocolFactory;
 
-class LuaToProtocolMediator {
+class LuaToProtocolMediator : public ILuaScriptEventsListener {
 public:
     LuaToProtocolMediator(LuaScriptManager *luaManager, HardwareProtocolFactory *protocolFactory, SoundManager *soundManager);
     virtual ~LuaToProtocolMediator();
@@ -32,9 +33,14 @@ public:
     
     void cancelNotifyRequest(const string &notifyId);
     
+    void luaEvent(ILuaEventSharedPtr event) override;    
     
 private:
     void startNotifyRequestHelper(const StartNotifyInfo &startNotifyInfo);
+    
+    void handleStartScriptLuaEvent(ILuaEventSharedPtr event);
+    void handleFinishScriptLuaEvent(ILuaEventSharedPtr event);
+    void handleOutgoingMessageLuaEvent(ILuaEventSharedPtr event);
     
 private:
     StartNotifyIncommingCommandHandler mStartNotifyIncommingCommandHandler;

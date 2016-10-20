@@ -16,16 +16,23 @@
         <itemPath>auth/authmanager.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
+        <itemPath>hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp</itemPath>
         <itemPath>hardwarestatuses/hardwarestatusesmanager.cpp</itemPath>
+        <itemPath>hardwarestatuses/hardwarestatusestolualmediator.cpp</itemPath>
+        <itemPath>hardwarestatuses/hardwarestatusestoprotocolmediator.cpp</itemPath>
+        <itemPath>networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp</itemPath>
+        <itemPath>hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/iluaeventforifhappenshandler.cpp</itemPath>
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
         <itemPath>lua/luascript.cpp</itemPath>
         <itemPath>lua/luascriptmanager.cpp</itemPath>
+        <itemPath>lua/outgoingmessageluaevent.cpp</itemPath>
         <itemPath>lua/playlocalfilerequestluaevent.cpp</itemPath>
         <itemPath>lua/playnetworkaudiorequestluaevent.cpp</itemPath>
         <itemPath>lua/scriptfinishedluaevent.cpp</itemPath>
+        <itemPath>lua/scriptstartedluaevent.cpp</itemPath>
         <itemPath>lua/sethardwarestatusesluaevent.cpp</itemPath>
         <itemPath>lua/stoplocalaudiorequestluaevent.cpp</itemPath>
         <itemPath>lua/stopnetworkaudiorequestluaevent.cpp</itemPath>
@@ -44,12 +51,17 @@
         <itemPath>soundmanagerifhappenshandler.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="protocol" projectFiles="true">
+        <itemPath>protocol/authprotocoloutgoingcommand.cpp</itemPath>
         <itemPath>protocol/command.cpp</itemPath>
+        <itemPath>protocol/finishscriptprotocoloutgoingcommand.cpp</itemPath>
+        <itemPath>protocol/finishscriptprotocoloutgoingcommand.h</itemPath>
         <itemPath>protocol/hardwareprotocol.cpp</itemPath>
         <itemPath>protocol/hardwareprotocolfactory.cpp</itemPath>
         <itemPath>protocol/hardwareprotocolpacketparser.cpp</itemPath>
         <itemPath>protocol/pingincommingcommandhandler.cpp</itemPath>
+        <itemPath>protocol/pingprotocoloutgoingcommand.cpp</itemPath>
         <itemPath>protocol/startnotifyincommingcommandhandler.cpp</itemPath>
+        <itemPath>protocol/startscriptprotocoloutgoingcommand.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
       </logicalFolder>
@@ -68,6 +80,7 @@
       <itemPath>main.cpp</itemPath>
       <itemPath>mainhandler.cpp</itemPath>
       <itemPath>networkaudio/networkaudioifhappenshandler.cpp</itemPath>
+      <itemPath>protocol/outgoingmessageprotocolcommand.cpp</itemPath>
       <itemPath>uuid.cpp</itemPath>
       <itemPath>uuid.h</itemPath>
     </logicalFolder>
@@ -79,8 +92,12 @@
         <itemPath>auth/iauthmanager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
+        <itemPath>hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.h</itemPath>
         <itemPath>hardwarestatuses/hardwarestatusesmanager.h</itemPath>
+        <itemPath>hardwarestatuses/hardwarestatusestolualmediator.h</itemPath>
+        <itemPath>hardwarestatuses/hardwarestatusestoprotocolmediator.h</itemPath>
         <itemPath>ihardwarestatusesevents.h</itemPath>
+        <itemPath>networkaudio/notifystatuschangedprotocoloutgoingcommand.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="ioc" projectFiles="true">
         <itemPath>ioc/resolver.h</itemPath>
@@ -92,9 +109,11 @@
         <itemPath>lua/logmessageluaevent.h</itemPath>
         <itemPath>lua/luascript.h</itemPath>
         <itemPath>lua/luascriptmanager.h</itemPath>
+        <itemPath>lua/outgoingmessageluaevent.h</itemPath>
         <itemPath>lua/playlocalfilerequestluaevent.h</itemPath>
         <itemPath>lua/playnetworkaudiorequestluaevent.h</itemPath>
         <itemPath>lua/scriptfinishedluaevent.h</itemPath>
+        <itemPath>lua/scriptstartedluaevent.h</itemPath>
         <itemPath>lua/stoplocalaudiorequestluaevent.h</itemPath>
         <itemPath>lua/stopnetworkaudiorequestluaevent.h</itemPath>
       </logicalFolder>
@@ -112,7 +131,6 @@
         <itemPath>soundmanager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="protocol" projectFiles="true">
-        <itemPath>protocol/authprotocoloutgoingcommand.cpp</itemPath>
         <itemPath>protocol/authprotocoloutgoingcommand.h</itemPath>
         <itemPath>protocol/command.h</itemPath>
         <itemPath>protocol/hardwareprotocol.h</itemPath>
@@ -122,8 +140,10 @@
         <itemPath>protocol/iprotocolincommingcommand.h</itemPath>
         <itemPath>protocol/iprotocoloutgoingcommand.h</itemPath>
         <itemPath>protocol/pingincommingcommandhandler.h</itemPath>
+        <itemPath>protocol/pingprotocoloutgoingcommand.h</itemPath>
         <itemPath>protocol/startnotifyincommingcommandhandler.h</itemPath>
         <itemPath>protocol/startnotifyinfo.h</itemPath>
+        <itemPath>protocol/startscriptprotocoloutgoingcommand.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="thread" projectFiles="true">
         <itemPath>thread/threadregister.h</itemPath>
@@ -134,6 +154,7 @@
       </logicalFolder>
       <itemPath>cancelnotifyincommingcommandhandler.h</itemPath>
       <itemPath>endian.hpp</itemPath>
+      <itemPath>enumclasshash.h</itemPath>
       <itemPath>filedownloader.h</itemPath>
       <itemPath>fortest.h</itemPath>
       <itemPath>isettings.h</itemPath>
@@ -145,6 +166,8 @@
       <itemPath>luatoprotocolmediator.h</itemPath>
       <itemPath>mainhandler.h</itemPath>
       <itemPath>networkaudio/networkaudioifhappenshandler.h</itemPath>
+      <itemPath>protocol/outgoingmessageprotocolcommand.h</itemPath>
+      <itemPath>hardwarestatuses/requesthardwarestatusesincommingcommandhandler.h</itemPath>
       <itemPath>safe_list.h</itemPath>
       <itemPath>lua/sethardwarestatusesluaevent.h</itemPath>
       <itemPath>soundmanagerifhappenshandler.h</itemPath>
@@ -230,6 +253,8 @@
       </item>
       <item path="endian.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="enumclasshash.h" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="TestFiles">
         <linkerTool>
           <linkerLibItems>
@@ -260,12 +285,52 @@
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="hardwarestatuses/hardwarestatusesmanager.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="hardwarestatuses/hardwarestatusesmanager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestolualmediator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestolualmediator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestoprotocolmediator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestoprotocolmediator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/requesthardwarestatusesincommingcommandhandler.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -309,6 +374,10 @@
       </item>
       <item path="lua/luascriptmanager.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lua/outgoingmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/outgoingmessageluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/playlocalfilerequestluaevent.cpp"
             ex="false"
             tool="1"
@@ -329,6 +398,10 @@
       <item path="lua/scriptfinishedluaevent.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="lua/scriptfinishedluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/scriptstartedluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/scriptstartedluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/sethardwarestatusesluaevent.cpp"
             ex="false"
@@ -416,6 +489,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/notifystatuschangedprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="protocol/authprotocoloutgoingcommand.cpp"
             ex="false"
             tool="1"
@@ -429,6 +512,16 @@
       <item path="protocol/command.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="protocol/command.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="protocol/finishscriptprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/finishscriptprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="protocol/hardwareprotocol.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -466,12 +559,32 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="protocol/outgoingmessageprotocolcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/outgoingmessageprotocolcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="protocol/pingincommingcommandhandler.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="protocol/pingincommingcommandhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingprotocoloutgoingcommand.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -487,6 +600,16 @@
             flavor2="0">
       </item>
       <item path="protocol/startnotifyinfo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="protocol/startscriptprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/startscriptprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -573,6 +696,8 @@
       </item>
       <item path="endian.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="enumclasshash.h" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="TestFiles">
         <linkerTool>
           <linkerLibItems>
@@ -603,12 +728,52 @@
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="hardwarestatuses/hardwarestatusesmanager.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="hardwarestatuses/hardwarestatusesmanager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestolualmediator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestolualmediator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestoprotocolmediator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/hardwarestatusestoprotocolmediator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="hardwarestatuses/requesthardwarestatusesincommingcommandhandler.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -652,6 +817,10 @@
       </item>
       <item path="lua/luascriptmanager.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lua/outgoingmessageluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/outgoingmessageluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lua/playlocalfilerequestluaevent.cpp"
             ex="false"
             tool="1"
@@ -672,6 +841,10 @@
       <item path="lua/scriptfinishedluaevent.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="lua/scriptfinishedluaevent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/scriptstartedluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/scriptstartedluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/sethardwarestatusesluaevent.cpp"
             ex="false"
@@ -759,6 +932,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="networkaudio/notifystatuschangedprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="protocol/authprotocoloutgoingcommand.cpp"
             ex="false"
             tool="1"
@@ -772,6 +955,16 @@
       <item path="protocol/command.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="protocol/command.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="protocol/finishscriptprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/finishscriptprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="protocol/hardwareprotocol.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -809,12 +1002,32 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="protocol/outgoingmessageprotocolcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/outgoingmessageprotocolcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="protocol/pingincommingcommandhandler.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="protocol/pingincommingcommandhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/pingprotocoloutgoingcommand.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -830,6 +1043,16 @@
             flavor2="0">
       </item>
       <item path="protocol/startnotifyinfo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="protocol/startscriptprotocoloutgoingcommand.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="protocol/startscriptprotocoloutgoingcommand.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="safe_list.h" ex="false" tool="3" flavor2="0">
       </item>

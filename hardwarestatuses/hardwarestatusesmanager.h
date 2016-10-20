@@ -15,6 +15,7 @@
 #define HARDWARESTATUSESMANAGER_H
 
 #include "ihardwarestatusesevents.h"
+#include "enumclasshash.h"
 
 #include "ev++.h"
 
@@ -26,9 +27,6 @@
 
 using namespace std;
 
-
-
-
 class HardwareStatusesManager 
 {
 public:
@@ -39,7 +37,7 @@ public:
     void removeEventsListener(IHardwareStatusesEvents *listener);
     
     IHardwareStatusesEvents::HardwareStatus hardwareStatus(const string &hardwareId);
-    IHardwareStatusesEvents::NotifyStatus NotifyStatus(const string &hardwareId);
+    IHardwareStatusesEvents::NotifyStatus notifyStatus(const string &hardwareId);
     
     void setHardwareStatus(const string &hardwareId, const IHardwareStatusesEvents::HardwareStatus &hardwareStatus);
     void setNotifyStatus(const string &hardwareId, const IHardwareStatusesEvents::NotifyStatus &notifyStatus);
@@ -56,6 +54,10 @@ private:
     mutex mMutex;
     unordered_map<string, IHardwareStatusesEvents::HardwareStatus> mHardwareStatuses;
     unordered_map<string, IHardwareStatusesEvents::NotifyStatus> mNotifyStatuses;
+    unordered_map<IHardwareStatusesEvents::HardwareStatus, string, EnumClassHash> mHardwareStatusToString;
+    unordered_map<IHardwareStatusesEvents::NotifyStatus, string, EnumClassHash> mNotifyStatusToString;
+    
+    
     
 };
 

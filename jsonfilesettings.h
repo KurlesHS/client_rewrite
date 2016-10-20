@@ -30,6 +30,8 @@ public:
     uint16_t port() override;
     string scriptNameByNotifyCode(const string& notifyCode) override;
     string fileServerUrl() override;
+    string autostartScript() override;
+
     
 private:
     void readSettings(const string &filePath);
@@ -37,6 +39,8 @@ private:
 private:
     uint16_t mPort;
     string mFileServerUrl;
+    string mAutostartScript;
+    
     unordered_map<string, string> mCodeToScriptBinding;
 };
 

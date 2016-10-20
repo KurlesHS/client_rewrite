@@ -18,6 +18,13 @@
 
 #include "logger.h"
 #include "ioc/resolver.h"
+#include "lua/scriptfinishedluaevent.h"
+#include "lua/scriptstartedluaevent.h"
+#include "protocol/startscriptprotocoloutgoingcommand.h"
+#include "protocol/finishscriptprotocoloutgoingcommand.h"
+#include "lua/logmessageluaevent.h"
+#include "lua/outgoingmessageluaevent.h"
+#include "protocol/outgoingmessageprotocolcommand.h"
 
 LuaToProtocolMediator::LuaToProtocolMediator(LuaScriptManager *luaManager, HardwareProtocolFactory *protocolFactory, SoundManager *soundManager) :
     mStartNotifyIncommingCommandHandler(this),
@@ -29,10 +36,66 @@ LuaToProtocolMediator::LuaToProtocolMediator(LuaScriptManager *luaManager, Hardw
 {
     mProtocolFactory->registerIncommingCommandHandler(&mStartNotifyIncommingCommandHandler);
     mProtocolFactory->registerIncommingCommandHandler(&mCancelNotifyIncommingCommandHandler);
+    mLuaManager->addLuaScriptEventListener(this);
 }
 
 LuaToProtocolMediator::~LuaToProtocolMediator()
 {
+
+}
+
+void LuaToProtocolMediator::handleFinishScriptLuaEvent(ILuaEventSharedPtr event)
+{
+    auto evt = static_cast<ScriptFinishedLuaEvent*> (event.get());
+
+    FinishScriptProtocolOutgoingCommand::FinishReason reason = FinishScriptProtocolOutgoingCommand::FinishReason::Normal;
+    string strReason("normal");
+
+    if (evt->isCanceled()) {
+        reason = FinishScriptProtocolOutgoingCommand::FinishReason::Canceled;
+        strReason = "cancel";
+    } else if (evt->hasError()) {
+        reason = FinishScriptProtocolOutgoingCommand::FinishReason::Error;
+        strReason = "error";
+    }
+    Logger::msg("script (%s) with notify id '%s' is finished with status %s",
+            evt->scriptName().data(), evt->notifyId().data(), strReason.data());
+    mProtocolFactory->sendCommand(
+            make_shared<FinishScriptProtocolOutgoingCommand>(evt->notifyId(), evt->scriptName(), reason));
+}
+
+void LuaToProtocolMediator::handleStartScriptLuaEvent(ILuaEventSharedPtr event)
+{
+    auto evt = static_cast<ScriptStartedLuaEvent*> (event.get());
+    Logger::msg("script (%s) with notify id '%s' and code '%s' is started",
+            evt->scriptName().data(), evt->notifyId().data(), evt->notifyCode().data());
+    mProtocolFactory->sendCommand(
+            make_shared<StartScriptProtocolOutgoingCommand>(evt->notifyId(), evt->notifyCode(), evt->scriptName()));
+}
+
+void LuaToProtocolMediator::handleOutgoingMessageLuaEvent(ILuaEventSharedPtr event)
+{
+    auto evt = static_cast<OutgoingMessageLuaEvent*> (event.get());
+    Logger::msg("message from hardware with id (%s): %s",
+            evt->hardwareId().data(), evt->message().data());
+    mProtocolFactory->sendCommand(
+            make_shared<OutgoingMessageProtocolCommand>(evt->hardwareId(), evt->message()));
+}
+
+void LuaToProtocolMediator::luaEvent(ILuaEventSharedPtr event)
+{
+    switch (event->eventType()) {
+        case ILuaEvent::EventType::FinishScript:
+            handleFinishScriptLuaEvent(event);
+            break;
+        case ILuaEvent::EventType::StartScript:
+            handleStartScriptLuaEvent(event);
+            break;
+        case ILuaEvent::EventType::OutgoingMessage:
+            handleOutgoingMessageLuaEvent(event);
+        default:
+            break;
+    }
 }
 
 void LuaToProtocolMediator::startNotifyRequest(const StartNotifyInfo& startNotifyInfo)
@@ -66,6 +129,8 @@ void LuaToProtocolMediator::startNotifyRequestHelper(const StartNotifyInfo& star
     string scriptName = mSettings->scriptNameByNotifyCode(startNotifyInfo.code);
     if (scriptName.empty()) {
         Logger::msg("binding notify code '%s' with script name isn't present", startNotifyInfo.code.data());
+        auto event = make_shared<ScriptFinishedLuaEvent>("", startNotifyInfo.id, startNotifyInfo.code, "-", false, true);
+        mLuaManager->luaEvent(event);
     } else {
         mLuaManager->startScript(scriptName, startNotifyInfo);
     }

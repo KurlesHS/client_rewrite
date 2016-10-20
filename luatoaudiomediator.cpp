@@ -72,7 +72,7 @@ void LuaToAudioMediator::handlePlayFileEvent(ILuaEventSharedPtr event)
         case PlayLocalFileRequestLuaEvent::Type::ByPath:
             mSoundManager->playbackByFilePath(playEvent->value(), playEvent->id());
             break;
-    } 
+    }
 }
 
 void LuaToAudioMediator::handleStopLocalAudioEvent(ILuaEventSharedPtr event)

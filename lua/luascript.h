@@ -49,6 +49,7 @@ public:
     virtual ~LuaScript();
     
     void setNotifyInfo(const StartNotifyInfo &info);
+    const StartNotifyInfo &notifyInfo() const;
 
     bool run();
     void cancel();
@@ -69,6 +70,7 @@ public:
     std::string lastError() const;
 
     int priority() const;
+    void setPriority(const int priority);
     std::string group() const;
 
     void addLuaScriptEventListener(ILuaScriptEventsListener *listener);

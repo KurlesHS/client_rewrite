@@ -20,18 +20,33 @@
 
 using namespace std;
 
-class ScriptFinishedLuaEvent : public ILuaEvent{
+class ScriptFinishedLuaEvent : public ILuaEvent {
 public:
-    ScriptFinishedLuaEvent(const string &scriptId);
+    ScriptFinishedLuaEvent(            
+            const string &scriptId,
+            const string &notifyId,
+            const string &notifyCode,
+            const string &scriptName,
+            const bool isCanceled,
+            const bool hasError);
 
     virtual ~ScriptFinishedLuaEvent();
-    
+
     ILuaEvent::EventType eventType() const override;
-    
+    string notifyId() const;
     string scriptId() const;
+    string notifyCode() const;
+    string scriptName() const;
+    bool isCanceled() const;
+    bool hasError() const;
 
 private:
-    string mScriptId;
+    const string mScriptId;
+    const string mNotifyId;
+    const string mNotifyCode;
+    const string mScriptName;
+    const bool mIsCanceled;
+    const bool mHasError;
 
 };
 

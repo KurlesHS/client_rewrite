@@ -24,6 +24,8 @@
 #include "iincommingcommandhandler.h"
 
 #include <unordered_map>
+#include "timer/itimer.h"
+
 class HardwareProtocol;
 class IAuthManager;
 class ITimerFactory;
@@ -52,6 +54,8 @@ public:
     void registerIncommingCommandHandler(IIncommingCommandHandler *handler);
     
     Error error() const;
+    
+    void disconnectFromClient();
 
 private:
     void doWorkWithIncommingData();
@@ -62,6 +66,8 @@ private:
     void processIncompleteCommand();
     
     void sendCommand(Command *cmd);
+    
+    void onPingCmdTimeout();
 
 private:
     ITransportSharedPrt mTransport;
@@ -69,6 +75,7 @@ private:
     HardwareProtocolPacketParser mHardwareProtocolParser;
     IIncommingCommandHandler *mPingCommandHandler;
     ITimerFactory *mTimerFactory;
+    ITimerSharedPtr mTimerForPingCommand; 
     Error mError;
     
     unordered_map<uint64_t, IProtocolOutgoingCommandSharedPtr> mOutgoingCommands;

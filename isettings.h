@@ -26,6 +26,8 @@ public:
     
     virtual string scriptNameByNotifyCode(const string &notifyCode) = 0;
     virtual string fileServerUrl() = 0;
+    virtual string autostartScript() = 0;
+    
 
 };
 

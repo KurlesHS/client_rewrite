@@ -143,7 +143,7 @@ TEST_F(TestLuaScript, testIfHappensAndRelayChangedEvent)
         {
             if (event->eventType() == ILuaEvent::EventType::FinishScript) {
                 auto ev = static_cast<ScriptFinishedLuaEvent*>(event.get());
-                onSctiptFinished(ev->scriptId());
+                onSctiptFinished(ev->notifyId());
             }
         }
 

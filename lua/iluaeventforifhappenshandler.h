@@ -51,7 +51,6 @@ protected:
 
 private:
     list<LuaScript*> mLuaScripts;
-
 };
 
 #endif /* ILUAEVENTFORIFHAPPENSHANDLER_H */

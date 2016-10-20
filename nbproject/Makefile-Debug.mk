@@ -39,16 +39,22 @@ OBJECTFILES= \
 	${OBJECTDIR}/cancelnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/filedownloader.o \
 	${OBJECTDIR}/fortest.o \
+	${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o \
+	${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o \
+	${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator.o \
+	${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o \
 	${OBJECTDIR}/jsonfilesettings.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/lua/iluaeventforifhappenshandler.o \
 	${OBJECTDIR}/lua/logmessageluaevent.o \
 	${OBJECTDIR}/lua/luascript.o \
 	${OBJECTDIR}/lua/luascriptmanager.o \
+	${OBJECTDIR}/lua/outgoingmessageluaevent.o \
 	${OBJECTDIR}/lua/playlocalfilerequestluaevent.o \
 	${OBJECTDIR}/lua/playnetworkaudiorequestluaevent.o \
 	${OBJECTDIR}/lua/scriptfinishedluaevent.o \
+	${OBJECTDIR}/lua/scriptstartedluaevent.o \
 	${OBJECTDIR}/lua/sethardwarestatusesluaevent.o \
 	${OBJECTDIR}/lua/stoplocalaudiorequestluaevent.o \
 	${OBJECTDIR}/lua/stopnetworkaudiorequestluaevent.o \
@@ -63,13 +69,18 @@ OBJECTFILES= \
 	${OBJECTDIR}/networkaudio/networkaudioifhappenshandler.o \
 	${OBJECTDIR}/networkaudio/networkaudiomanager.o \
 	${OBJECTDIR}/networkaudio/networkaudothreadworker.o \
+	${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand.o \
 	${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o \
 	${OBJECTDIR}/protocol/command.o \
+	${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand.o \
 	${OBJECTDIR}/protocol/hardwareprotocol.o \
 	${OBJECTDIR}/protocol/hardwareprotocolfactory.o \
 	${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o \
+	${OBJECTDIR}/protocol/outgoingmessageprotocolcommand.o \
 	${OBJECTDIR}/protocol/pingincommingcommandhandler.o \
+	${OBJECTDIR}/protocol/pingprotocoloutgoingcommand.o \
 	${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o \
+	${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand.o \
 	${OBJECTDIR}/soundmanager.o \
 	${OBJECTDIR}/soundmanagerifhappenshandler.o \
 	${OBJECTDIR}/timer/itimer.o \
@@ -105,11 +116,11 @@ LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto -lportaudio
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/auth
@@ -131,10 +142,30 @@ ${OBJECTDIR}/fortest.o: fortest.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/fortest.o fortest.cpp
 
+${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o: hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp
+
 ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o: hardwarestatuses/hardwarestatusesmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o hardwarestatuses/hardwarestatusesmanager.cpp
+
+${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o: hardwarestatuses/hardwarestatusestolualmediator.cpp
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o hardwarestatuses/hardwarestatusestolualmediator.cpp
+
+${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator.o: hardwarestatuses/hardwarestatusestoprotocolmediator.cpp
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator.o hardwarestatuses/hardwarestatusestoprotocolmediator.cpp
+
+${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o: hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp
 
 ${OBJECTDIR}/jsonfilesettings.o: jsonfilesettings.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -166,6 +197,11 @@ ${OBJECTDIR}/lua/luascriptmanager.o: lua/luascriptmanager.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/luascriptmanager.o lua/luascriptmanager.cpp
 
+${OBJECTDIR}/lua/outgoingmessageluaevent.o: lua/outgoingmessageluaevent.cpp
+	${MKDIR} -p ${OBJECTDIR}/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/outgoingmessageluaevent.o lua/outgoingmessageluaevent.cpp
+
 ${OBJECTDIR}/lua/playlocalfilerequestluaevent.o: lua/playlocalfilerequestluaevent.cpp
 	${MKDIR} -p ${OBJECTDIR}/lua
 	${RM} "$@.d"
@@ -180,6 +216,11 @@ ${OBJECTDIR}/lua/scriptfinishedluaevent.o: lua/scriptfinishedluaevent.cpp
 	${MKDIR} -p ${OBJECTDIR}/lua
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/scriptfinishedluaevent.o lua/scriptfinishedluaevent.cpp
+
+${OBJECTDIR}/lua/scriptstartedluaevent.o: lua/scriptstartedluaevent.cpp
+	${MKDIR} -p ${OBJECTDIR}/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/scriptstartedluaevent.o lua/scriptstartedluaevent.cpp
 
 ${OBJECTDIR}/lua/sethardwarestatusesluaevent.o: lua/sethardwarestatusesluaevent.cpp
 	${MKDIR} -p ${OBJECTDIR}/lua
@@ -251,6 +292,11 @@ ${OBJECTDIR}/networkaudio/networkaudothreadworker.o: networkaudio/networkaudothr
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/networkaudothreadworker.o networkaudio/networkaudothreadworker.cpp
 
+${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand.o: networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/networkaudio
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand.o networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp
+
 ${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o: protocol/authprotocoloutgoingcommand.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
@@ -260,6 +306,11 @@ ${OBJECTDIR}/protocol/command.o: protocol/command.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/command.o protocol/command.cpp
+
+${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand.o: protocol/finishscriptprotocoloutgoingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand.o protocol/finishscriptprotocoloutgoingcommand.cpp
 
 ${OBJECTDIR}/protocol/hardwareprotocol.o: protocol/hardwareprotocol.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
@@ -276,15 +327,30 @@ ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o: protocol/hardwareprotocolp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o protocol/hardwareprotocolpacketparser.cpp
 
+${OBJECTDIR}/protocol/outgoingmessageprotocolcommand.o: protocol/outgoingmessageprotocolcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/outgoingmessageprotocolcommand.o protocol/outgoingmessageprotocolcommand.cpp
+
 ${OBJECTDIR}/protocol/pingincommingcommandhandler.o: protocol/pingincommingcommandhandler.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/pingincommingcommandhandler.o protocol/pingincommingcommandhandler.cpp
 
+${OBJECTDIR}/protocol/pingprotocoloutgoingcommand.o: protocol/pingprotocoloutgoingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/pingprotocoloutgoingcommand.o protocol/pingprotocoloutgoingcommand.cpp
+
 ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o: protocol/startnotifyincommingcommandhandler.cpp
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o protocol/startnotifyincommingcommandhandler.cpp
+
+${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand.o: protocol/startscriptprotocoloutgoingcommand.cpp
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand.o protocol/startscriptprotocoloutgoingcommand.cpp
 
 ${OBJECTDIR}/soundmanager.o: soundmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -381,6 +447,19 @@ ${OBJECTDIR}/fortest_nomain.o: ${OBJECTDIR}/fortest.o fortest.cpp
 	    ${CP} ${OBJECTDIR}/fortest.o ${OBJECTDIR}/fortest_nomain.o;\
 	fi
 
+${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp 
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand_nomain.o hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand_nomain.o;\
+	fi
+
 ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager_nomain.o: ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o hardwarestatuses/hardwarestatusesmanager.cpp 
 	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o`; \
@@ -392,6 +471,45 @@ ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager_nomain.o: ${OBJECTDIR}/har
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager_nomain.o hardwarestatuses/hardwarestatusesmanager.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o ${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager_nomain.o;\
+	fi
+
+${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator_nomain.o: ${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o hardwarestatuses/hardwarestatusestolualmediator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator_nomain.o hardwarestatuses/hardwarestatusestolualmediator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o ${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator_nomain.o;\
+	fi
+
+${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator_nomain.o: ${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator.o hardwarestatuses/hardwarestatusestoprotocolmediator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator_nomain.o hardwarestatuses/hardwarestatusestoprotocolmediator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator.o ${OBJECTDIR}/hardwarestatuses/hardwarestatusestoprotocolmediator_nomain.o;\
+	fi
+
+${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler_nomain.o: ${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler_nomain.o hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o ${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler_nomain.o;\
 	fi
 
 ${OBJECTDIR}/jsonfilesettings_nomain.o: ${OBJECTDIR}/jsonfilesettings.o jsonfilesettings.cpp 
@@ -472,6 +590,19 @@ ${OBJECTDIR}/lua/luascriptmanager_nomain.o: ${OBJECTDIR}/lua/luascriptmanager.o 
 	    ${CP} ${OBJECTDIR}/lua/luascriptmanager.o ${OBJECTDIR}/lua/luascriptmanager_nomain.o;\
 	fi
 
+${OBJECTDIR}/lua/outgoingmessageluaevent_nomain.o: ${OBJECTDIR}/lua/outgoingmessageluaevent.o lua/outgoingmessageluaevent.cpp 
+	${MKDIR} -p ${OBJECTDIR}/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/outgoingmessageluaevent.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/outgoingmessageluaevent_nomain.o lua/outgoingmessageluaevent.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/lua/outgoingmessageluaevent.o ${OBJECTDIR}/lua/outgoingmessageluaevent_nomain.o;\
+	fi
+
 ${OBJECTDIR}/lua/playlocalfilerequestluaevent_nomain.o: ${OBJECTDIR}/lua/playlocalfilerequestluaevent.o lua/playlocalfilerequestluaevent.cpp 
 	${MKDIR} -p ${OBJECTDIR}/lua
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/playlocalfilerequestluaevent.o`; \
@@ -509,6 +640,19 @@ ${OBJECTDIR}/lua/scriptfinishedluaevent_nomain.o: ${OBJECTDIR}/lua/scriptfinishe
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/scriptfinishedluaevent_nomain.o lua/scriptfinishedluaevent.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/lua/scriptfinishedluaevent.o ${OBJECTDIR}/lua/scriptfinishedluaevent_nomain.o;\
+	fi
+
+${OBJECTDIR}/lua/scriptstartedluaevent_nomain.o: ${OBJECTDIR}/lua/scriptstartedluaevent.o lua/scriptstartedluaevent.cpp 
+	${MKDIR} -p ${OBJECTDIR}/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/scriptstartedluaevent.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/scriptstartedluaevent_nomain.o lua/scriptstartedluaevent.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/lua/scriptstartedluaevent.o ${OBJECTDIR}/lua/scriptstartedluaevent_nomain.o;\
 	fi
 
 ${OBJECTDIR}/lua/sethardwarestatusesluaevent_nomain.o: ${OBJECTDIR}/lua/sethardwarestatusesluaevent.o lua/sethardwarestatusesluaevent.cpp 
@@ -693,6 +837,19 @@ ${OBJECTDIR}/networkaudio/networkaudothreadworker_nomain.o: ${OBJECTDIR}/network
 	    ${CP} ${OBJECTDIR}/networkaudio/networkaudothreadworker.o ${OBJECTDIR}/networkaudio/networkaudothreadworker_nomain.o;\
 	fi
 
+${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand.o networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp 
+	${MKDIR} -p ${OBJECTDIR}/networkaudio
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand_nomain.o networkaudio/notifystatuschangedprotocoloutgoingcommand.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand.o ${OBJECTDIR}/networkaudio/notifystatuschangedprotocoloutgoingcommand_nomain.o;\
+	fi
+
 ${OBJECTDIR}/protocol/authprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o protocol/authprotocoloutgoingcommand.cpp 
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/authprotocoloutgoingcommand.o`; \
@@ -717,6 +874,19 @@ ${OBJECTDIR}/protocol/command_nomain.o: ${OBJECTDIR}/protocol/command.o protocol
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/command_nomain.o protocol/command.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/protocol/command.o ${OBJECTDIR}/protocol/command_nomain.o;\
+	fi
+
+${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand.o protocol/finishscriptprotocoloutgoingcommand.cpp 
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand_nomain.o protocol/finishscriptprotocoloutgoingcommand.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand.o ${OBJECTDIR}/protocol/finishscriptprotocoloutgoingcommand_nomain.o;\
 	fi
 
 ${OBJECTDIR}/protocol/hardwareprotocol_nomain.o: ${OBJECTDIR}/protocol/hardwareprotocol.o protocol/hardwareprotocol.cpp 
@@ -758,6 +928,19 @@ ${OBJECTDIR}/protocol/hardwareprotocolpacketparser_nomain.o: ${OBJECTDIR}/protoc
 	    ${CP} ${OBJECTDIR}/protocol/hardwareprotocolpacketparser.o ${OBJECTDIR}/protocol/hardwareprotocolpacketparser_nomain.o;\
 	fi
 
+${OBJECTDIR}/protocol/outgoingmessageprotocolcommand_nomain.o: ${OBJECTDIR}/protocol/outgoingmessageprotocolcommand.o protocol/outgoingmessageprotocolcommand.cpp 
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/outgoingmessageprotocolcommand.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/outgoingmessageprotocolcommand_nomain.o protocol/outgoingmessageprotocolcommand.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/protocol/outgoingmessageprotocolcommand.o ${OBJECTDIR}/protocol/outgoingmessageprotocolcommand_nomain.o;\
+	fi
+
 ${OBJECTDIR}/protocol/pingincommingcommandhandler_nomain.o: ${OBJECTDIR}/protocol/pingincommingcommandhandler.o protocol/pingincommingcommandhandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/pingincommingcommandhandler.o`; \
@@ -771,6 +954,19 @@ ${OBJECTDIR}/protocol/pingincommingcommandhandler_nomain.o: ${OBJECTDIR}/protoco
 	    ${CP} ${OBJECTDIR}/protocol/pingincommingcommandhandler.o ${OBJECTDIR}/protocol/pingincommingcommandhandler_nomain.o;\
 	fi
 
+${OBJECTDIR}/protocol/pingprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/protocol/pingprotocoloutgoingcommand.o protocol/pingprotocoloutgoingcommand.cpp 
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/pingprotocoloutgoingcommand.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/pingprotocoloutgoingcommand_nomain.o protocol/pingprotocoloutgoingcommand.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/protocol/pingprotocoloutgoingcommand.o ${OBJECTDIR}/protocol/pingprotocoloutgoingcommand_nomain.o;\
+	fi
+
 ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler_nomain.o: ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o protocol/startnotifyincommingcommandhandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}/protocol
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o`; \
@@ -782,6 +978,19 @@ ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler_nomain.o: ${OBJECTDIR}/
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler_nomain.o protocol/startnotifyincommingcommandhandler.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler.o ${OBJECTDIR}/protocol/startnotifyincommingcommandhandler_nomain.o;\
+	fi
+
+${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand.o protocol/startscriptprotocoloutgoingcommand.cpp 
+	${MKDIR} -p ${OBJECTDIR}/protocol
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand_nomain.o protocol/startscriptprotocoloutgoingcommand.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand.o ${OBJECTDIR}/protocol/startscriptprotocoloutgoingcommand_nomain.o;\
 	fi
 
 ${OBJECTDIR}/soundmanager_nomain.o: ${OBJECTDIR}/soundmanager.o soundmanager.cpp 
