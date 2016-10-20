@@ -42,7 +42,7 @@ static pid_t start_avplay(const char *filepath, int &stdOutFd, int &stdErrFd)
         // ffmpeg -i rtsp://192.168.56.1:9002/test.sdp -f s16le -acodec pcm_s16le pipe:1
         //-af aresample=resampler=soxr -ar 44100
         //execl("/usr/bin/ffmpeg", "/usr/bin/ffmpeg", "-i", filepath, "-f", "s16le", "-acodec", "pcm_s16le", "pipe:1", (char*) NULL);
-        execl("/usr/bin/ffmpeg", "/usr/bin/ffmpeg", "-i", filepath, "-af", "aresample=resampler=soxr", "-ar", "48000", "-f", "s16le", "-acodec", "pcm_s16le", "-ac", "1", "pipe:1", (char*) NULL);
+        execl("/usr/bin/ffmpeg", "/usr/bin/ffmpeg", "-re", "-i", filepath, "-af", "aresample=resampler=soxr", "-ar", "48000", "-f", "s16le", "-acodec", "pcm_s16le", "-ac", "1", "pipe:1", (char*) NULL);
     }
 
     // Родительский процесс
