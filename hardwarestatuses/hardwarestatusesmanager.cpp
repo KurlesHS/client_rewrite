@@ -82,7 +82,7 @@ void HardwareStatusesManager::setNotifyStatus(const string& hardwareId, const IH
 }
 
 set<string> HardwareStatusesManager::hardwares() const
-{gcd
+{
     set<string> result;
     
     for (auto it = mHardwareStatuses.begin(); it != mHardwareStatuses.end(); ++it) {
