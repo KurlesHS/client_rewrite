@@ -31,6 +31,7 @@ public:
     string scriptNameByNotifyCode(const string& notifyCode) override;
     string fileServerUrl() override;
     string autostartScript() override;
+    list<GpioSettings> gpioSettings() override;
 
     
 private:
@@ -39,9 +40,9 @@ private:
 private:
     uint16_t mPort;
     string mFileServerUrl;
-    string mAutostartScript;
-    
+    string mAutostartScript;    
     unordered_map<string, string> mCodeToScriptBinding;
+    list<GpioSettings> mGpioSettings;
 };
 
 #endif /* JSONFILESETTINGS_H */

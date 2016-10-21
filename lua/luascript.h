@@ -48,6 +48,8 @@ public:
     LuaScript(const std::string &scriptPath);
     virtual ~LuaScript();
     
+    void init();
+    
     void setNotifyInfo(const StartNotifyInfo &info);
     const StartNotifyInfo &notifyInfo() const;
 

@@ -15,6 +15,10 @@
       <logicalFolder name="auth" displayName="auth" projectFiles="true">
         <itemPath>auth/authmanager.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f9" displayName="gpio" projectFiles="true">
+        <itemPath>gpio/gpiomanager.cpp</itemPath>
+        <itemPath>gpio/gpiothread.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
         <itemPath>hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp</itemPath>
         <itemPath>hardwarestatuses/hardwarestatusesmanager.cpp</itemPath>
@@ -91,6 +95,8 @@
         <itemPath>auth/authmanager.h</itemPath>
         <itemPath>auth/iauthmanager.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f9" displayName="gpio" projectFiles="true">
+      </logicalFolder>
       <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
         <itemPath>hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.h</itemPath>
         <itemPath>hardwarestatuses/hardwarestatusesmanager.h</itemPath>
@@ -157,6 +163,8 @@
       <itemPath>enumclasshash.h</itemPath>
       <itemPath>filedownloader.h</itemPath>
       <itemPath>fortest.h</itemPath>
+      <itemPath>gpio/gpiomanager.h</itemPath>
+      <itemPath>gpio/gpiothread.h</itemPath>
       <itemPath>isettings.h</itemPath>
       <itemPath>isoundmanagereventslistener.h</itemPath>
       <itemPath>jsonfilesettings.h</itemPath>
@@ -209,7 +217,7 @@
   <confs>
     <conf name="Debug" type="1">
       <toolsSet>
-        <compilerSet>default</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
@@ -227,7 +235,7 @@
         </ccTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
+            <linkerOptionItem>-pthread -llua5.3-c++ -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -284,6 +292,14 @@
       <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio/gpiomanager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="gpio/gpiomanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio/gpiothread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="gpio/gpiothread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp"
             ex="false"
@@ -642,7 +658,7 @@
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
-        <compilerSet>default</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
@@ -670,7 +686,7 @@
         </asmTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>-pthread -llua5.3 -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
+            <linkerOptionItem>-pthread -llua5.3-c++ -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -727,6 +743,14 @@
       <item path="fortest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fortest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio/gpiomanager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="gpio/gpiomanager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio/gpiothread.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="gpio/gpiothread.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp"
             ex="false"

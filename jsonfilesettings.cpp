@@ -62,10 +62,37 @@ void JsonFileSettings::readSettings(const string& filePath)
                             mCodeToScriptBinding[it.key()] = it.value();
                         }
                     }
+                } else if (element.key() == "gpio" && element.value().is_object()) {
+                    json obj = element.value();
+                    for (json::iterator it = obj.begin(); it != obj.end(); ++it) {
+                        if (it.value().is_array()) {
+                            json array = it.value();                            
+                            if (array.size() > 1) {
+                                if (array[0].is_string() && array[1].is_string()) { 
+                                    string gpioId = it.key(); 
+                                    string gpioName = array[0]; 
+                                    string gpioDirection = array[1];  
+                                    GpioSettings gs;
+                                    gs.id = gpioId;
+                                    gs.name = gpioName;
+                                    if (gpioDirection == "in") {
+                                        gs.direction = GpioSettings::Direction::In;
+                                    } else if (gpioDirection == "out") {
+                                        gs.direction = GpioSettings::Direction::Out;
+                                    } else {
+                                        continue;
+                                    }
+                                    mGpioSettings.emplace_back(gs);
+                                }
+                            }
+                            
+                        }
+                    }
                 }
             }
         }
     } catch (exception &) {
+        
     }    
 }
 
@@ -86,4 +113,9 @@ string JsonFileSettings::fileServerUrl()
 string JsonFileSettings::autostartScript()
 {
     return mAutostartScript;
+}
+
+list<GpioSettings> JsonFileSettings::gpioSettings()
+{
+    return mGpioSettings;
 }

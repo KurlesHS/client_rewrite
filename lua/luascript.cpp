@@ -85,7 +85,8 @@ class IfHappensPendingFunc;
 
 typedef std::shared_ptr<IfHappensPendingFunc> IfHappensPendingFuncSharedPtr;
 
-class IfHappensPendingFunc {
+class IfHappensPendingFunc
+{
 public:
     using onExecuteFunc = std::function<void(const std::string &)>;
 
@@ -170,12 +171,14 @@ private:
     onExecuteFunc mOnTimeoutFunc;
 };
 
-struct OnRelayChangedParams {
+struct OnRelayChangedParams
+{
     sol::object relayNum;
     sol::object relayState;
 };
 
-class LuaScriptPrivate {
+class LuaScriptPrivate
+{
     friend class LuaScript;
     LuaScript *q;
     std::string scriptName;
@@ -284,38 +287,50 @@ class LuaScriptPrivate {
         checkIfFinished();
     }
 
-    void setHardwareStatusWorkFuncImpl(const string &hardwareId) {
+    void setHardwareStatusWorkFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
                 ILuaEvent::EventType::SetHardwareStatusWork, hardwareId));
     }
-    void setHardwareStatusFailFuncImpl(const string &hardwareId) {
+
+    void setHardwareStatusFailFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
                 ILuaEvent::EventType::SetHardwareStatusFail, hardwareId));
     }
-        
-    void setHardwareStatusUnknownFuncImpl(const string &hardwareId) {
+
+    void setHardwareStatusUnknownFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
                 ILuaEvent::EventType::SetHardwareStatusUnknown, hardwareId));
     }
 
-    void setNotifyStatusProcessFuncImpl(const string &hardwareId) {
+    void setNotifyStatusProcessFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
                 ILuaEvent::EventType::SetNotifyStatusProcess, hardwareId));
     }
-    void setNotifyStatusWaitFuncImpl(const string &hardwareId) {
+
+    void setNotifyStatusWaitFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
                 ILuaEvent::EventType::SetNotifyStatusWait, hardwareId));
     }
-    void setNotifyStatusErrorFuncImpl(const string &hardwareId) {
+
+    void setNotifyStatusErrorFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
                 ILuaEvent::EventType::SetNotifyStatusError, hardwareId));
     }
-    void setNotifyStatusUnknownFuncImpl(const string &hardwareId) {
+
+    void setNotifyStatusUnknownFuncImpl(const string &hardwareId)
+    {
         informAboutLuaEvent(make_shared<SetHardwareStatusesLuaEvent>(
-                ILuaEvent::EventType::SetNotifyStatusUnknown, hardwareId));        
+                ILuaEvent::EventType::SetNotifyStatusUnknown, hardwareId));
     }
-    
-    void outgoingMessageFuncImpl(const string &hardwareId, const string &message) {
+
+    void outgoingMessageFuncImpl(const string &hardwareId, const string &message)
+    {
         informAboutLuaEvent(make_shared<OutgoingMessageLuaEvent>(
                 hardwareId, message));
     }
@@ -326,18 +341,18 @@ class LuaScriptPrivate {
         mRelayChangeParams[id] = {relayNum, newState};
         return id;
     }
- 
+
     void checkIfFinished()
     {
         if (isFinished && !isFinishedEmited) {
-            isFinishedEmited = true;            
+            isFinishedEmited = true;
             informAboutLuaEvent(make_shared<ScriptFinishedLuaEvent>(
                     id,
                     startNotifyInfo.id,
                     startNotifyInfo.code,
                     scriptName,
                     isCanceled,
-                    !lastError.empty())); 
+                    !lastError.empty()));
         }
     }
 
@@ -346,7 +361,7 @@ class LuaScriptPrivate {
         this->lastError = lastError;
         isValid = false;
         isFinished = true;
-        Logger::msg("lua error: %s", lastError.data());        
+        Logger::msg("lua error: %s", lastError.data());
     }
 
     void cancelPendingFuncImpl(const std::string &pendingId)
@@ -510,16 +525,10 @@ ILuaPendingFunc::~ILuaPendingFunc()
 {
 }
 
-LuaScript::LuaScript(const std::string &scriptPath) :
-    d(new LuaScriptPrivate)
+void LuaScript::init()
 {
-    d->timerFactory = Resolver::resolveDi<ITimerFactory>();
-    d->createId();
-    d->q = this;
-    d->scriptPath = scriptPath;
-    d->state.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
-    try {
-        d->state.script_file(scriptPath);
+    try {        
+        d->state.script_file(d->scriptPath);
         sol::function startFunc = d->state[startFuncName];
         // если в скрипте нет функции старт - беда, счиатем что в скрипте 
         // ошибка
@@ -533,7 +542,7 @@ LuaScript::LuaScript(const std::string &scriptPath) :
             // если переменная приоритета присутствует - назначаем
             // указанный приоритет
             d->priority = priorityObject.as<int>();
-        }
+        } 
         // попытка прочитать группу (по умолчанию - 0).
         sol::object groupObject = d->state[groupVarName];
         if (groupObject.is<std::string>()) {
@@ -563,7 +572,7 @@ LuaScript::LuaScript(const std::string &scriptPath) :
                 &LuaScriptPrivate::playNetworkAudioFuncImpl, d);
         d->state.set_function(stopPlayNetworkAudioFuncName,
                 &LuaScriptPrivate::stopPlayNetworkAudioFuncImpl, d);
-        
+
         d->state.set_function(setHardwareStatusFailFuncName,
                 &LuaScriptPrivate::setHardwareStatusFailFuncImpl, d);
         d->state.set_function(setHardwareStatusUnknownFuncName,
@@ -579,17 +588,28 @@ LuaScript::LuaScript(const std::string &scriptPath) :
                 &LuaScriptPrivate::setNotifyStatusUnknownFuncImpl, d);
         d->state.set_function(setNotifyStatusWaitFuncName,
                 &LuaScriptPrivate::setNotifyStatusWaitFuncImpl, d);
-        
+
         d->state.set_function(outgoingMessageFuncName,
                 &LuaScriptPrivate::outgoingMessageFuncImpl, d);
-        
+
         d->state.set_function(onRelayChagedFuncName,
                 &LuaScriptPrivate::onRelayChangedFuncImpl, d);
-        
-        
-    } catch (sol::error error) {
+
+
+    } catch (const sol::error &error) {
         d->setLastError(error.what());
     }
+}
+
+LuaScript::LuaScript(const std::string &scriptPath) :
+    d(new LuaScriptPrivate)
+{
+    d->timerFactory = Resolver::resolveDi<ITimerFactory>();
+    d->createId();
+    d->q = this;
+    d->scriptPath = scriptPath;
+    d->state.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
+    init();
 }
 
 LuaScript::~LuaScript()
@@ -606,7 +626,6 @@ void LuaScript::setPriority(const int priority)
 {
     d->priority = priority;
 }
-
 
 std::string LuaScript::group() const
 {
@@ -744,7 +763,6 @@ const StartNotifyInfo& LuaScript::notifyInfo() const
 {
     return d->startNotifyInfo;
 }
-
 
 void LuaScript::setNotifyInfo(const StartNotifyInfo& info)
 {

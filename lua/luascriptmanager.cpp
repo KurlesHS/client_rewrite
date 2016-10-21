@@ -53,7 +53,7 @@ void LuaScriptManager::startAutostartScript(const string& scriptName)
         return;
     }
     string scriptPath = mLuaScriptPath + "/" + scriptName + ".lua";
-    auto script = make_shared<LuaScript>(scriptPath);
+    auto script = make_shared<LuaScript>(scriptPath);    
     script->setScriptName(scriptName);
     if (script->isValid()) {
         mAutostartScript = script;

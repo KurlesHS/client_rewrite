@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     if (m.run()) {
         mainLoop.run();
         retCode = -1;
-    }  
+    }
            
     di_unregister_type(ITimerFactory);
     di_unregister_type(IAuthManager)  ;  

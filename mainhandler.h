@@ -24,6 +24,7 @@
 #include "hardwarestatuses/hardwarestatusestolualmediator.h"
 #include "hardwarestatuses/hardwarestatusestoprotocolmediator.h"
 #include "hardwarestatuses/hardwarestatusesmanager.h"
+#include "gpio/gpiomanager.h"
 
 class MainHandler {
 public:
@@ -38,6 +39,7 @@ private:
     SoundManager mSoundManager;
     LuaScriptManager mLuaScriptManager;
     HardwareStatusesManager mStatusesManager;
+    GpioManager mGpioManager;
     LuaToProtocolMediator mLuaToProtocolMediator;
     LuaToAudioMediator mLuaToAudioMediator;
     LuaToNetworkStreamMediator mLuaToNetworkStreamMediator;

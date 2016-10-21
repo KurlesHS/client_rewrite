@@ -15,8 +15,19 @@
 #define ISETTINGS_H
 
 #include <string>
+#include <list>
 
 using namespace std;
+
+struct GpioSettings {
+    enum class Direction {
+        In,
+        Out
+    };
+    string id;
+    string name;
+    Direction direction;
+};
 
 class ISettings {
 public:
@@ -27,6 +38,7 @@ public:
     virtual string scriptNameByNotifyCode(const string &notifyCode) = 0;
     virtual string fileServerUrl() = 0;
     virtual string autostartScript() = 0;
+    virtual list<GpioSettings> gpioSettings() = 0;
     
 
 };

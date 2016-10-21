@@ -19,7 +19,6 @@
 
 #include "ioc/resolver.h"
 #include "isettings.h"
-#include "jsonfilesettings.h"
 #include "logger.h"
 #include "thread/threadregister.h"
 
@@ -36,8 +35,10 @@ MainHandler::MainHandler() :
     Logger::setCopyToStdoutEnabled(true);
     Logger::openlog("/var/log/sonet/server/", "server.log");
     Logger::msg("--- Sonet hardware server started ---");
+    mGpioManager.start();
     mNetworkAudioManager.start();
     mLuaScriptManager.startAutostartScript(di_inject(ISettings)->autostartScript());
+    
 #if 0
     mNetworkAudioManager.startStream("rtsp://localhost:9002/test.sdp");
     mSoundManager.downloadFileFromServer("827717d816d95c60f2059c8be841341897216104100d7b495f04c96f", "test.mp4", [](bool result) {

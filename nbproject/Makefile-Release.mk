@@ -39,6 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/cancelnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/filedownloader.o \
 	${OBJECTDIR}/fortest.o \
+	${OBJECTDIR}/gpio/gpiomanager.o \
+	${OBJECTDIR}/gpio/gpiothread.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o \
@@ -112,7 +114,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-pthread -llua5.3 -lev -luuid -lcrypto -lportaudio
+LDLIBSOPTIONS=-pthread -llua5.3-c++ -lev -luuid -lcrypto -lportaudio
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -141,6 +143,16 @@ ${OBJECTDIR}/fortest.o: fortest.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/fortest.o fortest.cpp
+
+${OBJECTDIR}/gpio/gpiomanager.o: gpio/gpiomanager.cpp
+	${MKDIR} -p ${OBJECTDIR}/gpio
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/gpiomanager.o gpio/gpiomanager.cpp
+
+${OBJECTDIR}/gpio/gpiothread.o: gpio/gpiothread.cpp
+	${MKDIR} -p ${OBJECTDIR}/gpio
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/gpiothread.o gpio/gpiothread.cpp
 
 ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o: hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp
 	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
@@ -445,6 +457,32 @@ ${OBJECTDIR}/fortest_nomain.o: ${OBJECTDIR}/fortest.o fortest.cpp
 	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/fortest_nomain.o fortest.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/fortest.o ${OBJECTDIR}/fortest_nomain.o;\
+	fi
+
+${OBJECTDIR}/gpio/gpiomanager_nomain.o: ${OBJECTDIR}/gpio/gpiomanager.o gpio/gpiomanager.cpp 
+	${MKDIR} -p ${OBJECTDIR}/gpio
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/gpio/gpiomanager.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/gpiomanager_nomain.o gpio/gpiomanager.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/gpio/gpiomanager.o ${OBJECTDIR}/gpio/gpiomanager_nomain.o;\
+	fi
+
+${OBJECTDIR}/gpio/gpiothread_nomain.o: ${OBJECTDIR}/gpio/gpiothread.o gpio/gpiothread.cpp 
+	${MKDIR} -p ${OBJECTDIR}/gpio
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/gpio/gpiothread.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/gpiothread_nomain.o gpio/gpiothread.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/gpio/gpiothread.o ${OBJECTDIR}/gpio/gpiothread_nomain.o;\
 	fi
 
 ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp 
