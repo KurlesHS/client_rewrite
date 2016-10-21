@@ -16,15 +16,36 @@
 
 #include "gpiothread.h"
 
+#include <ev++.h>
 
-class GpioManager {
+#include <functional>
+#include <mutex>
+#include <list>
+
+using namespace std;
+
+class GpioManager
+{
 public:
     GpioManager();
     virtual ~GpioManager();
-    
+
+    int gpioState(const string &gpioId);
+    bool setGpioState(const string &gpioId, int state);
+
     void start();
+    
+    void onGpioStatusChanged(const string &gpioId, const int state);
+    
+private:
+    void informAboutGpioStatusChanged(const string &gpioId, const int state);
+    void onAsync();
+
 private:
     GpioThread mWorker;
+    mutex mMutex;
+    ev::async mAsync;
+    list<function<void()>> mPendingFunctions;
 
 };
 

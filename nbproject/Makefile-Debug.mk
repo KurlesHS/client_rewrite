@@ -36,11 +36,13 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/auth/authmanager.o \
+	${OBJECTDIR}/auth/lua/iluafunctionregistrator.o \
 	${OBJECTDIR}/cancelnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/filedownloader.o \
 	${OBJECTDIR}/fortest.o \
 	${OBJECTDIR}/gpio/gpiomanager.o \
 	${OBJECTDIR}/gpio/gpiothread.o \
+	${OBJECTDIR}/gpio/luatogpiomediator.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatusesmanager.o \
 	${OBJECTDIR}/hardwarestatuses/hardwarestatusestolualmediator.o \
@@ -118,16 +120,21 @@ LDLIBSOPTIONS=-pthread -llua5.3-c++ -lev -luuid -lcrypto -lportaudio
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rewriteclient ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/auth
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/authmanager.o auth/authmanager.cpp
+
+${OBJECTDIR}/auth/lua/iluafunctionregistrator.o: auth/lua/iluafunctionregistrator.cpp
+	${MKDIR} -p ${OBJECTDIR}/auth/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o auth/lua/iluafunctionregistrator.cpp
 
 ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o: cancelnotifyincommingcommandhandler.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -153,6 +160,11 @@ ${OBJECTDIR}/gpio/gpiothread.o: gpio/gpiothread.cpp
 	${MKDIR} -p ${OBJECTDIR}/gpio
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/gpiothread.o gpio/gpiothread.cpp
+
+${OBJECTDIR}/gpio/luatogpiomediator.o: gpio/luatogpiomediator.cpp
+	${MKDIR} -p ${OBJECTDIR}/gpio
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/luatogpiomediator.o gpio/luatogpiomediator.cpp
 
 ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o: hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp
 	${MKDIR} -p ${OBJECTDIR}/hardwarestatuses
@@ -420,6 +432,19 @@ ${OBJECTDIR}/auth/authmanager_nomain.o: ${OBJECTDIR}/auth/authmanager.o auth/aut
 	    ${CP} ${OBJECTDIR}/auth/authmanager.o ${OBJECTDIR}/auth/authmanager_nomain.o;\
 	fi
 
+${OBJECTDIR}/auth/lua/iluafunctionregistrator_nomain.o: ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o auth/lua/iluafunctionregistrator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/auth/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/lua/iluafunctionregistrator_nomain.o auth/lua/iluafunctionregistrator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o ${OBJECTDIR}/auth/lua/iluafunctionregistrator_nomain.o;\
+	fi
+
 ${OBJECTDIR}/cancelnotifyincommingcommandhandler_nomain.o: ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o cancelnotifyincommingcommandhandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o`; \
@@ -483,6 +508,19 @@ ${OBJECTDIR}/gpio/gpiothread_nomain.o: ${OBJECTDIR}/gpio/gpiothread.o gpio/gpiot
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/gpiothread_nomain.o gpio/gpiothread.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/gpio/gpiothread.o ${OBJECTDIR}/gpio/gpiothread_nomain.o;\
+	fi
+
+${OBJECTDIR}/gpio/luatogpiomediator_nomain.o: ${OBJECTDIR}/gpio/luatogpiomediator.o gpio/luatogpiomediator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/gpio
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/gpio/luatogpiomediator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gpio/luatogpiomediator_nomain.o gpio/luatogpiomediator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/gpio/luatogpiomediator.o ${OBJECTDIR}/gpio/luatogpiomediator_nomain.o;\
 	fi
 
 ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand_nomain.o: ${OBJECTDIR}/hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.o hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp 

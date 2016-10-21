@@ -29,6 +29,8 @@
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/iluaeventforifhappenshandler.cpp</itemPath>
+        <itemPath>auth/lua/iluafunctionregistrator.cpp</itemPath>
+        <itemPath>auth/lua/iluafunctionregistrator.h</itemPath>
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
         <itemPath>lua/luascript.cpp</itemPath>
         <itemPath>lua/luascriptmanager.cpp</itemPath>
@@ -79,6 +81,7 @@
       <itemPath>jsonfilesettings.cpp</itemPath>
       <itemPath>logger.cpp</itemPath>
       <itemPath>luatoaudiomediator.cpp</itemPath>
+      <itemPath>gpio/luatogpiomediator.cpp</itemPath>
       <itemPath>luatonetworkstreammediator.cpp</itemPath>
       <itemPath>luatoprotocolmediator.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -96,6 +99,7 @@
         <itemPath>auth/iauthmanager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f9" displayName="gpio" projectFiles="true">
+        <itemPath>gpio/gpiomanager.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
         <itemPath>hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.h</itemPath>
@@ -163,13 +167,13 @@
       <itemPath>enumclasshash.h</itemPath>
       <itemPath>filedownloader.h</itemPath>
       <itemPath>fortest.h</itemPath>
-      <itemPath>gpio/gpiomanager.h</itemPath>
       <itemPath>gpio/gpiothread.h</itemPath>
       <itemPath>isettings.h</itemPath>
       <itemPath>isoundmanagereventslistener.h</itemPath>
       <itemPath>jsonfilesettings.h</itemPath>
       <itemPath>logger.h</itemPath>
       <itemPath>luatoaudiomediator.h</itemPath>
+      <itemPath>gpio/luatogpiomediator.h</itemPath>
       <itemPath>luatonetworkstreammediator.h</itemPath>
       <itemPath>luatoprotocolmediator.h</itemPath>
       <itemPath>mainhandler.h</itemPath>
@@ -249,6 +253,13 @@
       </item>
       <item path="auth/iauthmanager.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="auth/lua/iluafunctionregistrator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="auth/lua/iluafunctionregistrator.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="cancelnotifyincommingcommandhandler.cpp"
             ex="false"
             tool="1"
@@ -300,6 +311,10 @@
       <item path="gpio/gpiothread.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="gpio/gpiothread.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio/luatogpiomediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="gpio/luatogpiomediator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp"
             ex="false"
@@ -700,6 +715,13 @@
       </item>
       <item path="auth/iauthmanager.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="auth/lua/iluafunctionregistrator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="auth/lua/iluafunctionregistrator.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="cancelnotifyincommingcommandhandler.cpp"
             ex="false"
             tool="1"
@@ -751,6 +773,10 @@
       <item path="gpio/gpiothread.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="gpio/gpiothread.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio/luatogpiomediator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="gpio/luatogpiomediator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp"
             ex="false"

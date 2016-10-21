@@ -85,8 +85,7 @@ class IfHappensPendingFunc;
 
 typedef std::shared_ptr<IfHappensPendingFunc> IfHappensPendingFuncSharedPtr;
 
-class IfHappensPendingFunc
-{
+class IfHappensPendingFunc {
 public:
     using onExecuteFunc = std::function<void(const std::string &)>;
 
@@ -171,14 +170,12 @@ private:
     onExecuteFunc mOnTimeoutFunc;
 };
 
-struct OnRelayChangedParams
-{
+struct OnRelayChangedParams {
     sol::object relayNum;
     sol::object relayState;
 };
 
-class LuaScriptPrivate
-{
+class LuaScriptPrivate {
     friend class LuaScript;
     LuaScript *q;
     std::string scriptName;
@@ -201,7 +198,7 @@ class LuaScriptPrivate
     std::unordered_map<std::string, OnRelayChangedParams> mRelayChangeParams;
     list<ILuaScriptEventsListener*> mEventListeners;
     list<function<void() >> mAsyncFunc;
-
+    
     LuaScriptPrivate()
     {
         async.set<LuaScriptPrivate, &LuaScriptPrivate::onAsync>(this);
@@ -527,7 +524,7 @@ ILuaPendingFunc::~ILuaPendingFunc()
 
 void LuaScript::init()
 {
-    try {        
+    try {
         d->state.script_file(d->scriptPath);
         sol::function startFunc = d->state[startFuncName];
         // если в скрипте нет функции старт - беда, счиатем что в скрипте 
@@ -542,7 +539,7 @@ void LuaScript::init()
             // если переменная приоритета присутствует - назначаем
             // указанный приоритет
             d->priority = priorityObject.as<int>();
-        } 
+        }
         // попытка прочитать группу (по умолчанию - 0).
         sol::object groupObject = d->state[groupVarName];
         if (groupObject.is<std::string>()) {
@@ -808,3 +805,4 @@ void LuaScript::setNotifyInfo(const StartNotifyInfo& info)
         }
     }
 }
+

@@ -37,6 +37,8 @@ MainHandler::MainHandler() :
     Logger::msg("--- Sonet hardware server started ---");
     mGpioManager.start();
     mNetworkAudioManager.start();
+    mGpioManager.gpioState("fire");
+    mGpioManager.setGpioState("power", 1);
     mLuaScriptManager.startAutostartScript(di_inject(ISettings)->autostartScript());
     
 #if 0

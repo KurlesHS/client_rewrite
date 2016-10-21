@@ -17,6 +17,7 @@
 #include "scriptfinishedluaevent.h"
 #include "logger.h"
 #include "scriptstartedluaevent.h"
+#include "auth/lua/iluafunctionregistrator.h"
 
 #include <algorithm>
 #include <iostream>
@@ -53,7 +54,7 @@ void LuaScriptManager::startAutostartScript(const string& scriptName)
         return;
     }
     string scriptPath = mLuaScriptPath + "/" + scriptName + ".lua";
-    auto script = make_shared<LuaScript>(scriptPath);    
+    auto script = make_shared<LuaScript>(scriptPath);
     script->setScriptName(scriptName);
     if (script->isValid()) {
         mAutostartScript = script;
@@ -63,6 +64,9 @@ void LuaScriptManager::startAutostartScript(const string& scriptName)
             handler->addLuaScript(mAutostartScript.get());
         }
         Logger::msg("starting autostart script '%s'...", scriptName.data());
+        for (auto registrator : mFunctionRegistrators) {
+            registrator->registerFunction(&mAutostartScript->luaState());
+        }
         mAutostartScript->run();
     } else {
         Logger::msg("autostart script '%s' is not valid", scriptName.data());
@@ -109,6 +113,9 @@ void LuaScriptManager::startScript(const string& scriptName, const StartNotifyIn
 void LuaScriptManager::runCurrentScript()
 {
     if (mCurrentScript) {
+        for (auto registrator : mFunctionRegistrators) {
+            registrator->registerFunction(&mCurrentScript->luaState());
+        }
         for (auto handler : mIfHappensHandlers) {
             handler->registerCommand(mCurrentScript->luaState());
             handler->addLuaScript(mCurrentScript.get());
@@ -129,10 +136,9 @@ void LuaScriptManager::resetAutostartScript()
             handler->removeLuaScript(mAutostartScript.get());
         }
         Logger::msg("clear autostart script '%s'", mAutostartScript->scriptName().data());
-        mAutostartScript.reset(); 
+        mAutostartScript.reset();
     }
 }
-
 
 void LuaScriptManager::resetCurrentScript()
 {
@@ -186,7 +192,7 @@ void LuaScriptManager::luaEvent(ILuaEventSharedPtr event)
         } else if (mAutostartScript && finishEvent && finishEvent->scriptId() == mAutostartScript->id()) {
             mPendingCommands.push_back([this, event]() {
                 resetAutostartScript();
-                informAboutEvent(event);                
+                informAboutEvent(event);
             });
             mAsync.send();
         } else {
@@ -216,3 +222,12 @@ LuaScriptManager::~LuaScriptManager()
 {
 }
 
+void LuaScriptManager::addLuaFunctionRegistrator(ILuaFunctionRegistrator* registrator)
+{
+    mFunctionRegistrators.push_back(registrator);
+}
+
+void LuaScriptManager::removeLuaFunctionRegistrator(ILuaFunctionRegistrator* registrator)
+{
+    mFunctionRegistrators.remove(registrator);
+}

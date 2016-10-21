@@ -27,6 +27,8 @@
 #include <ev++.h>
 
 class ILuaEventForIfHappensHandler;
+class ILuaFunctionRegistrator;
+
 
 using namespace std;
 
@@ -46,7 +48,11 @@ public:
     void removeLuaScriptEventListener(ILuaScriptEventsListener *listener);
     
     void addIfHappensHandler(ILuaEventForIfHappensHandler *handler);
-    void removeIfHappensHandler(ILuaEventForIfHappensHandler *handler);   
+    void removeIfHappensHandler(ILuaEventForIfHappensHandler *handler); 
+    
+    void addLuaFunctionRegistrator(ILuaFunctionRegistrator *registrator);
+    void removeLuaFunctionRegistrator(ILuaFunctionRegistrator *registrator);
+       
 
 private:
     void onAsyncCommand();
@@ -68,6 +74,7 @@ private:
     list<ILuaEventForIfHappensHandler*> mIfHappensHandlers;
     ev::async mAsync;
     list<function<void()> > mPendingCommands;
+    list<ILuaFunctionRegistrator *> mFunctionRegistrators;
     
 
 

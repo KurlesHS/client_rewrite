@@ -47,11 +47,12 @@ class LuaScript
 public:
     LuaScript(const std::string &scriptPath);
     virtual ~LuaScript();
-    
+
     void init();
-    
+
     void setNotifyInfo(const StartNotifyInfo &info);
     const StartNotifyInfo &notifyInfo() const;
+
 
     bool run();
     void cancel();
@@ -65,7 +66,7 @@ public:
 
     void setScriptName(const string &name);
     string scriptName() const;
-    
+
 
     bool isValid() const;
     bool isFinished() const;
@@ -89,16 +90,19 @@ public:
 
     template<typename ... Args>
     void ifHappensHappened(const string& ifHappensId, Args ... args)
-    {   
-        for (auto f : ifHappensOkFunc(ifHappensId)) {
-            f(std::forward<Args>(args)...);
-        }            
-        removeIfHappens(ifHappensId, true, true);
+    {
+        {
+            for (auto f : ifHappensOkFunc(ifHappensId)) {
+                f(std::forward<Args>(args)...);
+            }
+            removeIfHappens(ifHappensId, true, true);
+        }
     }
-    
+
+
 private:
-    list<sol::function> ifHappensOkFunc(const string& ifHappensId);
-    void removeIfHappens(const string& ifHappensId, const bool checkIsfinished, const bool forceAsync);    
+    list<sol::function> ifHappensOkFunc(const string & ifHappensId);
+    void removeIfHappens(const string& ifHappensId, const bool checkIsfinished, const bool forceAsync);
 
 private:
     friend class LuaScriptPrivate;

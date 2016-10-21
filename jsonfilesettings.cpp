@@ -84,8 +84,7 @@ void JsonFileSettings::readSettings(const string& filePath)
                                     }
                                     mGpioSettings.emplace_back(gs);
                                 }
-                            }
-                            
+                            }                           
                         }
                     }
                 }

@@ -15,21 +15,39 @@
 #define GPIOTHREAD_H
 
 #include <thread>
+#include <mutex>
 
 using namespace std;
 
-class GpioThread {
-public:
-    GpioThread();
-    virtual ~GpioThread();
-    
-    void start();
-    
-    void threadProc();
-    
-private:
-    thread mThread;
+class GpioManager;
 
+class GpioThread
+{
+    struct GpioInfo;
+
+public:
+    GpioThread(GpioManager *manager);
+    virtual ~GpioThread();
+
+    void start();
+
+    void threadProc();
+    static string pathForGpioNum(const int pinNum);
+    static bool writeTo(const string &path, const string &data);
+    static string readFrom(const string &path, bool *ok = 0);
+
+    int gpioState(const string &gpioId);
+    bool setGpioState(const string &gpioId, int state);
+
+private:
+    GpioThread::GpioInfo * gpioInfo(const string &gpioId);
+    void threadFunc();
+        
+private:
+    GpioManager *mManager;
+    thread mThread;
+    GpioThread::GpioInfo *mGpioInfoList;
+    mutex mMutex;
 };
 
 #endif /* GPIOTHREAD_H */

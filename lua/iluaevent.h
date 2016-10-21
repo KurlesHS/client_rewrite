@@ -41,8 +41,9 @@ public:
         SetNotifyStatusProcess,
         SetNotifyStatusWait,
         SetNotifyStatusError,
-        SetNotifyStatusUnknown
-
+        SetNotifyStatusUnknown,
+        SetGpio,
+        GetGpio
     };
 
     virtual ~ILuaEvent()
