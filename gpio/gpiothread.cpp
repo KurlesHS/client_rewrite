@@ -28,9 +28,11 @@
 #include <poll.h>
 #include <fcntl.h>
 
-struct GpioThread::GpioInfo {
+struct GpioThread::GpioInfo
+{
 
-    enum class Direction {
+    enum class Direction
+    {
         In,
         Out
     };
@@ -76,8 +78,10 @@ static bool writeTo(const char *path, const char *data, const size_t size)
         fflush(f);
         fclose(f);
         result = err == 0;
+#if 0
         cout << data << " > " << path << " " << strerror(err) << " " << err << " "
                 << result << " == " << size << endl;
+#endif
 
     }
     return result;
@@ -96,7 +100,6 @@ string GpioThread::readFrom(const string& path, bool *ok)
         *ok = false;
     }
     struct stat st;
-
     if (stat(path.data(), &st) != 0) {
         return result;
     }
@@ -159,12 +162,13 @@ static string getDataForDirection(GpioSettings::Direction direction)
     return result;
 }
 
-static string getDataForEdge(GpioSettings::Direction direction)
+static string getDataForEdge(GpioSettings::Direction direction, const int currentState)
 {
     string result;
     switch (direction) {
+        
         case GpioSettings::Direction::In:
-            result = "rising";
+            result = "both";        
             break;
         case GpioSettings::Direction::Out:
             result = "none";
@@ -182,7 +186,8 @@ void GpioThread::threadProc()
 {
     auto settings = di_inject(ISettings);
 
-    struct gpio {
+    struct gpio
+    {
         int pinNum;
         GpioSettings setting;
         bool correct;
@@ -245,10 +250,13 @@ void GpioThread::threadProc()
         if (!g.correct) {
             continue;
         }
-        string tmp = pathForGpioNum(g.pinNum) + "/direction";
-        string data = getDataForDirection(g.setting.direction);
-        if (!::writeTo(tmp.data(), data.data(), data.size())) {
-            Logger::msg("gpio: can't set gpio %s direction (%s)", g.setting.id.data(), data.data());
+        string tmp = pathForGpioNum(g.pinNum) + "/value";
+        bool ok;
+        string data = readFrom(tmp, &ok);
+        if (ok && data.size()) {
+            g.setting.currentValue = data[1] - '0';
+        } else {
+            Logger::msg("gpio: can't get gpio %s current state)", g.setting.id.data());
             g.needUnexport = true;
             g.correct = false;
             g.needUnexport = true;
@@ -261,8 +269,26 @@ void GpioThread::threadProc()
         if (!g.correct) {
             continue;
         }
+        string tmp = pathForGpioNum(g.pinNum) + "/direction";
+        string data = getDataForDirection(g.setting.direction);
+        if (!::writeTo(tmp.data(), data.data(), data.size())) {
+            Logger::msg("gpio: can't set gpio %s direction (%s)", g.setting.id.data(), data.data());
+            g.needUnexport = true;
+            g.correct = false;
+            g.needUnexport = true;
+            continue;
+        }
+    }
+
+
+
+    usleep(delay);
+    for (gpio &g : correctInfo) {
+        if (!g.correct) {
+            continue;
+        }
         string tmp = pathForGpioNum(g.pinNum) + "/edge";
-        string data = getDataForEdge(g.setting.direction);
+        string data = getDataForEdge(g.setting.direction, g.setting.currentValue);
         if (!::writeTo(tmp.data(), data.data(), data.size())) {
             Logger::msg("gpio: can't set gpio %s edge %s mode ", g.setting.id.data(), data.data());
             g.needUnexport = true;
@@ -286,7 +312,11 @@ void GpioThread::threadProc()
                 GpioThread::GpioInfo::Direction::In :
                 GpioThread::GpioInfo::Direction::Out;
         if (mGpioInfoList) {
-            mGpioInfoList->next = newGpio;
+            GpioThread::GpioInfo *last = mGpioInfoList;
+            while (last->next) {
+                last = last->next;
+            }
+            last->next = newGpio;
         } else {
             mGpioInfoList = newGpio;
         }
@@ -331,6 +361,7 @@ void GpioThread::threadFunc()
     poolFd = new struct pollfd[idx];
     mMutex.lock();
     info = mGpioInfoList;
+    idx = 0;
     while (info) {
         if (info->direction == GpioThread::GpioInfo::Direction::In) {
             string path = pathForGpioNum(info->pinNum) + "/value";
@@ -352,7 +383,11 @@ void GpioThread::threadFunc()
     mMutex.unlock();
 
     while (true) {
+        for (int i = 0; i < idx; ++i) {
+            lseek(poolFd[i].fd, 0, SEEK_SET);
+        }
         err = poll(poolFd, idx, 1000);
+        // cout << "poll: " << idx << " " << err << endl;
         if (err > 0) {
             for (int i = 0; i < idx; ++i) {
                 if (poolFd[i].revents & POLLPRI) {
@@ -368,10 +403,9 @@ void GpioThread::threadFunc()
                     if (info) {
                         auto bytesRead = read(poolFd[i].fd, &c, 1);
                         if (bytesRead > 0) {
-                            int newStatus = c - '0';
-                            Logger::msg("gpio: gpio '%s' (%s) state changed to %d",
-                                    info->pinId.data(), info->pinName.data(), newStatus);
-                            mManager->setGpioState(info->pinId, newStatus);
+                            int newStatus = c - '0';                            
+                            mManager->onGpioStatusChanged(info->pinId, newStatus);
+                            // Logger::msg("!!!!gpio: state of gpio pin '%s' change to '%d'", info->pinId.data(), newStatus);                            
                         } else {
                             Logger::msg("gpio: error happens while receiving gpio '%s' (%s) state",
                                     info->pinId.data(), info->pinName.data());
@@ -391,6 +425,7 @@ GpioThread::GpioInfo* GpioThread::gpioInfo(const string& gpioId)
     auto info = mGpioInfoList;
     while (info) {
         if (info->pinId == gpioId) {
+            // cout << gpioId << ": " << info->pinId << " " << info->pinName << endl;
             break;
         }
         info = info->next;
@@ -405,7 +440,7 @@ int GpioThread::gpioState(const string& gpioId)
     auto info = gpioInfo(gpioId);
     if (info) {
         bool ok;
-        auto data = readFrom(pathForGpioNum(info->pinNum), &ok);
+        auto data = readFrom(pathForGpioNum(info->pinNum) + "/value", &ok);
         if (ok && data.size()) {
             result = data[0] == '1' ? 1 : 0;
             Logger::msg("gpio: request state for gpio '%s': state %d",
@@ -423,20 +458,23 @@ int GpioThread::gpioState(const string& gpioId)
 
 bool GpioThread::setGpioState(const string& gpioId, int state)
 {
+    static constexpr const char *high_val = "1";
+    static constexpr const char *low_val = "0";
     bool result = false;
+    const char *var = state ? high_val : low_val;
     auto info = gpioInfo(gpioId);
     if (info) {
         if (info->direction == GpioThread::GpioInfo::Direction::In) {
             Logger::msg("gpio: can't set state for gpio '%s': gpio configured for input",
                     gpioId.data());
         } else {
-            if (writeTo(pathForGpioNum(info->pinNum), state ? "1" : "0")) {
+            if (writeTo(pathForGpioNum(info->pinNum) + "/value", var)) {
                 result = true;
-                Logger::msg("gpio: set state for gpio '%s' to %d: success",
-                        gpioId.data(), (bool)state);
+                Logger::msg("gpio: set state for gpio '%s' to %s: success",
+                        gpioId.data(), var);
             } else {
-                Logger::msg("gpio: set state for gpio '%s' to %d: unable to set state",
-                        gpioId.data(), (bool)state);
+                Logger::msg("gpio: set state for gpio '%s' to %s: unable to set state",
+                        gpioId.data(), var);
             }
         }
     } else {

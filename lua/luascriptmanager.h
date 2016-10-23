@@ -14,13 +14,13 @@
 #ifndef LUASCRIPTMANAGER_H
 #define LUASCRIPTMANAGER_H
 
-#include "luascript.h"
 #include "iluascripteventlistener.h"
 #include "iluaeventforifhappenshandler.h"
 
 #include "protocol/startnotifyinfo.h"
 
 
+#include <memory>
 #include <string>
 #include <list>
 
@@ -28,7 +28,8 @@
 
 class ILuaEventForIfHappensHandler;
 class ILuaFunctionRegistrator;
-
+class LuaScript;
+using LuaScriptSharedPtr = std::shared_ptr<LuaScript>;
 
 using namespace std;
 
@@ -51,8 +52,7 @@ public:
     void removeIfHappensHandler(ILuaEventForIfHappensHandler *handler); 
     
     void addLuaFunctionRegistrator(ILuaFunctionRegistrator *registrator);
-    void removeLuaFunctionRegistrator(ILuaFunctionRegistrator *registrator);
-       
+    void removeLuaFunctionRegistrator(ILuaFunctionRegistrator *registrator);       
 
 private:
     void onAsyncCommand();

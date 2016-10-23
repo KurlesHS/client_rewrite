@@ -25,6 +25,7 @@
 MainHandler::MainHandler() :
     mSoundManager("/var/spool/sonet/files", Resolver::resolveDi<ISettings>()->fileServerUrl()),
     mLuaScriptManager("/usr/share/sonet/scripts"),
+    mLuaToGpioMediator(&mLuaScriptManager, &mGpioManager),
     mLuaToProtocolMediator(&mLuaScriptManager, &mFactory, &mSoundManager),
     mLuaToAudioMediator(&mLuaScriptManager, &mSoundManager),
     mLuaToNetworkStreamMediator(&mLuaScriptManager, &mNetworkAudioManager),
@@ -37,10 +38,8 @@ MainHandler::MainHandler() :
     Logger::msg("--- Sonet hardware server started ---");
     mGpioManager.start();
     mNetworkAudioManager.start();
-    mGpioManager.gpioState("fire");
-    mGpioManager.setGpioState("power", 1);
     mLuaScriptManager.startAutostartScript(di_inject(ISettings)->autostartScript());
-    
+
 #if 0
     mNetworkAudioManager.startStream("rtsp://localhost:9002/test.sdp");
     mSoundManager.downloadFileFromServer("827717d816d95c60f2059c8be841341897216104100d7b495f04c96f", "test.mp4", [](bool result) {

@@ -18,6 +18,7 @@
       <logicalFolder name="f9" displayName="gpio" projectFiles="true">
         <itemPath>gpio/gpiomanager.cpp</itemPath>
         <itemPath>gpio/gpiothread.cpp</itemPath>
+        <itemPath>gpio/luatogpiomediator.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f8" displayName="hardware_statuses" projectFiles="true">
         <itemPath>hardwarestatuses/hardwarestatuschangedprotocoloutgoingcommand.cpp</itemPath>
@@ -29,8 +30,6 @@
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
         <itemPath>lua/iluaeventforifhappenshandler.cpp</itemPath>
-        <itemPath>auth/lua/iluafunctionregistrator.cpp</itemPath>
-        <itemPath>auth/lua/iluafunctionregistrator.h</itemPath>
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
         <itemPath>lua/luascript.cpp</itemPath>
         <itemPath>lua/luascriptmanager.cpp</itemPath>
@@ -81,7 +80,6 @@
       <itemPath>jsonfilesettings.cpp</itemPath>
       <itemPath>logger.cpp</itemPath>
       <itemPath>luatoaudiomediator.cpp</itemPath>
-      <itemPath>gpio/luatogpiomediator.cpp</itemPath>
       <itemPath>luatonetworkstreammediator.cpp</itemPath>
       <itemPath>luatoprotocolmediator.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -211,6 +209,8 @@
       <itemPath>test_files/lua/test_04.lua</itemPath>
       <itemPath>test_files/lua/test_05.lua</itemPath>
     </logicalFolder>
+    <itemPath>lua/iluafunctionregistrator.cpp</itemPath>
+    <itemPath>lua/iluafunctionregistrator.h</itemPath>
     <itemPath>tests/testtimerfactory.h</itemPath>
   </logicalFolder>
   <sourceRootList>
@@ -252,13 +252,6 @@
       <item path="auth/authmanager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="auth/iauthmanager.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="auth/lua/iluafunctionregistrator.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="auth/lua/iluafunctionregistrator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="cancelnotifyincommingcommandhandler.cpp"
             ex="false"
@@ -390,6 +383,10 @@
             flavor2="0">
       </item>
       <item path="lua/iluaeventforifhappenshandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/iluafunctionregistrator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/iluafunctionregistrator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/iluascripteventlistener.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -700,6 +697,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sonet_server</output>
           <linkerLibItems>
             <linkerOptionItem>-pthread -llua5.3-c++ -lev -luuid -lcrypto -lportaudio</linkerOptionItem>
           </linkerLibItems>
@@ -714,13 +712,6 @@
       <item path="auth/authmanager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="auth/iauthmanager.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="auth/lua/iluafunctionregistrator.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="auth/lua/iluafunctionregistrator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="cancelnotifyincommingcommandhandler.cpp"
             ex="false"
@@ -852,6 +843,10 @@
             flavor2="0">
       </item>
       <item path="lua/iluaeventforifhappenshandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/iluafunctionregistrator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/iluafunctionregistrator.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/iluascripteventlistener.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -42,7 +42,7 @@ static pid_t start_avplay(const char *filepath, FILE **f)
     int pipefd[2];
     FILE* output;
 
-    pipe(pipefd); //create a pipe
+    auto error = pipe(pipefd); //create a pipe
     pid = fork(); //span a child process
     if (pid == 0) {
         // Child. Let's redirect its standard output to our pipe and replace process with tail
@@ -328,6 +328,7 @@ void SoundManager::onAvPlayEvent(ev::io& io, int event)
         vector<char> buff;
         buff.resize(count);
         int len = read(io.fd, buff.data(), buff.size());
+        
         if (len <= 0) {
             // все, выход из программы avplay
             io.stop();

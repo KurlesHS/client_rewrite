@@ -34,14 +34,15 @@ int main(int argc, char** argv)
     (void)argv;
     Logger::createInstanse();
     auto authManager = new AuthManager();
-    authManager->addUser("admin", "admin");
+    di_register_type(ISettings, JsonFileSettings, "/etc/sonet_server.json");
     di_register_type(ITimerFactory, TimerFactory,);
     di_register_object(IAuthManager, authManager);   
+    
+    authManager->addUser(di_inject(ISettings)->username(), di_inject(ISettings)->password());
             
     ev::default_loop mainLoop;
-    ThreadRegister::registerCurrentThread(mainLoop);
+    ThreadRegister::registerCurrentThread(mainLoop);    
     
-    di_register_type(ISettings, JsonFileSettings, "/etc/sonet_server.json");
     MainHandler m;
     int retCode = 0;
     if (m.run()) {

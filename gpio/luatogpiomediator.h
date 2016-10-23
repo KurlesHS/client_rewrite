@@ -14,16 +14,30 @@
 #ifndef LUATOGPIOMEDIATOR_H
 #define LUATOGPIOMEDIATOR_H
 
-#include "auth/lua/iluafunctionregistrator.h"
-
+#include "lua/iluafunctionregistrator.h"
+#include "lua/iluaeventforifhappenshandler.h"
+#include "gpiomanager.h"
 #include <string>
+#include <functional>
+#include "sol2/sol2.hpp"
+
+class LuaScriptManager;
+
 
 using namespace std;
 
-class LuaToGpioMediator : public ILuaFunctionRegistrator
+struct GpioStateChangedParamHolder {
+    string ifHappensId;
+    bool hasGpioId;
+    string gpioId;
+    bool hasState;
+    int state;
+};
+
+class LuaToGpioMediator : public ILuaFunctionRegistrator, public ILuaEventForIfHappensHandler, public IGpioEvents
 {
 public:
-    LuaToGpioMediator();
+    LuaToGpioMediator(LuaScriptManager *luaManager, GpioManager *gpioManager);
     virtual ~LuaToGpioMediator();
     
     void registerFunction(sol::state* state) override;
@@ -31,7 +45,19 @@ public:
     bool setGpioFuncImpl(const string &gpioId, const int state);
     int getGpioFuncImpl(const string &gpioId);
     
+    void ifHappensExpiried(const string& ifHappensId) override;
+    void registerCommand(sol::state& state) override;
+    
+    void gpioStateChanged(const string& gpioId, const int state) override;
+    
 private:
+    string gpioStateChangedFuncImpl(const sol::object &gpioId, const sol::object &state);
+    
+private:
+    LuaScriptManager *mLuaManager;
+    GpioManager *mGpioManager;
+    list<GpioStateChangedParamHolder> mPendingEvents;
+    list<function<void()> > mPendingFunc;
 
 };
 

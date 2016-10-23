@@ -27,12 +27,13 @@ public:
     JsonFileSettings(const string &filePath) ;
     
     virtual ~JsonFileSettings();
-    uint16_t port() override;
-    string scriptNameByNotifyCode(const string& notifyCode) override;
-    string fileServerUrl() override;
-    string autostartScript() override;
-    list<GpioSettings> gpioSettings() override;
-
+    uint16_t port() const override;
+    string scriptNameByNotifyCode(const string& notifyCode) const override;
+    string fileServerUrl() const override;
+    string autostartScript() const override;
+    list<GpioSettings> gpioSettings() const override;
+    string password() const override;
+    string username() const override;
     
 private:
     void readSettings(const string &filePath);
@@ -41,6 +42,8 @@ private:
     uint16_t mPort;
     string mFileServerUrl;
     string mAutostartScript;    
+    string mPassword;
+    string mUsername;
     unordered_map<string, string> mCodeToScriptBinding;
     list<GpioSettings> mGpioSettings;
 };

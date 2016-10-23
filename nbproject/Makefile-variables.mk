@@ -9,19 +9,19 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux
-CND_ARTIFACT_NAME_Debug=client_rewrite
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/client_rewrite
+CND_ARTIFACT_NAME_Debug=rewriteclient
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/rewriteclient
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
-CND_PACKAGE_NAME_Debug=clientrewrite.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/clientrewrite.tar
+CND_PACKAGE_NAME_Debug=rewriteclient.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/rewriteclient.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux
-CND_ARTIFACT_NAME_Release=client_rewrite
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/client_rewrite
+CND_ARTIFACT_NAME_Release=sonet_server
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/sonet_server
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux/package
-CND_PACKAGE_NAME_Release=clientrewrite.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/clientrewrite.tar
+CND_PACKAGE_NAME_Release=rewriteclient.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/rewriteclient.tar
 #
 # include compiler specific variables
 #

@@ -53,7 +53,6 @@ public:
     void setNotifyInfo(const StartNotifyInfo &info);
     const StartNotifyInfo &notifyInfo() const;
 
-
     bool run();
     void cancel();
 
@@ -89,7 +88,7 @@ public:
     int relayChangedActiveConditionsCount() const;
 
     template<typename ... Args>
-    void ifHappensHappened(const string& ifHappensId, Args ... args)
+    void ifHappensHappened(const string& ifHappensId, Args&& ... args)
     {
         {
             for (auto f : ifHappensOkFunc(ifHappensId)) {

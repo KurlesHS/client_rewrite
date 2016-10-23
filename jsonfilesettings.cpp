@@ -29,7 +29,7 @@ JsonFileSettings::JsonFileSettings(const string& filePath) :
     readSettings(filePath);
 }
 
-uint16_t JsonFileSettings::port()
+uint16_t JsonFileSettings::port()  const
 {
     return mPort;
 }
@@ -53,7 +53,11 @@ void JsonFileSettings::readSettings(const string& filePath)
                     mPort = element.value();
                 } else if (element.key() == "file_server" && element.value().is_string()) {
                     mFileServerUrl = element.value();
-                }  else if (element.key() == "autostart_script" && element.value().is_string()) {
+                } else if (element.key() == "username" && element.value().is_string()) {
+                    mUsername = element.value();
+                } else if (element.key() == "password" && element.value().is_string()) {
+                    mPassword = element.value();
+                } else if (element.key() == "autostart_script" && element.value().is_string()) {
                     mAutostartScript = element.value();
                 } else if (element.key() == "bindings" && element.value().is_object()) {
                     json obj = element.value();
@@ -95,7 +99,7 @@ void JsonFileSettings::readSettings(const string& filePath)
     }    
 }
 
-string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode)
+string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode)  const
 {
     auto it = mCodeToScriptBinding.find(notifyCode);
     if (it != mCodeToScriptBinding.end()) {
@@ -104,17 +108,27 @@ string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode)
     return string();
 }
 
-string JsonFileSettings::fileServerUrl()
+string JsonFileSettings::fileServerUrl() const
 {
     return mFileServerUrl;
 }
 
-string JsonFileSettings::autostartScript()
+string JsonFileSettings::autostartScript() const
 {
     return mAutostartScript;
 }
 
-list<GpioSettings> JsonFileSettings::gpioSettings()
+list<GpioSettings> JsonFileSettings::gpioSettings() const
 {
     return mGpioSettings;
+}
+
+string JsonFileSettings::password() const
+{
+    return mPassword;
+}
+
+string JsonFileSettings::username() const
+{
+    return mUsername;
 }

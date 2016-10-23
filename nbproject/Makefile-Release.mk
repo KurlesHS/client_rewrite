@@ -36,7 +36,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/auth/authmanager.o \
-	${OBJECTDIR}/auth/lua/iluafunctionregistrator.o \
 	${OBJECTDIR}/cancelnotifyincommingcommandhandler.o \
 	${OBJECTDIR}/filedownloader.o \
 	${OBJECTDIR}/fortest.o \
@@ -51,6 +50,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/jsonfilesettings.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/lua/iluaeventforifhappenshandler.o \
+	${OBJECTDIR}/lua/iluafunctionregistrator.o \
 	${OBJECTDIR}/lua/logmessageluaevent.o \
 	${OBJECTDIR}/lua/luascript.o \
 	${OBJECTDIR}/lua/luascriptmanager.o \
@@ -120,21 +120,16 @@ LDLIBSOPTIONS=-pthread -llua5.3-c++ -lev -luuid -lcrypto -lportaudio
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sonet_server
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sonet_server: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client_rewrite ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sonet_server ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/auth/authmanager.o: auth/authmanager.cpp
 	${MKDIR} -p ${OBJECTDIR}/auth
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/authmanager.o auth/authmanager.cpp
-
-${OBJECTDIR}/auth/lua/iluafunctionregistrator.o: auth/lua/iluafunctionregistrator.cpp
-	${MKDIR} -p ${OBJECTDIR}/auth/lua
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o auth/lua/iluafunctionregistrator.cpp
 
 ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o: cancelnotifyincommingcommandhandler.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -205,6 +200,11 @@ ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o: lua/iluaeventforifhappenshandle
 	${MKDIR} -p ${OBJECTDIR}/lua
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o lua/iluaeventforifhappenshandler.cpp
+
+${OBJECTDIR}/lua/iluafunctionregistrator.o: lua/iluafunctionregistrator.cpp
+	${MKDIR} -p ${OBJECTDIR}/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/iluafunctionregistrator.o lua/iluafunctionregistrator.cpp
 
 ${OBJECTDIR}/lua/logmessageluaevent.o: lua/logmessageluaevent.cpp
 	${MKDIR} -p ${OBJECTDIR}/lua
@@ -432,19 +432,6 @@ ${OBJECTDIR}/auth/authmanager_nomain.o: ${OBJECTDIR}/auth/authmanager.o auth/aut
 	    ${CP} ${OBJECTDIR}/auth/authmanager.o ${OBJECTDIR}/auth/authmanager_nomain.o;\
 	fi
 
-${OBJECTDIR}/auth/lua/iluafunctionregistrator_nomain.o: ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o auth/lua/iluafunctionregistrator.cpp 
-	${MKDIR} -p ${OBJECTDIR}/auth/lua
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/auth/lua/iluafunctionregistrator_nomain.o auth/lua/iluafunctionregistrator.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/auth/lua/iluafunctionregistrator.o ${OBJECTDIR}/auth/lua/iluafunctionregistrator_nomain.o;\
-	fi
-
 ${OBJECTDIR}/cancelnotifyincommingcommandhandler_nomain.o: ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o cancelnotifyincommingcommandhandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o`; \
@@ -625,6 +612,19 @@ ${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o: ${OBJECTDIR}/lua/iluaeve
 	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o lua/iluaeventforifhappenshandler.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o ${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o;\
+	fi
+
+${OBJECTDIR}/lua/iluafunctionregistrator_nomain.o: ${OBJECTDIR}/lua/iluafunctionregistrator.o lua/iluafunctionregistrator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/iluafunctionregistrator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/iluafunctionregistrator_nomain.o lua/iluafunctionregistrator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/lua/iluafunctionregistrator.o ${OBJECTDIR}/lua/iluafunctionregistrator_nomain.o;\
 	fi
 
 ${OBJECTDIR}/lua/logmessageluaevent_nomain.o: ${OBJECTDIR}/lua/logmessageluaevent.o lua/logmessageluaevent.cpp 

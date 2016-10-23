@@ -17,7 +17,7 @@
 #include "scriptfinishedluaevent.h"
 #include "logger.h"
 #include "scriptstartedluaevent.h"
-#include "auth/lua/iluafunctionregistrator.h"
+#include "lua/iluafunctionregistrator.h"
 
 #include <algorithm>
 #include <iostream>

@@ -18,11 +18,21 @@
 
 #include <ev++.h>
 
+#include <isettings.h>
+#include <unordered_map>
 #include <functional>
 #include <mutex>
 #include <list>
 
 using namespace std;
+
+class IGpioEvents {
+public:
+    virtual ~IGpioEvents() { }
+    
+    virtual void gpioStateChanged(const string &gpioId, const int state) = 0;
+
+};
 
 class GpioManager
 {
@@ -32,6 +42,9 @@ public:
 
     int gpioState(const string &gpioId);
     bool setGpioState(const string &gpioId, int state);
+    
+    void addEventListener(IGpioEvents *listener);
+    void removeEventListener(IGpioEvents *listener);
 
     void start();
     
@@ -40,13 +53,17 @@ public:
 private:
     void informAboutGpioStatusChanged(const string &gpioId, const int state);
     void onAsync();
+    void onTimer();
 
 private:
     GpioThread mWorker;
     mutex mMutex;
     ev::async mAsync;
+    ev::timer mTimer;
     list<function<void()>> mPendingFunctions;
-
+    list<GpioSettings> mInputGpios;
+    
+    list<IGpioEvents*> mEventListenres;
 };
 
 #endif /* GPIOMANAGER_H */

@@ -27,18 +27,21 @@ struct GpioSettings {
     string id;
     string name;
     Direction direction;
+    int currentValue;
+    int prevValue;
 };
 
 class ISettings {
 public:
     virtual ~ISettings() { }
     
-    virtual uint16_t port() = 0;
-    
-    virtual string scriptNameByNotifyCode(const string &notifyCode) = 0;
-    virtual string fileServerUrl() = 0;
-    virtual string autostartScript() = 0;
-    virtual list<GpioSettings> gpioSettings() = 0;
+    virtual uint16_t port() const= 0;    
+    virtual string scriptNameByNotifyCode(const string &notifyCode) const = 0;
+    virtual string fileServerUrl() const = 0;
+    virtual string autostartScript() const = 0;
+    virtual string username() const = 0;
+    virtual string password() const = 0;
+    virtual list<GpioSettings> gpioSettings() const = 0;
     
 
 };

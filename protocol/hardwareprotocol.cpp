@@ -64,7 +64,7 @@ void HardwareProtocol::registerIncommingCommandHandler(IIncommingCommandHandler*
 }
 
 HardwareProtocol::~HardwareProtocol()
-{
+{    
     mTransport->removeTransportEventsListener(this);
     delete mPingCommandHandler;
 }
@@ -77,6 +77,7 @@ void HardwareProtocol::disconnectFromClient()
 
 void HardwareProtocol::disconnected(ITransport* self)
 {
+    Logger::msg("client from %s is disconnected...", mTransport->peerAddress().data());
     self->removeTransportEventsListener(this);
 }
 

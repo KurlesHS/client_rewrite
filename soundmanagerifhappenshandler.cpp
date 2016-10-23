@@ -26,20 +26,24 @@ SoundManagerIfHappensHandler::~SoundManagerIfHappensHandler()
 
 void SoundManagerIfHappensHandler::fileNotFound(const string& playbackId)
 {
+    list<string> happened;
     auto &lst = mFileNotFoundPendingEvents;
     for (auto it = lst.begin(); it != lst.end();) {
         if (it->hasPlaybackId) {
             if (it->playbackId == playbackId) {
-                ifHappensHappened(it->ifHappensId, playbackId);
+                happened.push_back(it->ifHappensId);
                 it = lst.erase(it);
                 continue;
             }
         } else {
-            ifHappensHappened(it->ifHappensId, playbackId);
+            happened.push_back(it->ifHappensId);            
             it = lst.erase(it);
             continue;
         }
         ++it;
+    }
+    for (const auto &id : happened) {
+        ifHappensHappened(id, playbackId);
     }
 }
 
@@ -76,6 +80,7 @@ string SoundManagerIfHappensHandler::notFoundFuncImpl(const sol::object& playbac
 
 void SoundManagerIfHappensHandler::playbackFinished(const string& playbackId, const bool isCanceled)
 {
+    list<string> happened;
     auto &lst = mPlaybackFinishedPendingEvents;
     for (auto it = lst.begin(); it != lst.end();) {
         bool okPlaybackId = !it->hasPlaybackId;
@@ -87,12 +92,16 @@ void SoundManagerIfHappensHandler::playbackFinished(const string& playbackId, co
             okCanceled = it->isCanceled == isCanceled;
         }
         if (okCanceled && okPlaybackId) {
-            ifHappensHappened(it->ifHappensId, playbackId, isCanceled);
+            happened.push_back(it->ifHappensId);
             it = lst.erase(it);
         } else {
             ++it;
         }
     }
+    for (const auto &id : happened) {
+        ifHappensHappened(id, playbackId, isCanceled);
+    }
+    
 }
 
 string SoundManagerIfHappensHandler::playbackFinishedFuncImpl(const sol::object& playbackId, const sol::object &isCanceled)
@@ -117,20 +126,24 @@ string SoundManagerIfHappensHandler::playbackFinishedFuncImpl(const sol::object&
 
 void SoundManagerIfHappensHandler::playbackStarted(const string& playbackId)
 {
+    list<string> happened;
     auto &lst = mPlaybackStartedPendingEvents;
     for (auto it = lst.begin(); it != lst.end();) {
         if (it->hasPlaybackId) {
-            if (it->playbackId == playbackId) {
-                ifHappensHappened(it->ifHappensId, playbackId);
+            if (it->playbackId == playbackId) {                
+                happened.push_back(it->ifHappensId);
                 it = lst.erase(it);
                 continue;
             }
         } else {
-            ifHappensHappened(it->ifHappensId, playbackId);
+            happened.push_back(it->ifHappensId);
             it = lst.erase(it);
             continue;
         }
         ++it;
+    }
+    for (const auto &id : happened) {
+        ifHappensHappened(id, playbackId);
     }
 }
 

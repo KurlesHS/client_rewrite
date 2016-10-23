@@ -22,7 +22,7 @@
 #include "thread/threadregister.h"
 #include "inetworkaudioevents.h"
 
-static pid_t start_avplay(const char *filepath, int &stdOutFd, int &stdErrFd)
+static pid_t start_ffmpeg(const char *filepath, int &stdOutFd, int &stdErrFd)
 {
     pid_t pid = 0;
     int pipeFdStdOut[2];
@@ -151,7 +151,7 @@ void NetworkAudoThreadWorker::startStreamImpl(const string& streamAddress)
 {
     stopStreamImpl();
     int out, err;
-    mFfmpegPid = start_avplay(streamAddress.data(), out, err);
+    mFfmpegPid = start_ffmpeg(streamAddress.data(), out, err);
     if (mFfmpegPid > 0) {
         mIsInformedAboutFinish = false;
         mStdErrIo.start(err, ev::READ);
