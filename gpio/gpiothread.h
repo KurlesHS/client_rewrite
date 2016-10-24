@@ -41,7 +41,8 @@ public:
 
 private:
     GpioThread::GpioInfo * gpioInfo(const string &gpioId);
-    void threadFunc();
+    void threadFuncPoolEvents();
+    void threadFuncManualRead();
         
 private:
     GpioManager *mManager;

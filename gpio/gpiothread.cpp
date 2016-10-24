@@ -42,6 +42,7 @@ struct GpioThread::GpioInfo
     Direction direction;
     GpioThread::GpioInfo *next;
     int fd;
+    int prevStatus = -1;
 };
 
 GpioThread::GpioThread(GpioManager *manager) :
@@ -69,14 +70,16 @@ void GpioThread::start()
 
 static bool writeTo(const char *path, const char *data, const size_t size)
 {
+    errno = 0;
     bool result = false;
     FILE *f = fopen(path, "w");
     if (f) {
         int bytesWritten = fwrite(data, size, 1, f);
         (void) bytesWritten;
-        auto err = errno;
+
         fflush(f);
         fclose(f);
+        auto err = errno;
         result = err == 0;
 #if 0
         cout << data << " > " << path << " " << strerror(err) << " " << err << " "
@@ -92,6 +95,19 @@ bool GpioThread::writeTo(const string& path, const string& data)
     return ::writeTo(path.data(), data.data(), (size_t) data.size());
 }
 
+static bool isFilePresent(const string &path)
+{
+    struct stat st;
+    if (stat(path.data(), &st) != 0) {
+        return false;
+    }
+
+    if (!S_ISREG(st.st_mode)) {
+        return false;
+    }
+    return true;
+}
+
 string GpioThread::readFrom(const string& path, bool *ok)
 {
     char buff[0x10];
@@ -99,12 +115,19 @@ string GpioThread::readFrom(const string& path, bool *ok)
     if (ok) {
         *ok = false;
     }
+
+#if 0
     struct stat st;
     if (stat(path.data(), &st) != 0) {
         return result;
     }
 
     if (!S_ISREG(st.st_mode)) {
+        return result;
+    }
+
+#endif
+    if (!isFilePresent(path)) {
         return result;
     }
 
@@ -166,9 +189,9 @@ static string getDataForEdge(GpioSettings::Direction direction, const int curren
 {
     string result;
     switch (direction) {
-        
+
         case GpioSettings::Direction::In:
-            result = "both";        
+            result = "both";
             break;
         case GpioSettings::Direction::Out:
             result = "none";
@@ -185,6 +208,9 @@ string GpioThread::pathForGpioNum(const int pinNum)
 void GpioThread::threadProc()
 {
     auto settings = di_inject(ISettings);
+
+    Logger::msg("select %s gpio read mode", settings->manualGpioRead() ?
+            "manual" : "interrupt");
 
     struct gpio
     {
@@ -232,7 +258,7 @@ void GpioThread::threadProc()
             unexportGpio(g.pinNum);
         }
     }
-    errno = 0;
+    // errno = 0;
     usleep(delay);
     for (gpio &g : correctInfo) {
         if (!g.correct) {
@@ -288,11 +314,29 @@ void GpioThread::threadProc()
             continue;
         }
         string tmp = pathForGpioNum(g.pinNum) + "/edge";
+
+        if (!isFilePresent(tmp)) {
+            if (g.setting.direction == GpioSettings::Direction::Out) {
+                // а ничего и не надо писать для out mode
+                continue;
+            } else if (settings->manualGpioRead()) {
+                continue;
+            } else {
+                Logger::msg("gpio: can't set gpio %s edge mode (edge file isn't present)", g.setting.id.data());
+                g.needUnexport = true;
+                g.correct = false;
+            }
+        }
+
         string data = getDataForEdge(g.setting.direction, g.setting.currentValue);
+        if (settings->manualGpioRead()) {
+            data = "none";
+        }
+
         if (!::writeTo(tmp.data(), data.data(), data.size())) {
             Logger::msg("gpio: can't set gpio %s edge %s mode ", g.setting.id.data(), data.data());
-            g.needUnexport = true;
-            g.correct = false;
+            // g.needUnexport = true;
+            // g.correct = false;
             continue;
         }
     }
@@ -334,10 +378,14 @@ void GpioThread::threadProc()
         }
     }
 
-    threadFunc();
+    if (settings->manualGpioRead()) {
+        threadFuncManualRead();
+    } else {
+        threadFuncPoolEvents();
+    }
 }
 
-void GpioThread::threadFunc()
+void GpioThread::threadFuncPoolEvents()
 {
     struct pollfd * poolFd;
     int err;
@@ -403,9 +451,9 @@ void GpioThread::threadFunc()
                     if (info) {
                         auto bytesRead = read(poolFd[i].fd, &c, 1);
                         if (bytesRead > 0) {
-                            int newStatus = c - '0';                            
+                            int newStatus = c - '0';
                             mManager->onGpioStatusChanged(info->pinId, newStatus);
-                            // Logger::msg("!!!!gpio: state of gpio pin '%s' change to '%d'", info->pinId.data(), newStatus);                            
+                            // Logger::msg("!!!!gpio: state of gpio pin '%s' change to '%d'", info->pinId.data(), newStatus);
                         } else {
                             Logger::msg("gpio: error happens while receiving gpio '%s' (%s) state",
                                     info->pinId.data(), info->pinName.data());
@@ -484,3 +532,72 @@ bool GpioThread::setGpioState(const string& gpioId, int state)
     return result;
 }
 
+void GpioThread::threadFuncManualRead()
+{
+    char c;
+    int idx = 0;
+    mMutex.lock();
+    auto info = mGpioInfoList;
+    while (info) {
+        if (info->direction == GpioThread::GpioInfo::Direction::In) {
+            ++idx;
+        }
+        info = info->next;
+    }
+    mMutex.unlock();
+
+    if (idx == 0) {
+        /* нет у нас gpio на вход, нечего и тред занимать*/
+        return;
+    }
+
+    mMutex.lock();
+    info = mGpioInfoList;
+    idx = 0;
+    while (info) {
+        if (info->direction == GpioThread::GpioInfo::Direction::In) {
+            string path = pathForGpioNum(info->pinNum) + "/value";
+            auto fd = open(path.data(), O_RDONLY);
+            ++idx;
+            info->fd = fd;
+            if (fd < 0) {
+                Logger::msg("gpio: can't start monitor gpio '%s': %s",
+                        info->pinId.data(), strerror(errno));
+                continue;
+            }
+        }
+        info = info->next;
+    }
+    mMutex.unlock();
+
+    while (true) {
+        usleep(10000);
+        auto info = mGpioInfoList;
+        while (info) {
+
+            if (info->direction == GpioThread::GpioInfo::Direction::In && info->fd >= 0) {
+                lseek(info->fd, 0, SEEK_SET);
+                auto bytesRead = read(info->fd, &c, 1);
+                if (bytesRead > 0) {
+                    int newStatus = c - '0';
+                    bool inform = false;
+                    mMutex.lock();
+                    if (info->prevStatus != newStatus) {
+                        info->prevStatus = newStatus;
+                        inform = true;
+                    }
+                    mMutex.unlock();
+
+                    if (inform) {
+                        mManager->onGpioStatusChanged(info->pinId, newStatus);                        
+                    }
+                    // Logger::msg("!!!!gpio: state of gpio pin '%s' change to '%d'", info->pinId.data(), newStatus);                            
+                } else {
+                    Logger::msg("gpio: error happens while receiving gpio '%s' (%s) state",
+                            info->pinId.data(), info->pinName.data());
+                }
+            }
+            info = info->next;
+        }
+    }
+}

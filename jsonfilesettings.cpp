@@ -24,12 +24,13 @@ JsonFileSettings::~JsonFileSettings()
 }
 
 JsonFileSettings::JsonFileSettings(const string& filePath) :
-    mPort(55555)
+    mPort(55555),
+    mManualGpioRead(false)
 {
     readSettings(filePath);
 }
 
-uint16_t JsonFileSettings::port()  const
+uint16_t JsonFileSettings::port() const
 {
     return mPort;
 }
@@ -44,13 +45,15 @@ void JsonFileSettings::readSettings(const string& filePath)
             stream.seekg(0, stream.end);
             int size = stream.tellg();
             stream.seekg(0, stream.beg);
-            
+
             buff.resize(size);
             stream.read(buff.data(), size);
             json j = json::parse(string(buff.begin(), buff.end()));
             for (json::iterator element = j.begin(); element != j.end(); ++element) {
                 if (element.key() == "port" && element.value().is_number()) {
                     mPort = element.value();
+                } else if (element.key() == "manual_gpio_read" && element.value().is_boolean()) {
+                    mManualGpioRead = element.value();
                 } else if (element.key() == "file_server" && element.value().is_string()) {
                     mFileServerUrl = element.value();
                 } else if (element.key() == "username" && element.value().is_string()) {
@@ -70,12 +73,12 @@ void JsonFileSettings::readSettings(const string& filePath)
                     json obj = element.value();
                     for (json::iterator it = obj.begin(); it != obj.end(); ++it) {
                         if (it.value().is_array()) {
-                            json array = it.value();                            
+                            json array = it.value();
                             if (array.size() > 1) {
-                                if (array[0].is_string() && array[1].is_string()) { 
-                                    string gpioId = it.key(); 
-                                    string gpioName = array[0]; 
-                                    string gpioDirection = array[1];  
+                                if (array[0].is_string() && array[1].is_string()) {
+                                    string gpioId = it.key();
+                                    string gpioName = array[0];
+                                    string gpioDirection = array[1];
                                     GpioSettings gs;
                                     gs.id = gpioId;
                                     gs.name = gpioName;
@@ -88,18 +91,18 @@ void JsonFileSettings::readSettings(const string& filePath)
                                     }
                                     mGpioSettings.emplace_back(gs);
                                 }
-                            }                           
+                            }
                         }
                     }
                 }
             }
         }
     } catch (exception &) {
-        
-    }    
+
+    }
 }
 
-string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode)  const
+string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode) const
 {
     auto it = mCodeToScriptBinding.find(notifyCode);
     if (it != mCodeToScriptBinding.end()) {
@@ -132,3 +135,9 @@ string JsonFileSettings::username() const
 {
     return mUsername;
 }
+
+bool JsonFileSettings::manualGpioRead() const
+{
+    return mManualGpioRead;
+}
+
