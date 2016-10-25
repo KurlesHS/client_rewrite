@@ -35,14 +35,15 @@ private:
     void onIo(ev::io &io, int events);
     
 private:
+    string mNewFilePath;
     const string mServerAddress;
     const string mPath;
     const string mHash;
-    const string mFileName;
+    const string mFileName;    
     const fileIsDownloadedCallback mCallback;
     vector<char> mBuffer;
     string result;
-    
+    pid_t mPid;
     ev::io mIo;
     FILE *mFile;
     bool mIsStartDownload;

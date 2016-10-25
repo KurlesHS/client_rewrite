@@ -100,6 +100,9 @@ void JsonFileSettings::readSettings(const string& filePath)
     } catch (exception &) {
 
     }
+    if (mFileServerUrl.size() && mFileServerUrl.at(mFileServerUrl.size() - 1) != '/') {
+        mFileServerUrl += "/";
+    }
 }
 
 string JsonFileSettings::scriptNameByNotifyCode(const string& notifyCode) const

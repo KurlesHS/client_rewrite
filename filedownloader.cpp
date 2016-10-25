@@ -17,9 +17,12 @@
 
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <iostream>
 
 static pid_t startWget(const string &serverAddress, const string &hash, int &outFd)
 {
+    string url = serverAddress + "get/" + hash;
+    Logger::msg("trying to download file from %s", url.data());
     pid_t pid = 0;
     int pipefd[2];
 
@@ -35,8 +38,8 @@ static pid_t startWget(const string &serverAddress, const string &hash, int &out
         // dup2(pipefd[1], STDERR_FILENO);
         //  wget -O - -o /dev/null http://localhost:8088/get/827717d816d95c60f2059c8be841341897216104100d7b495f04c96f > 1
 
-        string url = serverAddress + "get/" + hash;
-        execl("/usr/bin/wget", "/usr/bin/wget", "-O", "-", "-o", "/dev/null", url.data(), (char*) NULL);
+
+        execl("/usr/bin/wget", "/usr/bin/wget", "--connect-timeout=15", "-t", "1", "-O", "-", "-o", "/dev/null", url.data(), (char*) NULL);
     }
 
     // Родительский процесс
@@ -76,18 +79,31 @@ void FileDownloader::onIo(ev::io& io, int events)
             // выход            
             io.stop();
             close(io.fd);
-            fclose(mFile);
+            if (mFile) {
+                fclose(mFile);
+            }
             if (mIsStartDownload) {
-                Logger::msg("file with hash '%s' is downloaded", mHash.data());                
+                Logger::msg("file with hash '%s' is downloaded", mHash.data());
             } else {
-                Logger::msg("error hapened while downloading file with hash '%s'", mHash.data());                
+                Logger::msg("error hapened while downloading file with hash '%s'", mHash.data());
+                // unlink(mNewFilePath.data());
             }
             mCallback(mIsStartDownload);
             delete this;
         } else {
             if (!mIsStartDownload) {
                 mIsStartDownload = true;
-                Logger::msg("started downloading file with hash '%s'", mHash.data());                
+
+                mFile = fopen(mNewFilePath.data(), "wb");
+                if (!mFile) {
+                    Logger::msg("fail to open file '%s' for write", mNewFilePath.data());
+                    mIo.stop();
+                    mCallback(false);
+                    kill(mPid, SIGKILL);
+                    delete this;
+                    return;
+                }
+                Logger::msg("started downloading file with hash '%s'", mHash.data());
             }
             // пишем данные
             fwrite(mBuffer.data(), mBuffer.size(), 1, mFile);
@@ -99,30 +115,17 @@ void FileDownloader::onIo(ev::io& io, int events)
 
 void FileDownloader::start()
 {
-    auto newFilePath = mPath + "/" + mHash + "_" + mFileName;
-    mFile = fopen(newFilePath.data(), "wb");
-    if (mFile) {
-        // тут можно стартовать процесс скачки
-        int fd;
-        auto pid = startWget(mServerAddress, mHash, fd);
-        if (pid > 0) {
-            // получилось запустить wget
-            mIo.start(fd, ev::READ);
-        } else {
-            // не получилось запустить wget
-            Logger::msg("can't start process for downloading for file hash '%s'", mHash.data());
-            // закрываем файл
-            fclose(mFile);
-            // удаляем его
-            unlink(newFilePath.data());
-            mCallback(false);
-            delete this;
-        }
+    mNewFilePath = mPath + "/" + mHash + "_" + mFileName;
+    // тут можно стартовать процесс скачки
+    int fd;
+    mPid = startWget(mServerAddress, mHash, fd);
+    if (mPid > 0) {
+        // получилось запустить wget
+        mIo.start(fd, ev::READ);
     } else {
-        // не получилось открыть файл - дальнейшие манипуляции бессмысленны
-        Logger::msg("can't open file for writting for file hash '%s'", mHash.data());
+        // не получилось запустить wget
+        Logger::msg("can't start process for downloading for file hash '%s'", mHash.data());
         mCallback(false);
         delete this;
     }
-
 }
