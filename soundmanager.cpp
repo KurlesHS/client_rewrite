@@ -335,7 +335,8 @@ void SoundManager::onAvPlayEvent(ev::io& io, int event)
             close(io.fd);
             if (!mIsPlaybackStarted) {
                 // если не начинали проигрывние - значит беда
-                Logger::msg("sound manager event: file not found. Playback id: '%s'", mCurrentPlaybackFile.playbackId.data());
+                Logger::msg("sound manager event: file not found. Playback id: '%s', filepath: '%s'", 
+                        mCurrentPlaybackFile.playbackId.data(), mCurrentPlaybackFile.filePath.data());
                 informAboutEvent(&ISoundManagerEventsListener::fileNotFound, mCurrentPlaybackFile.playbackId);
             } else {
                 // если начинали = то проигрывние закончено
@@ -347,7 +348,8 @@ void SoundManager::onAvPlayEvent(ev::io& io, int event)
         } else if (!mIsPlaybackStarted) {
             if (std::search(buff.begin(), buff.end(), duration.begin(), duration.end()) != buff.end()) {
                 mIsPlaybackStarted = true;
-                Logger::msg("sound manager event: playback started. Playback id: '%s'", mCurrentPlaybackFile.playbackId.data());
+                Logger::msg("sound manager event: playback started. Playback id: '%s', filepath: '%s'", 
+                        mCurrentPlaybackFile.playbackId.data(), mCurrentPlaybackFile.filePath.data());
                 informAboutEvent(&ISoundManagerEventsListener::playbackStarted, mCurrentPlaybackFile.playbackId);
             }
         }
