@@ -29,6 +29,8 @@
         <itemPath>hardwarestatuses/requesthardwarestatusesincommingcommandhandler.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
+        <itemPath>lua/emitsignalifhappenshandler.cpp</itemPath>
+        <itemPath>lua/emitsignalluaevent.cpp</itemPath>
         <itemPath>lua/iluaeventforifhappenshandler.cpp</itemPath>
         <itemPath>lua/logmessageluaevent.cpp</itemPath>
         <itemPath>lua/luascript.cpp</itemPath>
@@ -111,6 +113,8 @@
         <itemPath>ioc/resolver.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="lua" projectFiles="true">
+        <itemPath>lua/emitsignalifhappenshandler.h</itemPath>
+        <itemPath>lua/emitsignalluaevent.h</itemPath>
         <itemPath>lua/iluaevent.h</itemPath>
         <itemPath>lua/iluaeventforifhappenshandler.h</itemPath>
         <itemPath>lua/iluascripteventlistener.h</itemPath>
@@ -374,6 +378,14 @@
       <item path="logger.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/emitsignalifhappenshandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/emitsignalifhappenshandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/emitsignalluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/emitsignalluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -834,6 +846,14 @@
       <item path="logger.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/emitsignalifhappenshandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/emitsignalifhappenshandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lua/emitsignalluaevent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lua/emitsignalluaevent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua/iluaevent.h" ex="false" tool="3" flavor2="0">
       </item>

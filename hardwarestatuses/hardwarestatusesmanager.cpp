@@ -25,7 +25,7 @@ HardwareStatusesManager::HardwareStatusesManager()
     mHardwareStatusToString = {
         {IHardwareStatusesEvents::HardwareStatus::Fail, "fail"},
         {IHardwareStatusesEvents::HardwareStatus::Unknown, "unknown"},
-        {IHardwareStatusesEvents::HardwareStatus::Work, "worki"}
+        {IHardwareStatusesEvents::HardwareStatus::Work, "working"}
     };
     
     mNotifyStatusToString = {

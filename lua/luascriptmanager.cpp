@@ -28,6 +28,7 @@ LuaScriptManager::LuaScriptManager(const string& luaScriptPath) :
     mAsync.set(ThreadRegister::loopForCurrentThread());
     mAsync.set<LuaScriptManager, &LuaScriptManager::onAsyncCommand>(this);
     mAsync.start();
+    addIfHappensHandler(&mEmitSignalHandler);
 }
 
 void LuaScriptManager::cancelScript(const string& notifyId)
@@ -208,6 +209,8 @@ void LuaScriptManager::informAboutEvent(ILuaEventSharedPtr event)
     for (auto listener : mEventListeners) {
         listener->luaEvent(event);
     }
+    mEmitSignalHandler.luaEvent(event);
+    
 }
 
 void LuaScriptManager::onAsyncCommand()

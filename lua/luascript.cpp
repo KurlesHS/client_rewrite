@@ -26,15 +26,17 @@
 #include <ev++.h>
 
 #include "uuid.h"
-#include "scriptfinishedluaevent.h"
 #include "logmessageluaevent.h"
+#include "emitsignalluaevent.h"
+#include "scriptfinishedluaevent.h"
+#include "outgoingmessageluaevent.h"
+#include "sethardwarestatusesluaevent.h"
 #include "playlocalfilerequestluaevent.h"
 #include "stoplocalaudiorequestluaevent.h"
 #include "playnetworkaudiorequestluaevent.h"
 #include "stopnetworkaudiorequestluaevent.h"
+
 #include "logger.h"
-#include "sethardwarestatusesluaevent.h"
-#include "outgoingmessageluaevent.h"
 
 
 
@@ -53,6 +55,7 @@ static const char stopPlayNetworkAudioFuncName[] = "stop_play_network_audio";
 static const char ifHappensFuncName[] = "if_happens";
 static const char delayFuncName[] = "delay";
 static const char cancelPendingFuncFuncName[] = "cancel_pending_func";
+static const char emitSignalFuncName[] = "emit_signal";
 
 static const char setHardwareStatusWorkFuncName[] = "set_hardware_status_work";
 static const char setHardwareStatusFailFuncName[] = "set_hardware_status_fail";
@@ -338,6 +341,10 @@ class LuaScriptPrivate {
         mRelayChangeParams[id] = {relayNum, newState};
         return id;
     }
+    
+    void emitSignalFuncImpl(const string &signalName) {
+        informAboutLuaEvent(make_shared<EmitSignalLuaEvent>(signalName));
+    }
 
     void checkIfFinished()
     {
@@ -591,6 +598,8 @@ void LuaScript::init()
 
         d->state.set_function(onRelayChagedFuncName,
                 &LuaScriptPrivate::onRelayChangedFuncImpl, d);
+        d->state.set_function(emitSignalFuncName,
+                &LuaScriptPrivate::emitSignalFuncImpl, d);
 
 
     } catch (const sol::error &error) {

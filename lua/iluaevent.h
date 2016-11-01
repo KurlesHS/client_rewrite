@@ -43,7 +43,8 @@ public:
         SetNotifyStatusError,
         SetNotifyStatusUnknown,
         SetGpio,
-        GetGpio
+        GetGpio,
+        EmitSignal
     };
 
     virtual ~ILuaEvent()

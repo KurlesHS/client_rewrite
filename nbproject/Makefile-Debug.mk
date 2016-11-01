@@ -49,6 +49,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/hardwarestatuses/requesthardwarestatusesincommingcommandhandler.o \
 	${OBJECTDIR}/jsonfilesettings.o \
 	${OBJECTDIR}/logger.o \
+	${OBJECTDIR}/lua/emitsignalifhappenshandler.o \
+	${OBJECTDIR}/lua/emitsignalluaevent.o \
 	${OBJECTDIR}/lua/iluaeventforifhappenshandler.o \
 	${OBJECTDIR}/lua/iluafunctionregistrator.o \
 	${OBJECTDIR}/lua/logmessageluaevent.o \
@@ -195,6 +197,16 @@ ${OBJECTDIR}/logger.o: logger.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/logger.o logger.cpp
+
+${OBJECTDIR}/lua/emitsignalifhappenshandler.o: lua/emitsignalifhappenshandler.cpp
+	${MKDIR} -p ${OBJECTDIR}/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/emitsignalifhappenshandler.o lua/emitsignalifhappenshandler.cpp
+
+${OBJECTDIR}/lua/emitsignalluaevent.o: lua/emitsignalluaevent.cpp
+	${MKDIR} -p ${OBJECTDIR}/lua
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/emitsignalluaevent.o lua/emitsignalluaevent.cpp
 
 ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o: lua/iluaeventforifhappenshandler.cpp
 	${MKDIR} -p ${OBJECTDIR}/lua
@@ -599,6 +611,32 @@ ${OBJECTDIR}/logger_nomain.o: ${OBJECTDIR}/logger.o logger.cpp
 	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/logger_nomain.o logger.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/logger.o ${OBJECTDIR}/logger_nomain.o;\
+	fi
+
+${OBJECTDIR}/lua/emitsignalifhappenshandler_nomain.o: ${OBJECTDIR}/lua/emitsignalifhappenshandler.o lua/emitsignalifhappenshandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/emitsignalifhappenshandler.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/emitsignalifhappenshandler_nomain.o lua/emitsignalifhappenshandler.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/lua/emitsignalifhappenshandler.o ${OBJECTDIR}/lua/emitsignalifhappenshandler_nomain.o;\
+	fi
+
+${OBJECTDIR}/lua/emitsignalluaevent_nomain.o: ${OBJECTDIR}/lua/emitsignalluaevent.o lua/emitsignalluaevent.cpp 
+	${MKDIR} -p ${OBJECTDIR}/lua
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/lua/emitsignalluaevent.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lua/emitsignalluaevent_nomain.o lua/emitsignalluaevent.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/lua/emitsignalluaevent.o ${OBJECTDIR}/lua/emitsignalluaevent_nomain.o;\
 	fi
 
 ${OBJECTDIR}/lua/iluaeventforifhappenshandler_nomain.o: ${OBJECTDIR}/lua/iluaeventforifhappenshandler.o lua/iluaeventforifhappenshandler.cpp 

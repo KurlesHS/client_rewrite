@@ -17,8 +17,9 @@
 #include "iluascripteventlistener.h"
 #include "iluaeventforifhappenshandler.h"
 
-#include "protocol/startnotifyinfo.h"
+#include "emitsignalifhappenshandler.h"
 
+#include "protocol/startnotifyinfo.h"
 
 #include <memory>
 #include <string>
@@ -75,10 +76,7 @@ private:
     ev::async mAsync;
     list<function<void()> > mPendingCommands;
     list<ILuaFunctionRegistrator *> mFunctionRegistrators;
-    
-
-
-
+    EmitSignalIfHappensHandler mEmitSignalHandler;
 
 };
 
