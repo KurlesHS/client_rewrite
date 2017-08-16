@@ -29,7 +29,7 @@ HardwareStatusesManager::HardwareStatusesManager()
     };
     
     mNotifyStatusToString = {
-        {IHardwareStatusesEvents::NotifyStatus::Error, "errpr"},
+        {IHardwareStatusesEvents::NotifyStatus::Error, "error"},
         {IHardwareStatusesEvents::NotifyStatus::Process, "process"},
         {IHardwareStatusesEvents::NotifyStatus::Unknown, "unknown"},
         {IHardwareStatusesEvents::NotifyStatus::Wait, "wait"}

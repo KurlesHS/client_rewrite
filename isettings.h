@@ -42,6 +42,7 @@ public:
     virtual string username() const = 0;
     virtual string password() const = 0;
     virtual bool manualGpioRead() const = 0;
+    virtual string eventFilesDir() const = 0;
     virtual list<GpioSettings> gpioSettings() const = 0;
     
 

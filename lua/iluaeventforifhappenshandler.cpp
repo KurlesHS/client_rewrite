@@ -6,6 +6,10 @@
 
 #include "iluaeventforifhappenshandler.h"
 
+namespace {
+    const char eventName[] = "incoming_file_content";
+}
+
 void ILuaEventForIfHappensHandler::addLuaScript(LuaScript* listener)
 {
     mLuaScripts.push_back(listener);

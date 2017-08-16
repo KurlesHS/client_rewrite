@@ -30,7 +30,9 @@ MainHandler::MainHandler() :
     mLuaToAudioMediator(&mLuaScriptManager, &mSoundManager),
     mLuaToNetworkStreamMediator(&mLuaScriptManager, &mNetworkAudioManager),
     mHardwareStatusesToLualMediator(&mStatusesManager, &mLuaScriptManager),
-    mHardwareStatusesToProtocolMediator(&mFactory, &mStatusesManager)
+    mHardwareStatusesToProtocolMediator(&mFactory, &mStatusesManager),
+    mFileWatcher(Resolver::resolveDi<ISettings>()->eventFilesDir(), true, true),
+    mFileContentEventHandler(&mFileWatcher)
 {
     Logger::createInstanse();
     Logger::setCopyToStdoutEnabled(true);
@@ -38,6 +40,8 @@ MainHandler::MainHandler() :
     Logger::msg("--- Sonet hardware server started ---");
     mGpioManager.start();
     mNetworkAudioManager.start();
+    mFileWatcher.start();
+    mLuaScriptManager.addIfHappensHandler(&mFileContentEventHandler);
     mLuaScriptManager.startAutostartScript(di_inject(ISettings)->autostartScript());
 
 #if 0

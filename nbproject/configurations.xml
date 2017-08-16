@@ -15,6 +15,10 @@
       <logicalFolder name="auth" displayName="auth" projectFiles="true">
         <itemPath>auth/authmanager.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f10" displayName="file_watcher" projectFiles="true">
+        <itemPath>file_watcher/filecontenteventhandler.cpp</itemPath>
+        <itemPath>file_watcher/filewatcher.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f9" displayName="gpio" projectFiles="true">
         <itemPath>gpio/gpiomanager.cpp</itemPath>
         <itemPath>gpio/gpiothread.cpp</itemPath>
@@ -98,6 +102,10 @@
         <itemPath>auth/authmanager.h</itemPath>
         <itemPath>auth/iauthmanager.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f10" displayName="file_watcher" projectFiles="true">
+        <itemPath>file_watcher/filecontenteventhandler.h</itemPath>
+        <itemPath>file_watcher/filewatcher.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f9" displayName="gpio" projectFiles="true">
         <itemPath>gpio/gpiomanager.h</itemPath>
       </logicalFolder>
@@ -170,6 +178,7 @@
       <itemPath>filedownloader.h</itemPath>
       <itemPath>fortest.h</itemPath>
       <itemPath>gpio/gpiothread.h</itemPath>
+      <itemPath>file_watcher/ifilewatcherlistener.h</itemPath>
       <itemPath>isettings.h</itemPath>
       <itemPath>isoundmanagereventslistener.h</itemPath>
       <itemPath>jsonfilesettings.h</itemPath>
@@ -293,6 +302,25 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <item path="file_watcher/filecontenteventhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="file_watcher/filecontenteventhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="file_watcher/filewatcher.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="file_watcher/filewatcher.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="file_watcher/ifilewatcherlistener.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="filedownloader.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="filedownloader.h" ex="false" tool="3" flavor2="0">
@@ -761,6 +789,25 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <item path="file_watcher/filecontenteventhandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="file_watcher/filecontenteventhandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="file_watcher/filewatcher.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="file_watcher/filewatcher.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="file_watcher/ifilewatcherlistener.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="filedownloader.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="filedownloader.h" ex="false" tool="3" flavor2="0">

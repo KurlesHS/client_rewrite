@@ -92,7 +92,12 @@ public:
     {
         {
             for (auto f : ifHappensOkFunc(ifHappensId)) {
-                f(std::forward<Args>(args)...);
+                try {
+                    f(std::forward<Args>(args)...);
+                } catch (sol::error error) {
+                    setLastError(error.what());
+                    break;
+                }                
             }
             removeIfHappens(ifHappensId, true, true);
         }
@@ -102,6 +107,8 @@ public:
 private:
     list<sol::function> ifHappensOkFunc(const string & ifHappensId);
     void removeIfHappens(const string& ifHappensId, const bool checkIsfinished, const bool forceAsync);
+    
+    void setLastError(const string &error);
 
 private:
     friend class LuaScriptPrivate;

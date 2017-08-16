@@ -38,8 +38,6 @@
 
 #include "logger.h"
 
-
-
 // static const char priorityVarName[] = "priority";
 static const char groupVarName[] = "group";
 
@@ -529,6 +527,11 @@ ILuaPendingFunc::~ILuaPendingFunc()
 {
 }
 
+void LuaScript::setLastError(const string& error)
+{
+    d->setLastError(error);
+}
+
 void LuaScript::init()
 {
     try {
@@ -614,7 +617,8 @@ LuaScript::LuaScript(const std::string &scriptPath) :
     d->createId();
     d->q = this;
     d->scriptPath = scriptPath;
-    d->state.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
+    d->state.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math, 
+    sol::lib::os, sol::lib::io);
     init();
 }
 

@@ -26,6 +26,9 @@
 #include "jsonfilesettings.h"
 #include "logger.h"
 
+#include "file_watcher/filewatcher.h"
+#include "filedownloader.h"
+
 using namespace std;
  
 int main(int argc, char** argv)
@@ -45,13 +48,15 @@ int main(int argc, char** argv)
     
     MainHandler m;
     int retCode = 0;
+        
+    
     if (m.run()) {
         mainLoop.run();
         retCode = -1;
     }
            
     di_unregister_type(ITimerFactory);
-    di_unregister_type(IAuthManager)  ;  
+    di_unregister_type(IAuthManager);  
     
     return retCode;
 }

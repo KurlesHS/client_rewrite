@@ -23,6 +23,12 @@ JsonFileSettings::~JsonFileSettings()
 {
 }
 
+string JsonFileSettings::eventFilesDir() const
+{
+    return mEventFilesDir;
+}
+
+
 JsonFileSettings::JsonFileSettings(const string& filePath) :
     mPort(55555),
     mManualGpioRead(false)
@@ -56,6 +62,8 @@ void JsonFileSettings::readSettings(const string& filePath)
                     mManualGpioRead = element.value();
                 } else if (element.key() == "file_server" && element.value().is_string()) {
                     mFileServerUrl = element.value();
+                } else if (element.key() == "event_files_dir" && element.value().is_string()) {
+                    mEventFilesDir = element.value();
                 } else if (element.key() == "username" && element.value().is_string()) {
                     mUsername = element.value();
                 } else if (element.key() == "password" && element.value().is_string()) {

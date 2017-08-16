@@ -37,6 +37,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/auth/authmanager.o \
 	${OBJECTDIR}/cancelnotifyincommingcommandhandler.o \
+	${OBJECTDIR}/file_watcher/filecontenteventhandler.o \
+	${OBJECTDIR}/file_watcher/filewatcher.o \
 	${OBJECTDIR}/filedownloader.o \
 	${OBJECTDIR}/fortest.o \
 	${OBJECTDIR}/gpio/gpiomanager.o \
@@ -137,6 +139,16 @@ ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o: cancelnotifyincommingcommand
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o cancelnotifyincommingcommandhandler.cpp
+
+${OBJECTDIR}/file_watcher/filecontenteventhandler.o: file_watcher/filecontenteventhandler.cpp
+	${MKDIR} -p ${OBJECTDIR}/file_watcher
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/file_watcher/filecontenteventhandler.o file_watcher/filecontenteventhandler.cpp
+
+${OBJECTDIR}/file_watcher/filewatcher.o: file_watcher/filewatcher.cpp
+	${MKDIR} -p ${OBJECTDIR}/file_watcher
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/file_watcher/filewatcher.o file_watcher/filewatcher.cpp
 
 ${OBJECTDIR}/filedownloader.o: filedownloader.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -455,6 +467,32 @@ ${OBJECTDIR}/cancelnotifyincommingcommandhandler_nomain.o: ${OBJECTDIR}/cancelno
 	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cancelnotifyincommingcommandhandler_nomain.o cancelnotifyincommingcommandhandler.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/cancelnotifyincommingcommandhandler.o ${OBJECTDIR}/cancelnotifyincommingcommandhandler_nomain.o;\
+	fi
+
+${OBJECTDIR}/file_watcher/filecontenteventhandler_nomain.o: ${OBJECTDIR}/file_watcher/filecontenteventhandler.o file_watcher/filecontenteventhandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}/file_watcher
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/file_watcher/filecontenteventhandler.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/file_watcher/filecontenteventhandler_nomain.o file_watcher/filecontenteventhandler.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/file_watcher/filecontenteventhandler.o ${OBJECTDIR}/file_watcher/filecontenteventhandler_nomain.o;\
+	fi
+
+${OBJECTDIR}/file_watcher/filewatcher_nomain.o: ${OBJECTDIR}/file_watcher/filewatcher.o file_watcher/filewatcher.cpp 
+	${MKDIR} -p ${OBJECTDIR}/file_watcher
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/file_watcher/filewatcher.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Wall -I3rdparty -I3rdparty/sol2 -I/usr/include/ -I/usr/include/lua5.3 -I. -std=c++14 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/file_watcher/filewatcher_nomain.o file_watcher/filewatcher.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/file_watcher/filewatcher.o ${OBJECTDIR}/file_watcher/filewatcher_nomain.o;\
 	fi
 
 ${OBJECTDIR}/filedownloader_nomain.o: ${OBJECTDIR}/filedownloader.o filedownloader.cpp 

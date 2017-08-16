@@ -26,6 +26,8 @@
 #include "hardwarestatuses/hardwarestatusesmanager.h"
 #include "gpio/gpiomanager.h"
 #include "gpio/luatogpiomediator.h"
+#include "file_watcher/filewatcher.h"
+#include "file_watcher/filecontenteventhandler.h"
 
 class MainHandler {
 public:
@@ -47,6 +49,8 @@ private:
     LuaToNetworkStreamMediator mLuaToNetworkStreamMediator;
     HardwareStatusesToLualMediator mHardwareStatusesToLualMediator;
     HardwareStatusesToProtocolMediator mHardwareStatusesToProtocolMediator;
+    FileWatcher mFileWatcher;
+    FileContentEventHandler mFileContentEventHandler;
 };
 
 #endif /* MAINHANDLER_H */

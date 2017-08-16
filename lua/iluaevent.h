@@ -44,7 +44,8 @@ public:
         SetNotifyStatusUnknown,
         SetGpio,
         GetGpio,
-        EmitSignal
+        EmitSignal,
+        FileContent
     };
 
     virtual ~ILuaEvent()

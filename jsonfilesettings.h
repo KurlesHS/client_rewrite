@@ -35,6 +35,8 @@ public:
     string password() const override;
     string username() const override;
     bool manualGpioRead() const override;
+    string eventFilesDir() const override;
+
     
 private:
     void readSettings(const string &filePath);
@@ -45,6 +47,7 @@ private:
     string mAutostartScript;    
     string mPassword;
     string mUsername;
+    string mEventFilesDir;
     bool mManualGpioRead;
     unordered_map<string, string> mCodeToScriptBinding;
     list<GpioSettings> mGpioSettings;
